@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Go Live — DivaFans</title>
+<style>
+  :root{--bg:#0d0f14;--panel:#161a22;--line:#262c38;--txt:#e6e9ef;--mut:#8b93a3;--acc:#e8318a;--ok:#25c26e;--warn:#e0a800}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+  .top{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .top h1{font-size:17px;margin:0;font-weight:600}
+  .top .live{margin-left:auto;font-size:13px;color:var(--mut);display:flex;align-items:center;gap:7px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--mut)}
+  .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .dot.wait{background:var(--warn)}
+  .wrap{max-width:560px;margin:0 auto;padding:16px}
+  .preview{position:relative;width:100%;aspect-ratio:9/16;max-height:60vh;background:#000;border-radius:16px;overflow:hidden}
+  @media(min-width:600px){.preview{aspect-ratio:16/9;max-height:none}}
+  video{width:100%;height:100%;object-fit:cover;background:#000}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--mut);font-size:14px}
+  .controls{display:flex;gap:10px;margin-top:14px}
+  .btn{flex:1;border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer}
+  .btn-go{background:var(--acc);color:#fff}
+  .btn-stop{background:#232a36;color:var(--txt)}
+  .btn-cam{background:#232a36;color:var(--txt);flex:0 0 54px;font-size:20px}
+  .btn:disabled{opacity:.5}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-top:16px}
+  .card h2{margin:0 0 6px;font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+  .card p{margin:0 0 12px;color:var(--mut);font-size:13px}
+  .field{margin-bottom:12px}
+  .field label{display:block;font-size:12px;color:var(--mut);margin-bottom:5px;text-transform:uppercase;letter-spacing:.03em}
+  .copyrow{display:flex;gap:8px}
+  .copyrow input{flex:1;background:#0d0f14;border:1px solid var(--line);color:var(--txt);padding:11px 12px;border-radius:9px;font:14px ui-monospace,Menlo,monospace}
+  .copyrow button{background:#232a36;color:var(--txt);border:0;border-radius:9px;padding:0 14px;font-size:13px;font-weight:600;cursor:pointer}
+  .tabs{display:flex;gap:8px;margin:16px 0 0}
+  .tab{flex:1;text-align:center;padding:11px;border:1px solid var(--line);border-radius:10px;color:var(--mut);font-size:14px;font-weight:600;cursor:pointer;background:#0d0f14}
+  .tab.active{background:var(--acc);color:#fff;border-color:var(--acc)}
+  .pane{display:none}
+  .pane.active{display:block}
+  .apps{font-size:13px;color:var(--mut);line-height:1.7;margin-top:8px}
+  .apps b{color:var(--txt)}
+  .note{font-size:12px;color:var(--warn);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>🔴 Go Live</h1>
+  <div class="live"><span id="dot" class="dot"></span><span id="liveTxt">Offline</span></div>
+</div>
+
+<div class="wrap">
+
+  <div class="tabs">
+    <div class="tab active" id="tabBrowser" onclick="showTab('browser')">📱 Browser Camera</div>
+    <div class="tab" id="tabApp" onclick="showTab('app')">📲 Phone App</div>
+  </div>
+
+  <!-- BROWSER CAMERA (WebRTC) -->
+  <div class="pane active" id="paneBrowser">
+    <div class="card" style="margin-top:12px">
+      <div class="preview">
+        <video id="cam" autoplay playsinline muted></video>
+        <div class="overlay" id="camOverlay">Tap "Enable Camera" to preview, then Go Live.</div>
+      </div>
+      <div class="field" style="margin-top:14px">
+        <label>Your stream name</label>
+        <div class="copyrow">
+          <input id="pname" value="stream1">
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-cam" onclick="enableCam()" title="Enable/flip camera">📷</button>
+        <button class="btn btn-go" id="goBtn" onclick="goLive()">Go Live</button>
+        <button class="btn btn-stop" id="endBtn" onclick="endLive()" disabled>End</button>
+      </div>
+      <div class="note" id="webrtcNote">Browser publishing uses WebRTC (activates with Red5 Pro). Camera preview works now; full go-live turns on when WebRTC is enabled on the server.</div>
+    </div>
+  </div>
+
+  <!-- PHONE APP (RTMP creds) -->
+  <div class="pane" id="paneApp">
+    <div class="card" style="margin-top:12px">
+      <h2>Stream from a phone app</h2>
+      <p>Use any free RTMP camera app (e.g. Larix Broadcaster, Streamlabs, nginx-compatible broadcasters). Enter these two values in the app:</p>
+      <div class="field">
+        <label>Server / URL</label>
+        <div class="copyrow">
+          <input id="rtmpUrl" readonly value="rtmp://162.35.180.58:1935/live">
+          <button onclick="copyVal('rtmpUrl',this)">Copy</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Stream key</label>
+        <div class="copyrow">
+          <input id="rtmpKey" value="stream1">
+          <button onclick="copyVal('rtmpKey',this)">Copy</button>
+        </div>
+      </div>
+      <div class="field">
+        <label>Or full URL (some apps take one line)</label>
+        <div class="copyrow">
+          <input id="rtmpFull" readonly value="rtmp://162.35.180.58:1935/live/stream1">
+          <button onclick="copyVal('rtmpFull',this)">Copy</button>
+        </div>
+      </div>
+      <div class="apps">
+        Suggested free apps: <b>Larix Broadcaster</b> (iOS/Android), <b>Streamlabs</b>, <b>nginx Broadcaster</b>. Set video to H.264, audio AAC, then start streaming with the values above.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clean=s=>(s||'').replace(/[^a-zA-Z0-9_-]/g,'')||'stream1';
+let camStream=null, facing='user';
+
+function showTab(t){
+  $('tabBrowser').classList.toggle('active',t==='browser');
+  $('tabApp').classList.toggle('active',t==='app');
+  $('paneBrowser').classList.toggle('active',t==='browser');
+  $('paneApp').classList.toggle('active',t==='app');
+}
+
+// keep stream name synced across both tabs
+function syncName(){
+  const n=clean($('pname').value);
+  $('rtmpKey').value=n;
+  $('rtmpFull').value='rtmp://162.35.180.58:1935/live/'+n;
+}
+$('pname').addEventListener('input',syncName);
+$('rtmpKey').addEventListener('input',()=>{$('pname').value=clean($('rtmpKey').value);syncName();});
+
+async function enableCam(){
+  try{
+    if(camStream){camStream.getTracks().forEach(t=>t.stop());}
+    facing = facing==='user'?'environment':'user';
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:true});
+    $('cam').srcObject=camStream;
+    $('camOverlay').style.display='none';
+  }catch(e){
+    $('camOverlay').textContent='Camera access denied or unavailable: '+e.message;
+  }
+}
+
+/* WebRTC publish — wired for Red5 Pro's WHIP/WebSocket endpoint.
+   Future-proof: when Pro is enabled, set PUBLISH_ENDPOINT and this connects.
+   On free Red5 the endpoint is absent, so we surface a clear message instead of failing silently. */
+const PUBLISH_ENDPOINT = ''; // e.g. wss://streamer.divafans.club/ws or WHIP URL when Pro is on
+let pc=null;
+
+async function goLive(){
+  const name=clean($('pname').value);
+  if(!camStream){ await enableCam(); if(!camStream) return; }
+  setLive('wait');
+  if(!PUBLISH_ENDPOINT){
+    setLive('off');
+    $('webrtcNote').textContent='Browser go-live needs WebRTC (Red5 Pro). For now use the "Phone App" tab with the RTMP values, or enable Pro to publish straight from this camera.';
+    $('webrtcNote').style.color='#e0a800';
+    showTab('app');
+    $('rtmpKey').value=name; syncName();
+    return;
+  }
+  // ---- WebRTC/WHIP publish (activates when PUBLISH_ENDPOINT set) ----
+  try{
+    pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+    camStream.getTracks().forEach(t=>pc.addTrack(t,camStream));
+    const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+    const r=await fetch(PUBLISH_ENDPOINT+'?stream='+encodeURIComponent(name),{method:'POST',headers:{'Content-Type':'application/sdp'},body:offer.sdp});
+    const answer=await r.text();
+    await pc.setRemoteDescription({type:'answer',sdp:answer});
+    setLive('on'); $('goBtn').disabled=true; $('endBtn').disabled=false;
+  }catch(e){ setLive('off'); $('webrtcNote').textContent='Publish failed: '+e.message; }
+}
+function endLive(){
+  if(pc){pc.close();pc=null;}
+  setLive('off'); $('goBtn').disabled=false; $('endBtn').disabled=true;
+}
+
+function setLive(state){
+  $('dot').className='dot'+(state==='on'?' on':state==='wait'?' wait':'');
+  $('liveTxt').textContent=state==='on'?'LIVE':state==='wait'?'Connecting…':'Offline';
+}
+
+function copyVal(id,btn){
+  const el=$(id); el.select(); el.setSelectionRange(0,99999);
+  navigator.clipboard.writeText(el.value).then(()=>{const o=btn.textContent;btn.textContent='✓';setTimeout(()=>btn.textContent=o,1200);});
+}
+syncName();
+</script>
+</body>
+</html>

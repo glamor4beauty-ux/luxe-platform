@@ -1,0 +1,23 @@
+<?php
+/* Credential accessor — require this from any endpoint that needs a secret.
+   Usage:  require __DIR__.'/_settings.php';  $sid = app_setting('twilio_account_sid');
+   Reads from the DB `settings` table (managed by the Settings tab), so nothing
+   has to be hardcoded in source. This file is require-only and is intentionally
+   NOT in the nginx allow-list, so it can never be fetched over the web. */
+
+if (!function_exists('app_setting')) {
+    function app_setting(string $key, string $default = ''): string {
+        static $cache = null;
+        if ($cache === null) {
+            $cache = [];
+            try {
+                foreach (db()->query("SELECT setting_key, setting_value FROM settings")->fetchAll() as $r) {
+                    $cache[$r['setting_key']] = (string)$r['setting_value'];
+                }
+            } catch (Throwable $e) {
+                $cache = [];
+            }
+        }
+        return ($cache[$key] ?? '') !== '' ? $cache[$key] : $default;
+    }
+}

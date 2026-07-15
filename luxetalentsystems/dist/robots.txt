@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /$
+Allow: /index.html
+
+# Block private / operational areas
+Disallow: /api/
+Disallow: /uploads/
+Disallow: /dashboard.html
+Disallow: /performer-dashboard.html
+Disallow: /performer.html
+Disallow: /performer-view.html
+Disallow: /login.html
+Disallow: /lib/
+
+Sitemap: https://luxetalentsystems.com/sitemap.xml

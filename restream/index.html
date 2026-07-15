@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restream Control — Creators Corner</title>
+<style>
+  :root{--bg:#0e1117;--card:#161b22;--border:#30363d;--txt:#e6edf3;--muted:#8b949e;--gold:#d4a830;--green:#3fb950;--red:#f85149;--blue:#388bfd;}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;padding:20px;max-width:900px;margin:0 auto}
+  h1{font-size:22px;margin-bottom:4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+  .status-bar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:20px}
+  .dot{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+  .dot.live{background:var(--green);box-shadow:0 0 8px var(--green)}
+  .dot.off{background:var(--red)}
+  .platform{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px}
+  .platform-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .platform-name{font-weight:700;font-size:15px}
+  .platform-badge{font-size:11px;padding:2px 8px;border-radius:10px;background:#21262d;color:var(--muted)}
+  .platform-badge.on{background:rgba(63,185,80,.15);color:var(--green)}
+  .fields{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+  .fields.full{grid-template-columns:1fr}
+  label{display:block;font-size:11px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.03em}
+  input,select{width:100%;background:#0d1117;border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--txt);font-size:13px}
+  input:focus,select:focus{outline:none;border-color:var(--blue)}
+  .row-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  button{cursor:pointer;border:none;border-radius:6px;padding:8px 14px;font-size:13px;font-weight:600}
+  .toggle{background:#21262d;color:var(--txt);border:1px solid var(--border)}
+  .toggle.on{background:var(--green);color:#04260f;border-color:var(--green)}
+  .btn-del{background:transparent;color:var(--red);border:1px solid var(--red)}
+  .btn-add{background:var(--gold);color:#0e1117;width:100%;padding:12px;font-size:14px;margin-bottom:20px}
+  .btn-go{background:var(--green);color:#04260f;font-size:16px;padding:14px 28px;flex:1}
+  .btn-stop{background:var(--red);color:#fff;font-size:16px;padding:14px 28px;flex:1}
+  .controls{display:flex;gap:10px;margin:20px 0}
+  .src-box{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:20px}
+  .hint{font-size:11px;color:var(--muted);margin-top:4px}
+  .log{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:var(--muted);max-height:150px;overflow-y:auto;white-space:pre-wrap;margin-top:14px}
+  .presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+  .preset{font-size:11px;padding:4px 10px;background:#21262d;border:1px solid var(--border);border-radius:12px;color:var(--muted);cursor:pointer}
+  .preset:hover{border-color:var(--blue);color:var(--txt)}
+</style>
+</head>
+<body>
+  <h1>Restream Control</h1>
+  <div class="sub">Fan your live stream out to multiple platforms. Toggle which ones, then Go Live.</div>
+
+  <div class="status-bar">
+    <div class="dot" id="statusDot"></div>
+    <div id="statusText">Checking status…</div>
+  </div>
+
+  <div class="src-box">
+    <label>Source (your incoming stream — usually your Owncast RTMP)</label>
+    <input id="sourceUrl" value="rtmp://127.0.0.1:1935/live/jP8NvaMBLbVM4OGqElFEDSRsE6FIXr">
+    <div class="hint">This is the stream the restreamer pulls from and copies to each enabled platform below.</div>
+  </div>
+
+  <div id="platforms"></div>
+
+  <button class="btn-add" onclick="addPlatform()">+ Add Platform</button>
+
+  <div class="controls">
+    <button class="btn-go" id="goBtn" onclick="goLive()">● Go Live (enabled platforms)</button>
+    <button class="btn-stop" id="stopBtn" onclick="stopLive()">■ Stop All</button>
+  </div>
+
+  <div class="log" id="log">Ready.</div>
+
+<script>
+const API = '/api';
+let platforms = [];
+
+const PRESETS = {
+  'X / Twitter':  { url:'rtmp://va.pscp.tv:80/x', key:'' },
+  'YouTube':      { url:'rtmp://a.rtmp.youtube.com/live2', key:'' },
+  'Facebook':     { url:'rtmps://live-api-s.facebook.com:443/rtmp/', key:'' },
+  'Twitch':       { url:'rtmp://live.twitch.tv/app/', key:'' },
+  'Kick':         { url:'rtmps://fa723fc1b171.global-contribute.live-video.net/app/', key:'' },
+  'Custom':       { url:'', key:'' },
+};
+
+function log(msg){ const l=document.getElementById('log'); l.textContent = new Date().toLocaleTimeString()+'  '+msg+'\n'+l.textContent; }
+
+async function load(){
+  try{
+    const r = await fetch(API+'/config.php?action=get',{credentials:'include'});
+    const d = await r.json();
+    if(d.ok){
+      platforms = d.platforms || [];
+      if(d.source) document.getElementById('sourceUrl').value = d.source;
+      render();
+    }
+  }catch(e){ log('Load error: '+e.message); }
+  refreshStatus();
+}
+
+function render(){
+  const box = document.getElementById('platforms');
+  box.innerHTML = '';
+  platforms.forEach((p,i)=>{
+    const div = document.createElement('div');
+    div.className='platform';
+    div.innerHTML = `
+      <div class="platform-head">
+        <span class="platform-name">${p.name||'Unnamed'}</span>
+        <span class="platform-badge ${p.enabled?'on':''}" id="badge${i}">${p.enabled?'ENABLED':'off'}</span>
+      </div>
+      <div class="fields">
+        <div><label>Platform Name</label><input value="${p.name||''}" onchange="upd(${i},'name',this.value)"></div>
+        <div><label>Preset</label><select onchange="applyPreset(${i},this.value)">
+          <option value="">— choose —</option>
+          ${Object.keys(PRESETS).map(k=>`<option ${p.name===k?'selected':''}>${k}</option>`).join('')}
+        </select></div>
+      </div>
+      <div class="fields full">
+        <div><label>RTMP / RTMPS URL</label><input value="${p.url||''}" onchange="upd(${i},'url',this.value)" placeholder="rtmp://..."></div>
+      </div>
+      <div class="fields full">
+        <div><label>Stream Key</label><input value="${p.key||''}" onchange="upd(${i},'key',this.value)" placeholder="stream key"></div>
+      </div>
+      <div class="fields">
+        <div><label>Video Bitrate (k, blank = copy)</label><input value="${p.vbitrate||''}" onchange="upd(${i},'vbitrate',this.value)" placeholder="e.g. 6000 (blank=passthrough)"></div>
+        <div><label>Resolution (blank = copy)</label><input value="${p.size||''}" onchange="upd(${i},'size',this.value)" placeholder="e.g. 1920x1080"></div>
+      </div>
+      <div class="row-actions">
+        <button class="toggle ${p.enabled?'on':''}" onclick="toggle(${i})">${p.enabled?'✓ Enabled':'Enable'}</button>
+        <button class="btn-del" onclick="del(${i})">Delete</button>
+      </div>
+    `;
+    box.appendChild(div);
+  });
+}
+
+function addPlatform(){ platforms.push({name:'',url:'',key:'',enabled:false,vbitrate:'',size:''}); render(); save(); }
+function upd(i,k,v){ platforms[i][k]=v; if(k==='name'){document.querySelectorAll('.platform-name')[i].textContent=v||'Unnamed';} save(); }
+function applyPreset(i,name){ if(PRESETS[name]){ platforms[i].name=name; platforms[i].url=PRESETS[name].url; render(); save(); } }
+function toggle(i){ platforms[i].enabled=!platforms[i].enabled; render(); save(); }
+function del(i){ if(confirm('Delete this platform?')){ platforms.splice(i,1); render(); save(); } }
+
+async function save(){
+  try{
+    await fetch(API+'/config.php?action=save',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({source:document.getElementById('sourceUrl').value, platforms})});
+  }catch(e){ log('Save error: '+e.message); }
+}
+document.getElementById('sourceUrl').addEventListener('change',save);
+
+async function goLive(){
+  await save();
+  const enabled = platforms.filter(p=>p.enabled);
+  if(!enabled.length){ log('No platforms enabled.'); return; }
+  log('Starting restream to: '+enabled.map(p=>p.name).join(', '));
+  try{
+    const r = await fetch(API+'/control.php?action=start',{method:'POST',credentials:'include'});
+    const d = await r.json();
+    log(d.ok?('Started ('+d.count+' platforms).'):('Error: '+(d.error||'failed')));
+  }catch(e){ log('Start error: '+e.message); }
+  refreshStatus();
+}
+
+async function stopLive(){
+  log('Stopping all restreams…');
+  try{
+    const r = await fetch(API+'/control.php?action=stop',{method:'POST',credentials:'include'});
+    const d = await r.json();
+    log(d.ok?'Stopped all.':'Error stopping.');
+  }catch(e){ log('Stop error: '+e.message); }
+  refreshStatus();
+}
+
+async function refreshStatus(){
+  try{
+    const r = await fetch(API+'/control.php?action=status',{credentials:'include'});
+    const d = await r.json();
+    const dot=document.getElementById('statusDot'), txt=document.getElementById('statusText');
+    if(d.ok && d.running && d.running.length){
+      dot.className='dot live';
+      txt.textContent='LIVE → '+d.running.join(', ');
+    }else{
+      dot.className='dot off';
+      txt.textContent='Offline (not restreaming)';
+    }
+  }catch(e){
+    document.getElementById('statusText').textContent='Status unavailable';
+  }
+}
+
+load();
+setInterval(refreshStatus, 5000);
+</script>
+</body>
+</html>

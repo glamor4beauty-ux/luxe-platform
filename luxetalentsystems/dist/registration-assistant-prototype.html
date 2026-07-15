@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Luxe Talent — Registration Assistant (Prototype)</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0d14; --card:#11151c; --panel:#161a23; --line:#2a2f3e;
+  --gold:#d4a830; --gold2:#e8bf44; --green:#4ade80;
+  --text:#e8eaf0; --soft:#c0c4d0; --muted:#8a8fa8;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',system-ui,sans-serif;
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:24px 14px 60px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.brand-logo{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-weight:700;color:var(--bg);font-size:13px}
+.brand-name{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;letter-spacing:.02em}
+.brand-name span{color:var(--gold)}
+.proto-tag{font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:20px;
+  padding:3px 9px;text-transform:uppercase;letter-spacing:.08em}
+
+.card{width:100%;max-width:540px;background:var(--card);
+  border:1px solid rgba(212,168,48,.18);border-radius:16px;overflow:hidden}
+
+.bar{display:flex;align-items:center;gap:10px;padding:14px 18px;
+  border-bottom:1px solid rgba(212,168,48,.12);background:rgba(212,168,48,.03)}
+.ai-dot{width:34px;height:34px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center}
+.ai-dot svg{width:18px;height:18px}
+.bar-txt{flex:1;min-width:0}
+.bar-txt b{font-size:14px;font-weight:600;display:block}
+.bar-txt small{font-size:11px;color:var(--green)}
+.restart{background:transparent;border:1px solid var(--line);color:var(--muted);
+  font-size:11px;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit}
+.restart:hover{border-color:var(--gold);color:var(--gold)}
+
+.body{padding:20px 18px 22px}
+
+.prog{height:4px;background:var(--panel);border-radius:3px;margin:0 0 4px;overflow:hidden}
+.prog>i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));
+  transition:width .3s ease;width:0}
+.prog-lbl{font-size:11px;color:var(--muted);margin-bottom:16px}
+
+.msg{display:flex;gap:10px;margin-bottom:16px}
+.msg .av{width:28px;height:28px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center}
+.msg .av svg{width:14px;height:14px}
+.bubble{background:rgba(212,168,48,.06);border:1px solid rgba(212,168,48,.18);
+  border-radius:4px 12px 12px 12px;padding:12px 14px;font-size:14px;line-height:1.6;color:var(--text)}
+
+h2.q{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;line-height:1.5}
+
+.choice{width:100%;text-align:left;background:var(--panel);border:1px solid var(--line);
+  color:var(--text);border-radius:10px;padding:14px 16px;font-size:14px;font-weight:500;
+  cursor:pointer;font-family:inherit;margin-top:10px;display:flex;align-items:center;
+  justify-content:space-between;gap:10px;transition:border-color .15s,background .15s}
+.choice:hover{border-color:var(--gold);background:#1b2030}
+.choice.sel{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold);background:#1b2030}
+.choice .arr{color:var(--muted);font-size:16px}
+.choice .sub{font-size:11px;color:var(--gold);font-weight:600}
+.choice-row{display:flex;gap:10px;margin-top:10px}
+.choice-row .choice{flex:1;width:auto;margin-top:0;justify-content:center;text-align:center}
+
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.opt{background:var(--panel);border:1px solid var(--line);color:var(--soft);
+  border-radius:8px;padding:9px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+.opt:hover{border-color:var(--gold);color:var(--text)}
+.opt.sel{border-color:var(--gold);color:var(--text);box-shadow:inset 0 0 0 1px var(--gold);
+  background:#1b2030}
+
+.field{margin-top:4px}
+.field textarea,.field input{width:100%;background:var(--panel);border:1px solid var(--line);
+  color:var(--text);border-radius:9px;padding:11px 13px;font-size:14px;font-family:inherit;
+  resize:vertical}
+.field textarea:focus,.field input:focus{outline:none;border-color:var(--gold)}
+.field textarea{min-height:78px;line-height:1.5}
+.hint{font-size:11px;color:var(--muted);margin-top:7px}
+.err{font-size:12px;color:#f87171;margin-top:8px;display:none}
+
+.nav{display:flex;align-items:center;gap:10px;margin-top:20px}
+.btn{font-family:inherit;font-size:14px;font-weight:600;border-radius:9px;
+  padding:11px 20px;cursor:pointer;border:1px solid var(--line)}
+.btn-ghost{background:transparent;color:var(--soft)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.btn-ghost:disabled{opacity:.35;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:var(--bg);border-color:var(--gold);margin-left:auto}
+.btn-gold:hover{background:var(--gold2)}
+.skip{background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;
+  font-family:inherit;text-decoration:underline;margin-top:12px}
+.skip:hover{color:var(--gold)}
+
+.plat{background:var(--panel);border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;margin-top:10px}
+.plat b{color:var(--gold);font-size:13px;display:block;margin-bottom:4px}
+.plat p{font-size:13px;color:var(--soft);line-height:1.55}
+
+.divider{height:1px;background:var(--line);margin:20px 0 4px}
+
+.kb-link{margin-top:18px;text-align:center}
+.kb-link button{background:none;border:none;color:var(--muted);font-size:12px;
+  cursor:pointer;font-family:inherit}
+.kb-link button:hover{color:var(--gold)}
+.kb-panel{margin-top:14px;border:1px solid var(--line);border-radius:10px;
+  background:var(--panel);overflow:hidden;display:none}
+.kb-panel.open{display:block}
+.kb-head{padding:11px 14px;font-size:12px;color:var(--gold);font-weight:600;
+  border-bottom:1px solid var(--line);display:flex;justify-content:space-between}
+.kb-head span{cursor:pointer;color:var(--muted)}
+.faq{border-bottom:1px solid var(--line)}
+.faq:last-child{border-bottom:none}
+.faq q{display:block;padding:11px 14px;font-size:13px;cursor:pointer;quotes:none}
+.faq q::before,.faq q::after{content:''}
+.faq q:hover{color:var(--gold)}
+.faq p{display:none;padding:0 14px 12px;font-size:12px;color:var(--soft);line-height:1.55}
+.faq.open p{display:block}
+
+.recap{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.recap>summary{padding:11px 14px;font-size:13px;color:var(--gold);cursor:pointer;
+  list-style:none}
+.recap>summary::-webkit-details-marker{display:none}
+.recap table{width:100%;font-size:12px;border-top:1px solid var(--line)}
+.recap td{padding:7px 14px;border-bottom:1px solid rgba(42,47,62,.5);vertical-align:top}
+.recap td:first-child{color:var(--muted);width:42%}
+
+.step-list{counter-reset:s;margin-top:6px}
+.step-list li{list-style:none;display:flex;gap:11px;padding:9px 0;font-size:13px;
+  color:var(--soft);align-items:flex-start}
+.step-list li::before{counter-increment:s;content:counter(s);flex:none;
+  width:22px;height:22px;border-radius:50%;background:rgba(212,168,48,.12);
+  color:var(--gold);font-size:11px;font-weight:700;display:flex;
+  align-items:center;justify-content:center}
+
+.pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+.pill{font-size:11px;color:var(--muted);border:1px solid var(--line);
+  border-radius:20px;padding:5px 11px}
+.pill.first{border-color:var(--gold);color:var(--gold)}
+
+.done-ic{width:54px;height:54px;border-radius:50%;background:var(--green);
+  display:flex;align-items:center;justify-content:center;margin:6px auto 14px}
+.done-ic svg{width:26px;height:26px}
+.center{text-align:center}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:10px;
+  border:1px dashed var(--line);border-radius:9px;padding:11px 13px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+</style>
+  <meta name="robots" content="noindex,nofollow">
+  </head>
+<body>
+
+<div class="brand">
+  <div class="brand-logo">LT</div>
+  <div class="brand-name">Luxe <span>Talent</span></div>
+  <div class="proto-tag">Prototype</div>
+</div>
+
+<div class="card">
+  <div class="bar">
+    <div class="ai-dot"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0d14" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></div>
+    <div class="bar-txt"><b>Luxe Assistant</b><small id="barStatus">Online — here to help</small></div>
+    <button class="restart" id="restartBtn">Restart</button>
+  </div>
+  <div class="body" id="body"></div>
+</div>
+
+<script>
+"use strict";
+var BODY = document.getElementById('body');
+var BARSTATUS = document.getElementById('barStatus');
+
+var PLATFORMS = {
+  webcam: [
+    ['BongaCams','BongaCams is the perfect combo of stability and freedom. Go live from anywhere — even your phone — and earn at your own pace. 18+ welcome anytime.'],
+    ['Stripchat','Engage with a diverse audience, showcase your talents, and earn competitive payouts. Earnings depend on engagement, consistency, and performance quality.'],
+    ['My.Club','A personalized "Call Me" link for enhanced fan engagement. Share your unique link to promote conversations with your followers.'],
+    ['LiveJasmin','Get up to 100% share. 35 million daily users. Standard, Fast, and Instant payouts. Multiple languages supported.']
+  ],
+  creator: [
+    ['Content Creator','We are looking for amateur and professional video content creators — solo performers and couples welcome. Build a library of content and earn on every sale.']
+  ]
+};
+
+var QUESTIONS = [
+  {id:'recruiterName',q:"Who invited you to apply? Choose your recruiter.",type:'select',options:['Clarence']},
+  {id:'platforms',q:"Which platforms would you like to join? Pick all that interest you.",type:'multi',options:['Stripchat','My.Club','BongaCams','LiveJasmin','Content Creator']},
+  {id:'firstName',q:"Let's start with your name. What's your first name?",type:'text'},
+  {id:'middleName',q:"Do you have a middle name?",type:'text',opt:true,ph:'Leave blank if none'},
+  {id:'lastName',q:"And your last name?",type:'text'},
+  {id:'email',q:"What's the best email address to reach you?",type:'email',ph:'you@example.com'},
+  {id:'phone',q:"What's your phone number?",type:'tel',ph:'+1 555 123 4567'},
+  {id:'password',q:"Create a password for your performer portal. At least 6 characters.",type:'password',ph:'Choose a password'},
+  {id:'confirmPassword',q:"Please type that password once more to confirm.",type:'password',ph:'Repeat password'},
+  {id:'stageName',q:"What stage name would you like to perform under?",type:'text'},
+  {id:'alternateUsernames',q:"Any alternate stage names you also use?",type:'text',opt:true,ph:'Comma-separated, or leave blank'},
+  {id:'streetAddress',q:"What's your street address?",type:'text'},
+  {id:'city',q:"Which city do you live in?",type:'text'},
+  {id:'state',q:"What state or province?",type:'text'},
+  {id:'zipCode',q:"And your zip or postal code?",type:'text'},
+  {id:'country',q:"Which country?",type:'text'},
+  {id:'dateOfBirth',q:"What's your date of birth? You must be 18 or older to apply.",type:'date'},
+  {id:'displayAge',q:"What age would you like shown on your public profile?",type:'number',opt:true,ph:'Optional'},
+  {id:'primaryLanguage',q:"What's your primary language?",type:'text',ph:'e.g. English'},
+  {id:'otherLanguage',q:"Any other languages you speak?",type:'text',opt:true,ph:'Optional'},
+  {id:'height',q:"How tall are you?",type:'text',ph:'e.g. 5 ft 6 in or 168 cm'},
+  {id:'weight',q:"What's your weight?",type:'text',ph:'e.g. 130 lb or 59 kg'},
+  {id:'build',q:"How would you describe your build?",type:'select',options:['Skinny','Athletic','Medium','BBW']},
+  {id:'ethnicity',q:"What's your ethnicity?",type:'select',options:['Asian','Black','Hispanic','Indian','Latin American','Middle Eastern','Native American','White']},
+  {id:'eyeColor',q:"Eye colour?",type:'select',options:['Blue','Brown','Black','Green','Grey','Other']},
+  {id:'hairColor',q:"Hair colour?",type:'select',options:['Blonde','Black','Brown','Fire Red','Auburn','Orange','Pink']},
+  {id:'hairLength',q:"Hair length?",type:'select',options:['Bald','Crew Cut','Short','Shoulder Length','Long']},
+  {id:'breastSize',q:"Breast size?",type:'select',options:['Tiny','Normal','Big','Huge','Male']},
+  {id:'buttSize',q:"Butt size?",type:'select',options:['Small','Normal','Big','Huge','Male']},
+  {id:'pubicHair',q:"Pubic hair?",type:'select',options:['Hairy','Shaved','Trimmed']},
+  {id:'dressSize',q:"Dress size?",type:'select',options:['XS','Small','Medium','Large','XL','2XL','3XL']},
+  {id:'orientation',q:"What's your orientation?",type:'select',options:['Straight','Gay','Lesbian','Bisexual','Trans','Nonbinary','Other']},
+  {id:'sexualPreferences',q:"Any sexual preferences you'd like noted?",type:'select',opt:true,options:['Bisexual','Straight','Lesbian']},
+  {id:'interestedIn',q:"Who are you interested in?",type:'select',options:['Males','Females','Both']},
+  {id:'aboutMe',q:"Tell us a little about yourself. This appears on your profile.",type:'long'},
+  {id:'turnsOn',q:"What turns you on?",type:'long'},
+  {id:'turnsOff',q:"What turns you off?",type:'long'}
+];
+
+var FAQ = [
+  ['How long does approval take?','After you submit, you may receive up to two ID-verification emails depending on the platform. Reply to them as soon as possible — they are time-sensitive. Registrations not completed within 48 hours are removed.'],
+  ['What ID do I need?','A clear, readable government photo ID. You will upload the front (and back if it has one), plus a photo of your face next to your ID.'],
+  ['I already have a Stripchat account.','Delete the old account, or register here using a different email address.'],
+  ['What does the studio expect?','A minimum of 10 hours per week online, your committed schedule uploaded weekly through the app, and all photos and videos approved before posting.']
+];
+
+var state = {flow:null, answers:{}, idx:0};
+
+function el(html){var d=document.createElement('div');d.innerHTML=html.trim();return d.firstChild;}
+function av(){return '<div class="av"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0d14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/></svg></div>';}
+function pretty(id){return id.replace(/([A-Z])/g,' $1').replace(/^./,function(c){return c.toUpperCase();});}
+
+/* ---------- Screen: greeting ---------- */
+function screenGreeting(){
+  BARSTATUS.textContent='Online — here to help';
+  BODY.innerHTML='';
+  BODY.appendChild(el(
+    '<div class="msg">'+av()+'<div class="bubble">Hi, I\u2019m the Luxe Assistant. I\u2019ll help you apply to '+
+    'Luxe Model Collective \u2014 it only takes a few minutes.<br><br>'+
+    'To begin: are you applying as a <b>Webcam Model</b> or a <b>Content Creator</b>?</div></div>'
+  ));
+  var row=el('<div class="choice-row"></div>');
+  var b1=el('<button class="choice">Webcam Model</button>');
+  var b2=el('<button class="choice">Content Creator</button>');
+  b1.onclick=function(){state.flow='webcam';screenPlatforms();};
+  b2.onclick=function(){state.flow='creator';screenPlatforms();};
+  row.appendChild(b1);row.appendChild(b2);
+  BODY.appendChild(row);
+}
+
+/* ---------- Screen: platforms + path choice ---------- */
+function screenPlatforms(){
+  BODY.innerHTML='';
+  var lead = state.flow==='webcam'
+    ? 'Great choice. Here are the webcam platforms you can join \u2014 you can pick more than one later.'
+    : 'Wonderful. Here\u2019s what content creation with Luxe looks like.';
+  BODY.appendChild(el('<div class="msg">'+av()+'<div class="bubble">'+lead+'</div></div>'));
+  PLATFORMS[state.flow].forEach(function(p){
+    BODY.appendChild(el('<div class="plat"><b>'+p[0]+'</b><p>'+p[1]+'</p></div>'));
+  });
+  BODY.appendChild(el('<div class="divider"></div>'));
+  BODY.appendChild(el('<div class="msg">'+av()+'<div class="bubble">How would you like to complete your '+
+    'registration?</div></div>'));
+  var help=el('<button class="choice"><span>Help me complete it<br><span class="sub">Recommended \u2014 I\u2019ll guide you</span></span><span class="arr">\u2192</span></button>');
+  var self=el('<button class="choice"><span>I\u2019ll complete it myself</span><span class="arr">\u2192</span></button>');
+  help.onclick=function(){startWizard();};
+  self.onclick=function(){screenManual();};
+  BODY.appendChild(help);BODY.appendChild(self);
+}
+
+/* ---------- Wizard ---------- */
+function startWizard(){
+  if(state.flow==='creator' && !state.answers.platforms) state.answers.platforms=['Content Creator'];
+  state.idx=0;
+  renderQuestion();
+}
+
+function renderQuestion(){
+  var q=QUESTIONS[state.idx];
+  var total=QUESTIONS.length;
+  BARSTATUS.textContent='Question '+(state.idx+1)+' of '+total;
+  BODY.innerHTML='';
+
+  var prog=el('<div class="prog"><i></i></div>');
+  BODY.appendChild(prog);
+  BODY.appendChild(el('<div class="prog-lbl">Question '+(state.idx+1)+' of '+total+'</div>'));
+  setTimeout(function(){prog.firstChild.style.width=((state.idx+1)/total*100)+'%';},20);
+
+  BODY.appendChild(el('<div class="msg">'+av()+'<div class="bubble"><h2 class="q">'+q.q+'</h2></div></div>'));
+
+  var area=el('<div></div>');
+  BODY.appendChild(area);
+  var errBox=el('<div class="err"></div>');
+
+  var saved=state.answers[q.id];
+
+  /* ----- single select: auto-advance on pick ----- */
+  if(q.type==='select'){
+    var opts=el('<div class="opts"></div>');
+    q.options.forEach(function(o){
+      var btn=el('<button class="opt">'+o+'</button>');
+      if(saved===o) btn.className='opt sel';
+      btn.onclick=function(){state.answers[q.id]=o;goNext();};
+      opts.appendChild(btn);
+    });
+    area.appendChild(opts);
+    if(q.opt){
+      var sk=el('<button class="skip">Skip this question</button>');
+      sk.onclick=function(){state.answers[q.id]='';goNext();};
+      area.appendChild(sk);
+    }
+    BODY.appendChild(navRow(null));
+    return;
+  }
+
+  /* ----- multi select ----- */
+  if(q.type==='multi'){
+    var chosen=new Set(saved||[]);
+    var wrap=el('<div class="opts"></div>');
+    q.options.forEach(function(o){
+      var btn=el('<button class="opt">'+o+'</button>');
+      if(chosen.has(o)) btn.className='opt sel';
+      btn.onclick=function(){
+        if(chosen.has(o)){chosen.delete(o);btn.className='opt';}
+        else{chosen.add(o);btn.className='opt sel';}
+      };
+      wrap.appendChild(btn);
+    });
+    area.appendChild(wrap);
+    area.appendChild(el('<div class="hint">Pick at least one. You can choose several.</div>'));
+    area.appendChild(errBox);
+    BODY.appendChild(navRow(function(){
+      if(chosen.size===0){return 'Please choose at least one platform.';}
+      state.answers[q.id]=Array.from(chosen);
+      return null;
+    },errBox));
+    return;
+  }
+
+  /* ----- free text / inputs ----- */
+  var fieldWrap=el('<div class="field"></div>');
+  var input;
+  if(q.type==='text'){
+    input=el('<textarea rows="3"></textarea>');
+  }else if(q.type==='long'){
+    input=el('<textarea rows="5"></textarea>');
+  }else if(q.type==='date'){
+    input=el('<input type="date">');
+    var max=new Date();max.setFullYear(max.getFullYear()-18);
+    input.max=max.toISOString().slice(0,10);
+  }else if(q.type==='number'){
+    input=el('<input type="number" min="18" max="99">');
+  }else if(q.type==='email'){
+    input=el('<input type="email">');
+  }else if(q.type==='tel'){
+    input=el('<input type="tel">');
+  }else if(q.type==='password'){
+    input=el('<input type="password">');
+  }else{
+    input=el('<textarea rows="3"></textarea>');
+  }
+  if(q.ph) input.placeholder=q.ph;
+  if(saved!=null && saved!=='') input.value=saved;
+  fieldWrap.appendChild(input);
+  area.appendChild(fieldWrap);
+  area.appendChild(el('<div class="hint">'+(q.opt?'Optional \u2014 you can leave this blank.':'This field is required.')+'</div>'));
+  area.appendChild(errBox);
+  setTimeout(function(){input.focus();},30);
+
+  BODY.appendChild(navRow(function(){
+    var v=(input.value||'').trim();
+    if(!v && !q.opt) return 'Please answer this question to continue.';
+    if(v){
+      if(q.type==='email' && !/^\S+@\S+\.\S+$/.test(v)) return 'Please enter a valid email address.';
+      if(q.id==='password' && v.length<6) return 'Password must be at least 6 characters.';
+      if(q.id==='confirmPassword' && v!==state.answers.password) return 'The passwords don\u2019t match.';
+      if(q.type==='date'){
+        var age=(Date.now()-new Date(v).getTime())/(365.25*864e5);
+        if(age<18) return 'You must be at least 18 years old to apply.';
+      }
+    }
+    state.answers[q.id]=v;
+    return null;
+  },errBox));
+
+  addKB();
+}
+
+function navRow(validate,errBox){
+  var row=el('<div class="nav"></div>');
+  var back=el('<button class="btn btn-ghost">\u2190 Back</button>');
+  back.disabled = state.idx===0;
+  back.onclick=function(){ if(state.idx>0){state.idx--;renderQuestion();} };
+  row.appendChild(back);
+  if(validate){
+    var last = state.idx===QUESTIONS.length-1;
+    var cont=el('<button class="btn btn-gold">'+(last?'Finish':'Continue \u2192')+'</button>');
+    cont.onclick=function(){
+      var err=validate();
+      if(err){ if(errBox){errBox.textContent=err;errBox.style.display='block';} return; }
+      goNext();
+    };
+    row.appendChild(cont);
+  }
+  return row;
+}
+
+function goNext(){
+  if(state.idx<QUESTIONS.length-1){ state.idx++; renderQuestion(); }
+  else { screenHandoff(); }
+}
+
+/* ---------- knowledgebase panel ---------- */
+function addKB(){
+  var link=el('<div class="kb-link"><button>Have a question? Ask our help desk</button></div>');
+  var panel=el('<div class="kb-panel"></div>');
+  panel.appendChild(el('<div class="kb-head">Help desk <span>close</span></div>'));
+  FAQ.forEach(function(f){
+    var item=el('<div class="faq"><q>'+f[0]+'</q><p>'+f[1]+'</p></div>');
+    item.querySelector('q').onclick=function(){ item.classList.toggle('open'); };
+    panel.appendChild(item);
+  });
+  panel.querySelector('.kb-head span').onclick=function(){panel.classList.remove('open');};
+  link.querySelector('button').onclick=function(){panel.classList.toggle('open');};
+  BODY.appendChild(link);
+  BODY.appendChild(panel);
+}
+
+/* ---------- Screen: handoff ---------- */
+function screenHandoff(){
+  BARSTATUS.textContent='Almost done';
+  BODY.innerHTML='';
+  BODY.appendChild(el('<div class="msg">'+av()+'<div class="bubble">Perfect \u2014 I\u2019ve got all your '+
+    'details. Three quick things are left, and these you\u2019ll do on the form itself:</div></div>'));
+  BODY.appendChild(el('<ul class="step-list">'+
+    '<li>Upload your profile photo</li>'+
+    '<li>Upload your ID \u2014 front and back</li>'+
+    '<li>Read and sign the consent form (black or blue ink)</li></ul>'));
+
+  var recap=el('<details class="recap"><summary>Review my answers ('+
+    Object.keys(state.answers).length+')</summary></details>');
+  var tbl=el('<table></table>');
+  QUESTIONS.forEach(function(q){
+    var v=state.answers[q.id];
+    if(v==null||v==='') v='\u2014';
+    if(Array.isArray(v)) v=v.join(', ');
+    if(q.id==='password'||q.id==='confirmPassword') v='\u2022\u2022\u2022\u2022\u2022\u2022';
+    tbl.appendChild(el('<tr><td>'+pretty(q.id)+'</td><td>'+String(v)+'</td></tr>'));
+  });
+  recap.appendChild(tbl);
+  BODY.appendChild(recap);
+
+  var row=el('<div class="nav"></div>');
+  var back=el('<button class="btn btn-ghost">\u2190 Back</button>');
+  back.onclick=function(){state.idx=QUESTIONS.length-1;renderQuestion();};
+  var cont=el('<button class="btn btn-gold">Continue to photos \u2192</button>');
+  cont.onclick=function(){screenDone();};
+  row.appendChild(back);row.appendChild(cont);
+  BODY.appendChild(row);
+}
+
+/* ---------- Screen: done (preview) ---------- */
+function screenDone(){
+  BARSTATUS.textContent='Complete';
+  BODY.innerHTML='';
+  BODY.appendChild(el('<div class="done-ic"><svg viewBox="0 0 24 24" fill="none" stroke="#0a0d14" '+
+    'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>'));
+  BODY.appendChild(el('<div class="center"><h2 class="q" style="color:#4ade80;font-size:18px">'+
+    'Registration submitted</h2></div>'));
+  BODY.appendChild(el('<div class="note">This is a preview. In the live version, this point hands '+
+    'off to the existing Photos, ID and Consent steps, then your answers save to the performer '+
+    'table exactly like the form \u2014 followed by your schedule and login details.</div>'));
+  var row=el('<div class="nav"></div>');
+  var again=el('<button class="btn btn-ghost">\u2190 Start over</button>');
+  again.style.marginLeft='auto';again.style.marginRight='auto';
+  again.onclick=screenGreeting;
+  row.appendChild(again);
+  BODY.appendChild(row);
+}
+
+/* ---------- Screen: manual ---------- */
+function screenManual(){
+  BARSTATUS.textContent='Manual registration';
+  BODY.innerHTML='';
+  BODY.appendChild(el('<div class="msg">'+av()+'<div class="bubble">No problem \u2014 you can fill out '+
+    'the form yourself. Here\u2019s how it works:</div></div>'));
+  BODY.appendChild(el('<ul class="step-list">'+
+    '<li>Complete all six steps \u2014 every field is required</li>'+
+    '<li>Upload your profile photo and a clear photo of your ID</li>'+
+    '<li>Read and sign the consent form in black or blue ink</li>'+
+    '<li>Submit \u2014 watch for up to two ID-verification emails and reply quickly</li></ul>'));
+  BODY.appendChild(el('<div class="pills">'+
+    '<span class="pill first">1. Basic</span><span class="pill">2. Address</span>'+
+    '<span class="pill">3. Physical</span><span class="pill">4. Prefs</span>'+
+    '<span class="pill">5. Photos</span><span class="pill">6. Consent</span></div>'));
+  BODY.appendChild(el('<div class="note">In the live page, your existing 6-step registration form '+
+    'appears here.</div>'));
+  var row=el('<div class="nav"></div>');
+  var back=el('<button class="btn btn-ghost">\u2190 Back to assistant</button>');
+  back.style.marginLeft='auto';back.style.marginRight='auto';
+  back.onclick=function(){screenPlatforms();};
+  row.appendChild(back);
+  BODY.appendChild(row);
+}
+
+document.getElementById('restartBtn').onclick=screenGreeting;
+screenGreeting();
+</script>
+</body>
+</html>

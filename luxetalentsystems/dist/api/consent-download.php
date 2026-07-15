@@ -1,0 +1,130 @@
+<?php
+/**
+ * Luxe Talent System — signed consent download
+ * File location:  api/consent-download.php
+ *
+ * Outputs a performer's signed Photo & Video Consent and Release as a PDF.
+ *
+ * URL:  /api/consent-download.php?e=<email>&t=<token>
+ *   token = hash_hmac('sha256', 'consent:'.<email>, LUXE_HMAC_SECRET)
+ * register.php returns this token in its success response, so the
+ * confirmation screen can build the link. The token stops anyone from
+ * pulling another performer's record by guessing email addresses.
+ *
+ * Requires FPDF — one public-domain file, no Composer, runs on any host.
+ * Download fpdf.php from https://www.fpdf.org and place it at:  lib/fpdf.php
+ */
+require __DIR__.'/../config.php';          // provides db()
+require_once __DIR__.'/antibot.php';       // provides LUXE_HMAC_SECRET
+require __DIR__.'/../lib/fpdf.php';         // provides class FPDF
+
+$email = strtolower(trim($_GET['e'] ?? ''));
+$t     = (string)($_GET['t'] ?? '');
+if ($email === '') { http_response_code(400); exit('Bad request'); }
+
+$expected = hash_hmac('sha256', 'consent:' . $email, LUXE_HMAC_SECRET);
+if (!hash_equals($expected, $t)) { http_response_code(403); exit('Forbidden'); }
+
+$stmt = db()->prepare(
+    'SELECT first_name, middle_name, last_name, email, signature_path, printed_name,
+            \'#000000\' AS signature_color, signed_at, signed_ip, consent
+     FROM registration WHERE email = ?'
+);
+$stmt->execute([$email]);
+$r = $stmt->fetch(PDO::FETCH_ASSOC);
+if (!$r) { http_response_code(404); exit('Not found'); }
+
+$name = trim(
+    $r['first_name'] . ' ' .
+    ($r['middle_name'] ? $r['middle_name'] . ' ' : '') .
+    $r['last_name']
+);
+
+/* ---- consent document text ----------------------------------------------
+ * This mirrors the wording shown in the "Read Document" consent modal.
+ * Edit here if the modal text changes. Separate paragraphs with one blank
+ * line. (FPDF core fonts are Latin-1, so keep this plain ASCII.) */
+$CONSENT_TITLE = 'Photo and Video Consent and Release';
+$CONSENT_BODY  =
+"I confirm that I am at least 18 years of age and am voluntarily ".
+"participating in this engagement. All information and documents I have ".
+"provided are true and accurate.\n\n".
+"I grant Luxe Model Collective / Clarence McSween permission to register ".
+"and manage my performer account on my behalf, and to use the photos, ".
+"video and recorded image and/or voice I have submitted for promotional, ".
+"commercial and distribution purposes on the platforms selected on my ".
+"registration form.\n\n".
+"I waive any right to inspect or approve the finished materials, and I ".
+"release and discharge Luxe Model Collective from any liability arising ".
+"from the use of these materials, including claims related to blurring, ".
+"distortion, alteration or use in composite form.\n\n".
+"I have read this Consent and Release prior to signing, I understand it, ".
+"and I freely enter into it. I understand this electronic signature has ".
+"the same effect as a handwritten one.";
+
+$pdf = new FPDF('P', 'mm', 'A4');
+$pdf->SetMargins(20, 20, 20);
+$pdf->SetAutoPageBreak(true, 20);
+$pdf->AddPage();
+
+// Header
+$pdf->SetFont('Helvetica', 'B', 16);
+$pdf->Cell(0, 10, 'Luxe Model Collective', 0, 1);
+$pdf->SetFont('Helvetica', 'B', 12);
+$pdf->Cell(0, 8, $CONSENT_TITLE, 0, 1);
+$pdf->SetDrawColor(212, 168, 48);
+$pdf->Ln(1);
+$pdf->Cell(0, 0, '', 'T', 1);
+$pdf->Ln(6);
+
+// Body
+$pdf->SetFont('Helvetica', '', 11);
+foreach (explode("\n\n", $CONSENT_BODY) as $para) {
+    $pdf->MultiCell(0, 6, $para);
+    $pdf->Ln(3);
+}
+$pdf->Ln(4);
+
+// Performer details
+$pdf->SetFont('Helvetica', 'B', 11);
+$pdf->Cell(0, 7, 'Performer', 0, 1);
+$pdf->SetFont('Helvetica', '', 11);
+$pdf->Cell(38, 6, 'Name:', 0, 0);  $pdf->Cell(0, 6, $name, 0, 1);
+$pdf->Cell(38, 6, 'Email:', 0, 0); $pdf->Cell(0, 6, $r['email'], 0, 1);
+$pdf->Ln(6);
+
+// Signature
+$pdf->SetFont('Helvetica', 'B', 11);
+$pdf->Cell(0, 7, 'Signature', 0, 1);
+$sigFile = __DIR__ . '/../' . ltrim((string)$r['signature_path'], '/');
+if ($r['signature_path'] && is_file($sigFile)) {
+    $pdf->Image($sigFile, 20, $pdf->GetY(), 70);   // 70mm wide, height auto
+    $pdf->Ln(30);
+    if (!empty($r['printed_name'])) {
+        $pdf->SetFont('Helvetica', '', 11);
+        $pdf->Cell(38, 6, 'Printed Name:', 0, 0);
+        $pdf->SetFont('Helvetica', 'B', 11);
+        $pdf->Cell(0, 6, $r['printed_name'], 0, 1);
+        $pdf->SetFont('Helvetica', '', 11);
+    }
+} else {
+    $pdf->SetFont('Helvetica', 'I', 10);
+    $pdf->Cell(0, 6, '(signature image unavailable)', 0, 1);
+}
+$pdf->SetDrawColor(120, 120, 120);
+$pdf->Cell(80, 0, '', 'T', 1);
+$pdf->SetFont('Helvetica', '', 9);
+$pdf->SetTextColor(90, 90, 90);
+$ink = $r['signature_color'] ? ucfirst($r['signature_color']) . ' ink' : '';
+$pdf->Cell(0, 6, trim('Signed: ' . ($r['signed_at'] ?: '') . '   ' . $ink), 0, 1);
+if ($r['signed_ip']) {
+    $pdf->Cell(0, 6, 'IP address at signing: ' . $r['signed_ip'], 0, 1);
+}
+$pdf->SetTextColor(0, 0, 0);
+$pdf->SetFont('Helvetica', '', 9);
+$pdf->Ln(2);
+$pdf->Cell(0, 6, 'Accepted By: Luxe Model Collective - Clarence McSween', 0, 1);
+
+// Send as a download
+$safe = preg_replace('/[^a-z0-9]+/i', '-', strtolower($name ?: 'performer'));
+$pdf->Output('D', 'consent-' . trim($safe, '-') . '.pdf');

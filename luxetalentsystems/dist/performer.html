@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loading…</title>
+<script>
+/* ════════════════════════════════════════════════════════════════
+   Luxe Talent — Performer dashboard router (pure JS, no PHP needed)
+   File:  dist/performer.html
+
+   Detection priority — first match wins:
+     1. ?view=mobile or ?view=desktop  (one-time override; sticks 30d as cookie)
+     2. lux_view cookie                (sticky preference from a prior override)
+     3. User-Agent sniff               (phones → mobile; tablets/desktop → desktop)
+
+   Runs synchronously in <head> — redirects before any paint, so users
+   never see this page render. The <noscript> meta-refresh below is the
+   last-resort fallback for browsers with JS disabled.
+   ════════════════════════════════════════════════════════════════ */
+(function(){
+  try {
+    // ── 1. Explicit override via query param ─────────────────────
+    var qs = new URLSearchParams(window.location.search);
+    var override = qs.get('view');
+    if (override === 'mobile' || override === 'desktop') {
+      var exp = new Date(); exp.setTime(exp.getTime() + 30*24*60*60*1000);
+      document.cookie = 'lux_view=' + override + '; expires=' + exp.toUTCString() + '; path=/; samesite=lax';
+      return go(override);
+    }
+    // ── 2. Sticky preference cookie ──────────────────────────────
+    var m = document.cookie.match(/(?:^|;\s*)lux_view=(mobile|desktop)(?:;|$)/);
+    if (m) return go(m[1]);
+    // ── 3. UA sniff — match phones specifically ──────────────────
+    var ua = navigator.userAgent || '';
+    if (/iPad/i.test(ua)) return go('desktop');                              // iPad → desktop
+    if (/Android/i.test(ua) && !/Mobile/i.test(ua)) return go('desktop');    // Android tablet → desktop
+    var phone = /iPhone|iPod|Android.*Mobile|IEMobile|Windows Phone|BlackBerry|BB10|PlayBook|webOS|hpwOS|Opera M(ini|obi)/i.test(ua);
+    return go(phone ? 'mobile' : 'desktop');
+  } catch(e) { return go('desktop'); }
+
+  function go(view) {
+    // Strip ?view from the URL we forward to (it's just noise downstream)
+    var p = new URLSearchParams(window.location.search);
+    p.delete('view');
+    var tail = p.toString();
+    var target = '/performer-dashboard.html'
+               + (tail ? '?' + tail : '')
+               + window.location.hash;
+    window.location.replace(target);
+  }
+})();
+</script>
+<noscript><meta http-equiv="refresh" content="0;url=/performer-dashboard.html"></noscript>
+<style>
+html,body{margin:0;padding:0;background:#0e1117;color:#888;font-family:sans-serif}
+.loading{padding:60px 20px;text-align:center;font-size:14px}
+</style>
+  <meta name="robots" content="noindex,nofollow">
+  </head>
+<body>
+<div class="loading">Loading…</div>
+</body>
+</html>

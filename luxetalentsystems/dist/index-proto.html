@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Luxe Talent — Registration Flow Prototype</title>
+<style>
+  :root{
+    --bg:#0b0e14; --panel:#12161f; --panel2:#161b27; --border:#2a2f3e;
+    --text:#e8eaf0; --muted:#8a8fa8; --gold:#d4a830; --gold-dim:rgba(212,168,48,.12);
+    --green:#4ade80; --red:#f87171; --blue:#60a5fa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+  .wrap{max-width:1100px;margin:0 auto;padding:20px}
+  .topbar{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+  .logo{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--bg);font-size:14px}
+  .brand{font-size:17px;font-weight:700}
+  .brand span{color:var(--gold)}
+  .proto-tag{margin-left:auto;font-size:11px;color:var(--muted);border:1px solid var(--border);border-radius:20px;padding:4px 12px}
+
+  .tabs{display:flex;gap:8px;padding:16px 20px;flex-wrap:wrap}
+  .tab{background:var(--panel);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:8px 16px;font-size:13px;cursor:pointer;font-weight:600}
+  .tab.active{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+
+  .view{display:none;padding:0 20px 60px}
+  .view.active{display:block}
+
+  h2{font-size:20px;margin:8px 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+
+  /* SETTINGS */
+  .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:760px}
+  .fld{display:flex;flex-direction:column;gap:5px}
+  .fld.full{grid-column:1/-1}
+  .fld label{font-size:11px;text-transform:uppercase;letter-spacing:.03em;color:var(--muted);font-weight:600}
+  .fld input,.fld select{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:14px;outline:none}
+  .fld input:focus,.fld select:focus{border-color:var(--gold)}
+  .fld .hint{font-size:11px;color:var(--muted)}
+  .section-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--gold);margin:22px 0 12px;grid-column:1/-1;border-bottom:1px solid var(--border);padding-bottom:6px}
+  .pct-row{display:flex;align-items:center;gap:10px}
+  .pct-derived{font-size:13px;color:var(--green);font-weight:600}
+  .save-btn{background:var(--green);color:#06281a;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-top:20px}
+  .save-note{font-size:12px;color:var(--muted);margin-top:10px}
+
+  /* FLOW */
+  .flow-panel{max-width:720px;background:var(--panel);border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  .flow-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border)}
+  .asst-dot{width:36px;height:36px;border-radius:50%;background:var(--gold-dim);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:16px}
+  .asst-name{font-weight:700;font-size:14px}
+  .asst-status{font-size:11px;color:var(--green)}
+  .restart{margin-left:auto;background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer}
+  .flow-body{padding:20px}
+  .msg{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;font-size:14px;margin-bottom:14px;max-width:90%}
+  .choice-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+  .choice{flex:1;min-width:180px;background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:16px;font-size:14px;font-weight:600;cursor:pointer;text-align:center;transition:border-color .15s}
+  .choice:hover{border-color:var(--gold)}
+  .choice small{display:block;font-weight:400;color:var(--muted);font-size:12px;margin-top:4px}
+  .choice.list{text-align:left;display:flex;justify-content:space-between;align-items:center}
+  .choice.list .arr{color:var(--gold)}
+  .choice.platsel{position:relative}
+  .choice.platsel.sel{border-color:var(--gold);background:var(--gold-dim)}
+  .choice.platsel.sel::after{content:'\2713';position:absolute;top:12px;right:14px;color:var(--gold);font-weight:800;font-size:16px}
+
+  /* AGREEMENT */
+  .agreement-box{background:#0e1117;border:1px solid var(--border);border-radius:12px;margin-bottom:14px;overflow:hidden}
+  .agreement-head{padding:12px 16px;border-bottom:1px solid var(--border);font-weight:700;font-size:14px;color:var(--gold);display:flex;align-items:center;justify-content:space-between}
+  .agreement-scroll{max-height:340px;overflow-y:auto;padding:16px;font-size:12.5px;line-height:1.7;color:#c8ccd8;white-space:pre-wrap}
+  .agreement-scroll h1{font-size:15px;color:var(--text);margin:0 0 12px}
+  .tw-cursor::after{content:'▍';color:var(--gold);animation:twBlink 1s steps(1) infinite;margin-left:1px}
+  @keyframes twBlink{50%{opacity:0}}
+  .agreement-actions{display:flex;gap:10px;align-items:center;padding:12px 16px;border-top:1px solid var(--border);flex-wrap:wrap}
+  .skip-btn{background:var(--panel2);border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer}
+  .agree-btn{background:var(--gold);color:var(--bg);border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;opacity:.5;pointer-events:none}
+  .agree-btn.ready{opacity:1;pointer-events:auto}
+  .email-note{font-size:11px;color:var(--muted);margin-left:auto}
+
+  .step-dots{display:flex;gap:6px;margin:14px 0}
+  .step-dots .d{width:8px;height:8px;border-radius:50%;background:var(--border)}
+  .step-dots .d.on{background:var(--gold)}
+
+  .intro-video-wrap{position:relative;border-radius:12px;overflow:hidden;background:#000;min-height:180px}
+  .video-block{position:absolute;inset:0;z-index:2;cursor:default}
+  .video-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:13px;padding:20px;pointer-events:none;z-index:1}
+  .assoc-content{background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:18px;font-size:13.5px;line-height:1.65;color:#c8ccd8}
+  .assoc-content p{margin:0 0 14px}
+  .reach-row{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
+  .reach{flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;text-align:center}
+  .reach-num{font-size:22px;font-weight:800;color:var(--gold)}
+  .reach-lbl{font-size:11px;color:var(--muted);margin-top:4px}
+  .svc-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--gold);margin:16px 0 8px}
+  .svc-list{margin:0;padding-left:18px}
+  .svc-list li{margin-bottom:5px}
+  .svc-note{font-style:italic;color:var(--muted);margin-top:12px !important}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo">LT</div>
+  <div class="brand">Luxe <span>Talent</span></div>
+  <div class="proto-tag">Flow Prototype — not connected to server</div>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showView('settings',this)">⚙ Settings</button>
+  <button class="tab" onclick="showView('flow',this)">▶ Registration Flow</button>
+</div>
+
+<!-- ═══ SETTINGS VIEW ═══ -->
+<div class="view active" id="view-settings">
+  <div class="wrap" style="padding-top:0">
+    <h2>Settings › Registration Form</h2>
+    <div class="sub">These values feed the model agreement (both the on-screen version and the signed PDF). Model info is entered by the applicant — not here.</div>
+
+    <div class="settings-grid">
+      <div class="section-label">Agency Identity</div>
+      <div class="fld full"><label>Agency Name</label><input id="s_agency_name" value="Luxe Model Collective" oninput="syncPreview()"/></div>
+      <div class="fld"><label>Street</label><input id="s_agency_street" value="100 M St SE" oninput="syncPreview()"/></div>
+      <div class="fld"><label>City</label><input id="s_agency_city" value="Washington" oninput="syncPreview()"/></div>
+      <div class="fld"><label>State</label><input id="s_agency_state" value="DC" oninput="syncPreview()"/></div>
+      <div class="fld"><label>ZIP</label><input id="s_agency_zip" value="20003" oninput="syncPreview()"/></div>
+      <div class="fld"><label>Agency Phone</label><input id="s_agency_phone" value="" placeholder="(optional)" oninput="syncPreview()"/></div>
+      <div class="fld"><label>Agency Email</label><input id="s_agency_email" value="glamor4beauty@gmail.com" oninput="syncPreview()"/></div>
+      <div class="fld"><label>Signatory Name</label><input id="s_agency_signatory" value="Clarence McSween" oninput="syncPreview()"/></div>
+
+      <div class="section-label">Contract Terms</div>
+      <div class="fld">
+        <label>Agency Cut (%)</label>
+        <div class="pct-row">
+          <input id="s_agency_pct" type="number" min="0" max="100" value="24" style="width:90px" oninput="syncPreview()"/>
+          <span class="pct-derived">Model gets <span id="s_model_pct">76</span>%</span>
+        </div>
+        <span class="hint">Model % is auto-calculated (100 − agency %)</span>
+      </div>
+      <div class="fld"><label>Contract Term (days)</label><input id="s_term_days" type="number" value="30" oninput="syncPreview()"/></div>
+      <div class="fld"><label>Governing State / Jurisdiction</label><input id="s_governing" value="District of Columbia" oninput="syncPreview()"/></div>
+      <div class="fld"><label>Missed Sessions Before Termination</label><input id="s_missed" type="number" value="3" oninput="syncPreview()"/><span class="hint">Number of scheduled sessions a model can miss (without notice) before the agency may end the contract</span></div>
+      <div class="fld"><label>Max Platforms an Applicant Can Pick</label><input id="s_max_platforms" type="number" min="1" max="10" value="1" oninput="syncPreview()"/><span class="hint">How many of the available platforms an applicant may select (e.g. 1 = one only)</span></div>
+
+      <div class="section-label">Platforms Available (for applicants to pick)</div>
+      <div class="fld full">
+        <div style="display:flex;gap:16px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0"><input type="checkbox" id="plat_stripchat" checked/> Stripchat</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0"><input type="checkbox" id="plat_bongacams" checked/> BongaCams</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0"><input type="checkbox" id="plat_myclub" checked/> My.Club</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text);text-transform:none;letter-spacing:0"><input type="checkbox" id="plat_livejasmin" checked/> Live Jasmin</label>
+        </div>
+        <span class="hint" style="margin-top:8px">Only checked platforms appear on the applicant's form. Uncheck one, then open the Flow tab — it disappears from the applicant's choices.</span>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="fakeSave()">Save Settings</button>
+    <div class="save-note" id="saveNote"></div>
+  </div>
+</div>
+
+<!-- ═══ FLOW VIEW ═══ -->
+<div class="view" id="view-flow">
+  <div class="wrap" style="padding-top:0">
+    <h2>Registration Flow (applicant's view)</h2>
+    <div class="sub">This is what the applicant sees. Click through it. The agreement pulls live from your Settings values.</div>
+
+    <div class="step-dots">
+      <div class="d on" id="dot0"></div><div class="d" id="dot1"></div><div class="d" id="dot2"></div><div class="d" id="dot3"></div>
+    </div>
+
+    <div class="flow-panel">
+      <div class="flow-head">
+        <div class="asst-dot">✦</div>
+        <div><div class="asst-name">Luxe Assistant</div><div class="asst-status">Online — here to help</div></div>
+        <button class="restart" onclick="gotoStep(0)">Restart</button>
+      </div>
+      <div class="flow-body" id="flowBody"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ---- Settings state ----
+function getSettings(){
+  var agencyPct = parseInt(document.getElementById('s_agency_pct').value)||0;
+  return {
+    agency_name: val('s_agency_name'),
+    agency_street: val('s_agency_street'),
+    agency_city: val('s_agency_city'),
+    agency_state: val('s_agency_state'),
+    agency_zip: val('s_agency_zip'),
+    agency_phone: val('s_agency_phone'),
+    agency_email: val('s_agency_email'),
+    agency_signatory: val('s_agency_signatory'),
+    agency_percentage: agencyPct,
+    model_percentage: 100 - agencyPct,
+    term_days: val('s_term_days'),
+    governing_state: val('s_governing'),
+    missed_shoots_number: val('s_missed')
+  };
+}
+function val(id){ var e=document.getElementById(id); return e?e.value:''; }
+function syncPreview(){
+  var pct = parseInt(document.getElementById('s_agency_pct').value)||0;
+  document.getElementById('s_model_pct').textContent = (100-pct);
+}
+function fakeSave(){
+  document.getElementById('saveNote').textContent = 'Saved (prototype — would write to DB settings on the real server).';
+  document.getElementById('saveNote').style.color = 'var(--green)';
+  setTimeout(function(){ document.getElementById('saveNote').textContent=''; }, 2500);
+}
+
+function showView(v, btn){
+  document.querySelectorAll('.view').forEach(function(x){x.classList.remove('active')});
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
+  btn.classList.add('active');
+  if(v==='flow') gotoStep(0);
+}
+
+// ---- The agreement template (terms only; fields from settings) ----
+var AGREEMENT = `# Talent Representation & Content Agency Agreement
+
+This Agreement is entered into by and between {agency_name} ("Agency"), with its principal place of business at {agency_street}, {agency_city}, {agency_state} {agency_zip}, and the applicant ("Model") completing this registration.
+
+The Model enters into this Agreement as, and shall continue to be, an independent contractor. Under no circumstances shall the Model look to the Agency as an employer, but as an agent that procures and facilitates engagements for the Model.
+
+1. AGE VERIFICATION (18+). The Model represents and certifies they are at least eighteen (18) years of age, and all identification and date-of-birth information provided is true and accurate. Any misrepresentation of age voids this Agreement immediately. The Agency maintains age-verification records per applicable law (including 18 U.S.C. 2257 where applicable).
+
+2. APPOINTMENT. The Model appoints {agency_name} to represent them in matters regarding modeling, content creation, camming, contracts, and related business for the platforms coordinated by the Agency.
+
+3. CONSENT TO ADULT CONTENT. The Model acknowledges the services involve creation, performance, streaming, and distribution of adult-oriented content, entered into freely and voluntarily, and may communicate limits at any time.
+
+4. AGENCY COMPENSATION. The Agency shall retain {agency_percentage}% of all monies, tokens, fees, and tips received under this Agreement. The Model shall receive the remaining {model_percentage}%. Where a platform pays the Agency directly, the Agency accounts to the Model for the Model's {model_percentage}% share.
+
+5. CONTENT OWNERSHIP. The Model retains rights to their likeness and grants the Agency a license to use, publish, and promote the Model's name, stage name, and content for the duration of the term.
+
+6. INDEPENDENT CONTRACTOR. For taxes and regulations, the Model is an independent contractor responsible for their own fees.
+
+7. TERM. This Agreement commences on registration and continues for {term_days} days, extendable by written agreement of both Parties.
+
+8. PROFESSIONAL CONDUCT. Both Parties will conduct themselves professionally. The Agency may terminate on thirty (30) days' notice for breach; the Model may terminate immediately for Agency breach.
+
+9. GOVERNING LAW. Disputes will first be settled amicably; failing that, in the courts of the {governing_state}.
+
+10. WORK RESPONSIBILITIES. If the Model misses scheduled sessions (streams, bookings, or content commitments) on {missed_shoots_number} occasions without prior and proper notice, the Agency reserves the right to terminate without prior notice.
+
+By proceeding and signing, the Model acknowledges they have read, understood, and agree to these terms. A personalized, signed copy will be generated and emailed upon completion of registration.`;
+
+function fillAgreement(){
+  var s = getSettings();
+  var t = AGREEMENT;
+  Object.keys(s).forEach(function(k){
+    t = t.split('{'+k+'}').join(s[k]);
+  });
+  return t;
+}
+
+// ---- Typewriter ----
+var twTimer=null, twDone=false;
+function typeInto(el, text, speed, onDone){
+  speed = speed||12; twDone=false;
+  el.textContent=''; el.classList.add('tw-cursor');
+  var i=0;
+  function finish(){ if(twDone)return; twDone=true; el.textContent=text; el.classList.remove('tw-cursor'); if(onDone)onDone(); }
+  el._skip = finish;
+  function tick(){
+    if(twDone) return;
+    if(i>=text.length){ finish(); return; }
+    el.textContent = text.slice(0,i+1);
+    el.scrollTop = el.scrollHeight;
+    var ch=text[i]; i++;
+    var d=speed;
+    if(ch==='.'||ch==='!'||ch==='?') d=speed*10;
+    else if(ch===','||ch===';'||ch===':') d=speed*5;
+    else if(ch==='\n') d=speed*6;
+    else d=speed+Math.random()*speed*0.5;
+    twTimer=setTimeout(tick,d);
+  }
+  tick();
+}
+
+// ---- Flow steps ----
+var flowType='';  // webcam or creator
+var flowPath='';  // association or freelance
+var pickedPlatforms=[];
+function stopIntroVideo(cb){
+  var wrap=document.getElementById('introWrap');
+  var v=document.getElementById('introVideo');
+  if(v){ v.loop=false; }
+  if(wrap){
+    wrap.style.transition='opacity .5s ease, max-height .5s ease, margin .5s ease';
+    wrap.style.opacity='0';
+    setTimeout(function(){
+      if(v){ try{ v.pause(); }catch(e){} }
+      if(wrap){ wrap.style.maxHeight='0'; wrap.style.margin='0'; wrap.style.overflow='hidden'; }
+      if(cb) cb();
+    }, 500);
+  } else {
+    if(v){ try{ v.pause(); }catch(e){} }
+    if(cb) cb();
+  }
+}
+function togglePlat(el, maxP){
+  var name = el.getAttribute('data-name');
+  var idx = pickedPlatforms.indexOf(name);
+  if(idx>=0){
+    pickedPlatforms.splice(idx,1);
+    el.classList.remove('sel');
+  } else {
+    if(pickedPlatforms.length >= maxP){
+      // at limit: if max is 1, replace; otherwise block
+      if(maxP===1){
+        pickedPlatforms=[]; 
+        document.querySelectorAll('.platsel').forEach(function(c){c.classList.remove('sel')});
+        pickedPlatforms.push(name); el.classList.add('sel');
+      } else {
+        // flash the count as a hint, don't add
+        var pc=document.getElementById('platCount'); if(pc){ pc.style.color='var(--red)'; setTimeout(function(){pc.style.color='var(--muted)'},600); }
+        updatePlatCount(maxP); return;
+      }
+    } else {
+      pickedPlatforms.push(name); el.classList.add('sel');
+    }
+  }
+  updatePlatCount(maxP);
+}
+function updatePlatCount(maxP){
+  var pc=document.getElementById('platCount');
+  var btn=document.getElementById('platContinue');
+  if(pc) pc.textContent = pickedPlatforms.length + ' selected' + (maxP>1?(' (max '+maxP+')'):'');
+  if(btn) btn.classList.toggle('ready', pickedPlatforms.length>0);
+}
+function setDots(n){ var active = (n>=90)?0:n; for(var i=0;i<4;i++){ document.getElementById('dot'+i).classList.toggle('on', i<=active); } }
+
+function gotoStep(n){
+  if(twTimer) clearTimeout(twTimer);
+  var body=document.getElementById('flowBody');
+  setDots(n);
+  if(n===0){
+    // Opening: auto-looping attention video (controls fully hidden) + path choice.
+    // Video fades out smoothly on selection.
+    body.innerHTML =
+      '<div class="intro-video-wrap" id="introWrap">'
+      + '<video id="introVideo" src="/uploads/welcome-intro.mp4" autoplay loop muted playsinline '
+      + 'disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" '
+      + 'style="width:100%;border-radius:12px;display:block;background:#000;pointer-events:none"></video>'
+      + '<div class="video-block"></div>'
+      + '<div class="video-fallback" id="videoFallback">Welcome video (/uploads/welcome-intro.mp4) \u2014 will play here on the live site.</div>'
+      + '</div>'
+      + '<div class="msg" style="margin-top:16px">Welcome! How would you like to get started?</div>'
+      + '<div class="choice-row">'
+      + '<div class="choice" onclick="stopIntroVideo(function(){flowPath=\'association\';gotoStep(1)})"><b>Join Luxe Model Collective</b><small>Studio representation, training &amp; management</small></div>'
+      + '<div class="choice" onclick="stopIntroVideo(function(){flowPath=\'freelance\';gotoStep(90)})"><b>Independent Freelancer</b><small>Sign up on platforms directly</small></div>'
+      + '</div>';
+    setTimeout(function(){ var v=document.getElementById('introVideo'); if(v){ v.loop=true; v.play&&v.play().catch(function(){}); } }, 50);
+  }
+  else if(n===1){
+    // Association path: studio marketing content
+    var s = getSettings();
+    body.innerHTML =
+      '<div class="msg">Here\u2019s what joining '+s.agency_name+' gets you.</div>'
+      + '<div class="assoc-content">'
+      + '<p>'+s.agency_name+' is a webcam talent management platform designed to help creators manage their online presence. The system features a mobile-friendly interface with live chat, photo uploads, AI knowledgebase tools, and a Performer Dashboard for tracking earnings and accessing training.</p>'
+      + '<div class="reach-row">'
+      + '<div class="reach"><div class="reach-num">40M+</div><div class="reach-lbl">Webcam Modeling \u2014 potential viewers globally</div></div>'
+      + '<div class="reach"><div class="reach-num">131M+</div><div class="reach-lbl">Content Creator \u2014 viewers incl. Playboy live</div></div>'
+      + '</div>'
+      + '<div class="svc-title">Services included</div>'
+      + '<ul class="svc-list">'
+      + '<li>Fully managed fast-track webcam model system</li>'
+      + '<li>Professional, state-of-the-art training and mentoring</li>'
+      + '<li>Premium profile content</li>'
+      + '<li>Marketing and promotions</li>'
+      + '<li>Video production and editing</li>'
+      + '<li>Content distribution</li>'
+      + '<li>Networking and social media presence</li>'
+      + '</ul>'
+      + '<p class="svc-note">No experience required \u2014 designed for both amateur and experienced models dedicated to their craft.</p>'
+      + '</div>'
+      + '<div style="display:flex;gap:12px;margin-top:16px">'
+      + '<div class="choice" onclick="flowType=\'webcam\';gotoStep(2)"><b>Webcam Model</b><small>Be seen by up to 40M viewers</small></div>'
+      + '<div class="choice" onclick="flowType=\'creator\';gotoStep(2)"><b>Content Creator</b><small>Reach 131M+ incl. Playboy live</small></div>'
+      + '</div>';
+  }
+  else if(n===2){
+    var avail = [
+      {id:'plat_stripchat', name:'Stripchat', desc:'Engage a diverse audience and earn competitive payouts. Earnings depend on engagement, consistency, and performance quality.'},
+      {id:'plat_bongacams', name:'BongaCams', desc:'The perfect combo of stability and freedom. Go live from anywhere \u2014 even your phone. 18+ welcome anytime.'},
+      {id:'plat_myclub', name:'My.Club', desc:'A personalized \u201cCall Me\u201d link for enhanced engagement. Share your unique link to promote conversations with your followers.'},
+      {id:'plat_livejasmin', name:'Live Jasmin', desc:'Up to 100% share. 35 million daily users. Standard, fast, and instant payouts. Many languages supported.'}
+    ].filter(function(p){ var cb=document.getElementById(p.id); return cb && cb.checked; });
+    var maxP = parseInt(val('s_max_platforms'))||1;
+    pickedPlatforms = [];
+    var maxNote = maxP===1 ? 'Pick one platform.' : ('Pick up to '+maxP+' platforms.');
+    if(!avail.length){
+      body.innerHTML = '<div class="msg" style="color:var(--muted)">No platforms are enabled in Settings. Check at least one platform under Settings \u203a Registration Form.</div>';
+      return;
+    }
+    body.innerHTML =
+      '<div class="msg">Great choice. Here are the platforms you can join. <b>'+maxNote+'</b></div>'
+      + '<div class="choice-row" style="flex-direction:column" id="platCards">'
+      + avail.map(function(p){ return '<div class="choice platsel" data-name="'+p.name+'" onclick="togglePlat(this,'+maxP+')" style="text-align:left"><b style="color:var(--gold)">'+p.name+'</b><small style="margin-top:6px">'+p.desc+'</small></div>'; }).join('')
+      + '</div>'
+      + '<div style="display:flex;align-items:center;gap:10px;margin-top:14px"><span id="platCount" style="font-size:12px;color:var(--muted)">0 selected</span>'
+      + '<button class="agree-btn" id="platContinue" style="margin-left:auto" onclick="gotoStep(3)">Continue \u2192</button></div>';
+  }
+  else if(n===3){
+    body.innerHTML =
+      '<div class="msg">Please read our model agreement. A copy will be sent to your email once you complete registration.</div>'
+      + '<div class="agreement-box">'
+      + '<div class="agreement-head"><span>Model Agreement</span><span style="font-size:11px;color:var(--muted);font-weight:400">click text to skip typing</span></div>'
+      + '<div class="agreement-scroll" id="agrText" onclick="if(this._skip)this._skip()"></div>'
+      + '<div class="agreement-actions"><button class="skip-btn" onclick="var e=document.getElementById(\'agrText\');if(e._skip)e._skip()">Reveal all</button>'
+      + '<button class="agree-btn" id="agreeBtn" onclick="gotoStep(4)">I Agree \u2192</button>'
+      + '<span class="email-note">A signed copy is emailed after you finish.</span></div>'
+      + '</div>';
+    var el=document.getElementById('agrText');
+    typeInto(el, fillAgreement(), 8, function(){
+      document.getElementById('agreeBtn').classList.add('ready');
+    });
+  }
+  else if(n===4){
+    body.innerHTML =
+      '<div class="msg">Thanks! How would you like to complete your registration?</div>'
+      + '<div class="choice-row" style="flex-direction:column">'
+      + '<div class="choice list" onclick="alert(\'Prototype: this would start the AI-guided form fill.\')"><div><b>Help me complete it</b><small>Recommended \u2014 I\u2019ll guide you</small></div><div class="arr">\u2192</div></div>'
+      + '<div class="choice list" onclick="alert(\'Prototype: this would open the manual form.\')"><div><b>I\u2019ll complete it myself</b><small>Fill the form on your own</small></div><div class="arr">\u2192</div></div>'
+      + '</div>';
+  }
+  else if(n===90){
+    // Freelance path: referral buttons (open in new tab)
+    body.innerHTML =
+      '<div class="msg">As an independent freelancer, you can sign up directly on these platforms using our partner links.</div>'
+      + '<div class="choice-row" style="flex-direction:column">'
+      + refBtn('BongaCams','https://bongamodels.com?fuid=Ezmator7700')
+      + refBtn('My.Club','https://my.club/invite/005sn9x')
+      + refBtn('Live Jasmin','https://modelcenter.livejasmin.com/PC_2431014')
+      + refBtn('xVideos','https://my.sheer.com/referral/luxemodels/join')
+      + '</div>'
+      + '<div style="margin-top:14px"><button class="skip-btn" onclick="gotoStep(0)">\u2190 Back</button></div>';
+  }
+}
+function refBtn(name, url){
+  return '<a href="'+url+'" target="_blank" rel="noopener" class="choice list" style="text-decoration:none;color:inherit">'
+    + '<div><b>'+name+'</b><small>Sign up on '+name+' \u2192 opens in a new tab</small></div><div class="arr">\u2197</div></a>';
+}
+function platCard(name, desc){
+  return '<div class="choice" style="text-align:left"><b style="color:var(--gold)">'+name+'</b><small style="margin-top:6px">'+desc+'</small></div>';
+}
+
+// init
+syncPreview();
+</script>
+</body>
+</html>

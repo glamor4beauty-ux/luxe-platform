@@ -1,0 +1,15 @@
+# uploads & user data (large / private)
+**/uploads/
+**/hls/
+**/.videotmp/
+*.mp4
+*.flv
+*.ts
+*.m3u8
+# logs & backups
+*.log
+*.bak
+*-backup*
+*.bak-*
+# node
+node_modules/

@@ -1,0 +1,152 @@
+<!-- ============================================================
+     BROWSER TAB — link manager (paste into dashboard.html)
+     Requires: api/browser-links.php on the server.
+     1) Add a nav item that calls showBrowserTab()
+     2) Paste this whole block where tab content renders
+     ============================================================ -->
+<div id="browserTab" style="display:none">
+  <style>
+    #browserTab{--bl-line:#2a3140;--bl-mut:#8b93a3;--bl-acc:#d4a830;color:#e6e9ef}
+    #browserTab .bl-head{display:flex;gap:12px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+    #browserTab .bl-head h2{margin:0;font-size:18px}
+    #browserTab .bl-search{flex:1;min-width:180px;background:#0d1117;border:1px solid var(--bl-line);color:#e6e9ef;padding:9px 12px;border-radius:8px;font-size:14px}
+    #browserTab button{cursor:pointer;border:0;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600}
+    #browserTab .bl-add{background:var(--bl-acc);color:#0e1117}
+    #browserTab table{width:100%;border-collapse:collapse;font-size:14px}
+    #browserTab th,#browserTab td{padding:9px 8px;border-bottom:1px solid var(--bl-line);text-align:left;vertical-align:middle}
+    #browserTab th{color:var(--bl-mut);font-size:12px;text-transform:uppercase;letter-spacing:.03em;cursor:pointer;user-select:none;white-space:nowrap}
+    #browserTab th.sorted::after{content:' \25B2';color:var(--bl-acc)}
+    #browserTab th.sorted.desc::after{content:' \25BC'}
+    #browserTab td a{color:#58a6ff;text-decoration:none;word-break:break-all}
+    #browserTab td a:hover{text-decoration:underline}
+    #browserTab .bl-in{width:100%;background:#0d1117;border:1px solid var(--bl-line);color:#e6e9ef;padding:7px 9px;border-radius:6px;font-size:13px}
+    #browserTab .bl-actions button{padding:5px 10px;font-size:12px;margin-right:4px}
+    #browserTab .bl-edit{background:#232a36;color:#e6e9ef}
+    #browserTab .bl-del{background:transparent;color:#f85149;border:1px solid #f85149}
+    #browserTab .bl-save{background:#25c26e;color:#04260f}
+    #browserTab .bl-copy{background:#232a36;color:#8b93a3;border:1px solid var(--bl-line);padding:4px 8px;font-size:11px}
+    #browserTab .pw{font-family:ui-monospace,Menlo,monospace}
+  </style>
+
+  <div class="bl-head">
+    <h2>Browser — Links & Logins</h2>
+    <input class="bl-search" id="blSearch" placeholder="Search url, user, label…" oninput="blRender()">
+    <button class="bl-add" onclick="blAddRow()">+ Add Link</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th data-k="label" onclick="blSort('label')">Label</th>
+        <th data-k="url" onclick="blSort('url')">URL</th>
+        <th data-k="username" onclick="blSort('username')">Username</th>
+        <th data-k="password" onclick="blSort('password')">Password</th>
+        <th style="cursor:default">Actions</th>
+      </tr>
+    </thead>
+    <tbody id="blBody"></tbody>
+  </table>
+</div>
+
+<script>
+(function(){
+  const API='api/browser-links.php';
+  let rows=[], sortK='label', sortDir=1, editId=null, addingNew=false;
+
+  window.showBrowserTab=function(){
+    // hide other tab panels if your dashboard uses a convention; then:
+    document.getElementById('browserTab').style.display='block';
+    blLoad();
+  };
+
+  async function blLoad(){
+    try{const r=await fetch(API+'?action=list');const d=await r.json();rows=d.ok?d.rows:[];}catch(e){rows=[];}
+    blRender();
+  }
+
+  window.blSort=function(k){ if(sortK===k)sortDir*=-1; else{sortK=k;sortDir=1;} blRender(); };
+
+  function filtered(){
+    const q=(document.getElementById('blSearch').value||'').toLowerCase();
+    let r=rows.filter(x=>!q||[x.label,x.url,x.username].join(' ').toLowerCase().includes(q));
+    r.sort((a,b)=>((a[sortK]||'')+'').localeCompare(((b[sortK]||'')+''))*sortDir);
+    return r;
+  }
+
+  window.blRender=function(){
+    const tb=document.getElementById('blBody'); tb.innerHTML='';
+    // header sort indicators
+    document.querySelectorAll('#browserTab th[data-k]').forEach(th=>{
+      th.classList.toggle('sorted',th.dataset.k===sortK);
+      th.classList.toggle('desc',th.dataset.k===sortK&&sortDir<0);
+    });
+    // new-row editor
+    if(addingNew) tb.appendChild(editorRow({id:0,label:'',url:'',username:'',password:''}));
+    filtered().forEach(row=>{
+      tb.appendChild(editId===row.id?editorRow(row):viewRow(row));
+    });
+  };
+
+  function viewRow(row){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td>${esc(row.label)}</td>
+      <td><a href="${esc(row.url)}" target="_blank" rel="noopener">${esc(row.url)}</a></td>
+      <td>${esc(row.username)} ${row.username?`<button class="bl-copy" onclick="blCopy('${jsq(row.username)}',this)">copy</button>`:''}</td>
+      <td><span class="pw">${esc(row.password)}</span> ${row.password?`<button class="bl-copy" onclick="blCopy('${jsq(row.password)}',this)">copy</button>`:''}</td>
+      <td class="bl-actions">
+        <button class="bl-edit" onclick="blEdit(${row.id})">Edit</button>
+        <button class="bl-del" onclick="blDelete(${row.id})">Del</button>
+      </td>`;
+    return tr;
+  }
+
+  function editorRow(row){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input class="bl-in" id="bl_label" value="${esc(row.label)}" placeholder="label"></td>
+      <td><input class="bl-in" id="bl_url" value="${esc(row.url)}" placeholder="https://…"></td>
+      <td><input class="bl-in" id="bl_user" maxlength="128" value="${esc(row.username)}" placeholder="username"></td>
+      <td><input class="bl-in" id="bl_pass" value="${esc(row.password)}" placeholder="password"></td>
+      <td class="bl-actions">
+        <button class="bl-save" onclick="blSave(${row.id})">Save</button>
+        <button class="bl-edit" onclick="blCancel()">Cancel</button>
+      </td>`;
+    return tr;
+  }
+
+  window.blAddRow=function(){ addingNew=true; editId=null; blRender(); };
+  window.blEdit=function(id){ editId=id; addingNew=false; blRender(); };
+  window.blCancel=function(){ editId=null; addingNew=false; blRender(); };
+
+  window.blSave=async function(id){
+    const body={
+      id:id,
+      label:document.getElementById('bl_label').value,
+      url:document.getElementById('bl_url').value,
+      username:document.getElementById('bl_user').value.slice(0,128),
+      password:document.getElementById('bl_pass').value
+    };
+    if(!body.url.trim()){ alert('URL required'); return; }
+    await fetch(API+'?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    editId=null; addingNew=false; await blLoad();
+  };
+
+  window.blDelete=async function(id){
+    if(!confirm('Delete this link?'))return;
+    await fetch(API+'?action=delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
+    await blLoad();
+  };
+
+  window.blCopy=function(v,btn){ navigator.clipboard.writeText(v).then(()=>{const o=btn.textContent;btn.textContent='✓';setTimeout(()=>btn.textContent=o,1000);}); };
+
+  function esc(s){return (s==null?'':(''+s)).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+  function jsq(s){return (''+s).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+})();
+</script>
+<!-- ============================================================
+     TO WIRE THE NAV ITEM: add a sidebar/nav entry like
+       <div onclick="showBrowserTab()">Browser</div>
+     and make sure showBrowserTab() also hides your other tab panels
+     (follow the same pattern your dashboard uses for other tabs).
+     ============================================================ -->

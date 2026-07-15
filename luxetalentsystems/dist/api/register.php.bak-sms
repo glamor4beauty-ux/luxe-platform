@@ -1,0 +1,138 @@
+<?php
+require __DIR__."/../cors.php";
+require __DIR__.'/../config.php';
+const MAX_FILE_BYTES=15*1024*1024;
+const ALLOWED_MIME=['image/jpeg'=>'jpg','image/png'=>'png','image/webp'=>'webp','image/heic'=>'heic','image/heif'=>'heif','image/gif'=>'gif'];
+
+if($_SERVER['REQUEST_METHOD']!=='POST') json_response(['success'=>false,'error'=>'POST only'],405);
+error_log("[REG DEBUG] POST keys: ".implode(",",array_keys($_POST)));error_log("[REG DEBUG] email=[".($_POST["email"]??"")."]");try{register();}catch(Throwable $e){error_log('[luxe register] '.$e->getMessage());json_response(['success'=>false,'error'=>$e->getMessage()],400);}
+
+function register():void{
+    $f=function(string $key,bool $req=true):string{$v=trim($_POST[$key]??'');if($req&&$v==='')throw new RuntimeException("Missing: $key");return $v;};
+
+    $email=strtolower($f('email'));
+    if(!filter_var($email,FILTER_VALIDATE_EMAIL)) throw new RuntimeException('Invalid email');
+    $password=$f('password');
+    if(strlen($password)<6) throw new RuntimeException('Password min 6 chars');
+    $dob=$f('dateOfBirth');$dobTs=strtotime($dob);
+    if(!$dobTs) throw new RuntimeException('Invalid DOB');
+    if((int)((time()-$dobTs)/(365.25*86400))<18) throw new RuntimeException('Must be 18+');
+
+    $chk=db()->prepare('SELECT email FROM registration WHERE email=?');$chk->execute([$email]);
+    if($chk->fetch()) throw new RuntimeException('Email already registered');
+
+    $sigData=$_POST['signature']??'';
+    if(!preg_match('#^data:image/png;base64,#',$sigData)) throw new RuntimeException('Sign the consent document');
+
+    foreach([UPLOAD_PHOTOS,UPLOAD_IDS,UPLOAD_ADDITIONAL,UPLOAD_SIGS] as $d){if(!is_dir($d))mkdir($d,0750,true);}
+
+    $profilePaths=save_multi('profilePhotos',UPLOAD_PHOTOS,true);
+    $idFrontPath=save_single('idFront',UPLOAD_IDS,true);
+    $idBackPath=save_single('idBack',UPLOAD_IDS,false);
+    $faceIdPath=save_single('faceAndId',UPLOAD_IDS,false);
+    $nudePaths=save_multi('morePhotos',UPLOAD_ADDITIONAL,false);
+
+    $sigBytes=base64_decode(substr($sigData,strpos($sigData,',')+1),true);
+    if(!$sigBytes||strlen($sigBytes)<50) throw new RuntimeException('Sig decode fail');
+    $sigName=uname($email,'png');
+    file_put_contents(UPLOAD_SIGS.'/'.$sigName,$sigBytes);
+    $relSig='uploads/signatures/'.$sigName;
+
+    $platforms=trim($_POST['platforms']??'');
+    if(!$platforms) throw new RuntimeException('Select a platform');
+
+    $sql='INSERT INTO registration (
+        email,applying_for,role,platform,recruiter_name,first_name,middle_name,last_name,stage_name,password_hash,
+        alternate_user_names,street_address,city,state,zip_code,country,phone,date_of_birth,
+        sexual_preferences,ethnicity,interested_in,primary_language,other_language,display_age,weight,height,
+        orientation,eyes_color,hair_color,hair_length,build,butt_size,breast_size,pubic_hair,dress_size,
+        about_me,what_turns_you_on,what_turns_you_off,
+        profile_photo,id_front,id_back,face_and_id,nude_photos,
+        consent,signature_path,signed_at,signed_ip,signed_user_agent,status
+    ) VALUES (
+        :email,:applying_for,:role,:platform,:recruiter,:fname,:mname,:lname,:stage,:pw,
+        :alt,:street,:city,:state,:zip,:country,:phone,:dob,
+        :sexpref,:eth,:interest,:plang,:olang,:dage,:weight,:height,
+        :orient,:eyes,:hair,:hairlen,:build,:butt,:breast,:pubic,:dress,
+        :about,:turnson,:turnsoff,
+        :photo,:idfront,:idback,:faceid,:nude,
+        1,:sigpath,NOW(),:ip,:ua,:status
+    )';
+
+    $stmt=db()->prepare($sql);
+    $stmt->execute([
+        ':email'=>$email,':applying_for'=>'Webcam Model + My.Club Creator',
+        ':role'=>$f('role',false)?:'performer',':platform'=>$platforms,':recruiter'=>$f('recruiterName'),
+        ':fname'=>$f('firstName'),':mname'=>$f('middleName',false)?:null,':lname'=>$f('lastName'),
+        ':stage'=>$f('stageName'),':pw'=>password_hash($password,PASSWORD_BCRYPT),
+        ':alt'=>$f('alternateUsernames',false)?:null,':street'=>$f('streetAddress'),
+        ':city'=>$f('city'),':state'=>$f('state'),':zip'=>$f('zipCode'),':country'=>$f('country'),
+        ':phone'=>$f('phone'),':dob'=>date('Y-m-d',$dobTs),
+        ':sexpref'=>$f('sexualPreferences',false)?:null,':eth'=>$f('ethnicity'),
+        ':interest'=>$f('interestedIn'),':plang'=>$f('primaryLanguage'),
+        ':olang'=>$f('otherLanguage',false)?:null,':dage'=>(int)($_POST['displayAge']??0)?:null,
+        ':weight'=>$f('weight'),':height'=>$f('height'),':orient'=>$f('orientation'),
+        ':eyes'=>$f('eyeColor'),':hair'=>$f('hairColor'),':hairlen'=>$f('hairLength'),
+        ':build'=>$f('build'),':butt'=>$f('buttSize'),':breast'=>$f('breastSize'),
+        ':pubic'=>$f('pubicHair'),':dress'=>$f('dressSize'),
+        ':about'=>$f('aboutMe'),':turnson'=>$f('turnsOn'),':turnsoff'=>$f('turnsOff'),
+        ':photo'=>json_encode($profilePaths),':idfront'=>$idFrontPath,':idback'=>$idBackPath,
+        ':faceid'=>$faceIdPath,':nude'=>$nudePaths?json_encode($nudePaths):null,
+        ':sigpath'=>$relSig,':ip'=>$_SERVER['REMOTE_ADDR']??null,
+        ':ua'=>substr($_SERVER['HTTP_USER_AGENT']??'',0,500)?:null,':status'=>'pending',
+    ]);
+    
+    // Auto-confirm SMS
+    try {
+        $smsPhone = preg_replace('/[^+0-9]/', '', $phone);
+        if($smsPhone[0] !== '+') $smsPhone = '+1' . $smsPhone;
+        if(strlen($smsPhone) >= 11) {
+            $smsBody = "Welcome to Luxe Model Collective, {$firstName}! Your registration is received. Login: https://luxetalentsystems.com/login.html Email: {$email}. Reply HELP for assistance.";
+            $smsCh = curl_init('https://api.twilio.com/2010-04-01/Accounts/AC906dbbb445fc44f915f813107748e499/Messages.json');
+            curl_setopt_array($smsCh, [
+                CURLOPT_POST => true,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_USERPWD => 'AC906dbbb445fc44f915f813107748e499:1e44f3902ff20ae0ba527e4c84287e3b',
+                CURLOPT_POSTFIELDS => http_build_query(['From'=>'+15715836064','To'=>$smsPhone,'Body'=>$smsBody]),
+                CURLOPT_TIMEOUT => 10,
+            ]);
+            curl_exec($smsCh);
+            curl_close($smsCh);
+        }
+    } catch(Throwable $smsErr) {
+        error_log('[sms auto-confirm] ' . $smsErr->getMessage());
+    }
+
+    json_response(['success'=>true,'email'=>$email,'lastName'=>$f('lastName'),'status'=>'pending']);
+}
+
+function save_single(string $key,string $dir,bool $req):?string{
+    if(empty($_FILES[$key]['tmp_name'])||$_FILES[$key]['error']===UPLOAD_ERR_NO_FILE){if($req)throw new RuntimeException("$key required");return null;}
+    return save_one($_FILES[$key],$dir,$key);
+}
+function save_multi(string $key,string $dir,bool $req):array{
+    $out=[];
+    if(empty($_FILES[$key])||!is_array($_FILES[$key]['name']??null)){if($req)throw new RuntimeException("$key required");return $out;}
+    $n=count($_FILES[$key]['name']);
+    for($i=0;$i<$n;$i++){
+        if($_FILES[$key]['error'][$i]===UPLOAD_ERR_NO_FILE)continue;
+        $f=['name'=>$_FILES[$key]['name'][$i],'type'=>$_FILES[$key]['type'][$i],'tmp_name'=>$_FILES[$key]['tmp_name'][$i],'error'=>$_FILES[$key]['error'][$i],'size'=>$_FILES[$key]['size'][$i]];
+        $out[]=save_one($f,$dir,$key);
+    }
+    if($req&&!$out)throw new RuntimeException("$key: at least one file needed");
+    return $out;
+}
+function save_one(array $f,string $dir,string $label):string{
+    if($f['error']!==UPLOAD_ERR_OK) throw new RuntimeException("Upload error $label (code {$f['error']})");
+    if($f['size']<=0||$f['size']>MAX_FILE_BYTES) throw new RuntimeException("$label: max 15 MB");
+    $finfo=new finfo(FILEINFO_MIME_TYPE);$mime=$finfo->file($f['tmp_name']);
+    if(!isset(ALLOWED_MIME[$mime])) throw new RuntimeException("$label: must be image (got $mime)");
+    $ext=ALLOWED_MIME[$mime];$name=uname(strtolower($_POST['email']??'anon'),$ext);$dest=$dir.'/'.$name;
+    if(!move_uploaded_file($f['tmp_name'],$dest)) throw new RuntimeException("Could not save $label");
+    chmod($dest,0644);
+    return 'uploads/'.basename($dir).'/'.$name;
+}
+function uname(string $e,string $ext):string{
+    $slug=substr(preg_replace('/[^a-z0-9]/','',strtolower($e)),0,20)?:'anon';
+    return $slug.'_'.bin2hex(random_bytes(6)).'_'.date('Ymd_His').'.'.$ext;
+}

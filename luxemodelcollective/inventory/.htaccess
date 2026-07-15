@@ -1,0 +1,33 @@
+# My Furry Companion Dashboard - Apache config
+
+# Force HTTPS (assumes SSL is installed on the domain)
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# Block direct access to PHP includes and SQL files
+<FilesMatch "\.(sql|md)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+  RewriteRule ^includes/ - [F,L]
+</IfModule>
+
+# Reasonable upload limits for CSV files
+<IfModule mod_php.c>
+  php_value upload_max_filesize 16M
+  php_value post_max_size 20M
+  php_value max_input_time 300
+  php_value max_execution_time 300
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Default index
+DirectoryIndex index.php

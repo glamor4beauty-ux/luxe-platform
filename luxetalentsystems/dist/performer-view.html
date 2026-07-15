@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>Performer Profile · Luxe Talent System</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,sans-serif;font-size:14px;line-height:1.5}
+
+/* Layout */
+.page{min-height:100vh;display:flex;flex-direction:column}
+.topbar{height:52px;border-bottom:1px solid #1e2330;display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;background:#0e1117}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.topbar-logo-icon{width:28px;height:28px;border-radius:6px;background:#d4a830;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:#0e1117}
+.topbar-logo-text{font-size:13px;font-weight:700;color:#f1f5f9}
+.topbar-logo-text span{color:#d4a830}
+.back-btn{background:transparent;border:1px solid #2a2f3e;color:#c0c4d0;border-radius:6px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.back-btn:hover{border-color:#d4a830;color:#d4a830}
+.topbar-actions{display:flex;align-items:center;gap:8px}
+.act-btn{border:1px solid #2a2f3e;background:transparent;color:#c0c4d0;border-radius:6px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;gap:5px}
+.act-btn:hover{border-color:#d4a830;color:#d4a830}
+.act-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.act-btn.gold{background:#d4a830;color:#0e1117;border-color:#d4a830}
+.act-btn.gold:hover{background:#e8bf44}
+
+/* Content */
+.content{flex:1;padding:24px;max-width:1100px;margin:0 auto;width:100%}
+.perf-name{font-size:26px;font-weight:700;color:#f1f5f9;margin-bottom:20px}
+
+/* Top section: photo + personal */
+.top-section{display:flex;gap:20px;margin-bottom:20px}
+.photo-col{width:320px;flex-shrink:0}
+.photo-col img{width:100%;border-radius:12px;object-fit:cover;max-height:400px;background:#1a1f2e;border:1px solid #2a2f3e}
+.photo-placeholder{width:100%;height:300px;border-radius:12px;background:#1a1f2e;border:1px solid #2a2f3e;display:flex;align-items:center;justify-content:center;color:#4a4f5e;font-size:48px}
+.personal-col{flex:1}
+
+/* Section cards */
+.section-card{background:#1a1f2e;border:1px solid #2a2f3e;border-radius:12px;padding:18px;height:100%}
+.section-title{font-size:16px;font-weight:700;color:#f1f5f9;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid #2a2f3e}
+.field-grid{display:grid;gap:12px}
+.field-grid.cols-3{grid-template-columns:1fr 1fr 1fr}
+.field-grid.cols-4{grid-template-columns:1fr 1fr 1fr 1fr}
+.field-grid.cols-5{grid-template-columns:1fr 1fr 1fr 1fr 1fr}
+.field-item{display:flex;flex-direction:column;gap:2px}
+.field-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#d4a830}
+.field-value{font-size:13px;color:#e8eaf0;font-weight:500;word-break:break-word}
+.field-value.email{font-family:ui-monospace,monospace;font-size:12px;color:#8a8fa8}
+.field-value.status{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600}
+.field-value.status.pending{background:rgba(251,191,36,.1);color:#fbbf24}
+.field-value.status.active{background:rgba(74,222,128,.1);color:#4ade80}
+.field-value.status.registered{background:rgba(74,222,128,.1);color:#4ade80}
+.field-value.status.inactive{background:rgba(138,143,168,.1);color:#8a8fa8}
+.field-value.status.info_needed{background:rgba(96,165,250,.1);color:#60a5fa}
+.field-value.status.banned{background:rgba(248,113,113,.1);color:#f87171}
+
+/* Bottom row */
+.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:20px}
+
+/* Full width sections */
+.full-section{margin-bottom:20px}
+.full-section .section-card{height:auto}
+.about-text{font-size:14px;color:#c0c4d0;line-height:1.8;white-space:pre-wrap}
+
+/* Photos gallery */
+.photos-section{margin-top:20px}
+.photos-grid{display:flex;gap:10px;flex-wrap:wrap}
+.photos-grid img{width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #2a2f3e;cursor:pointer;transition:transform .15s}
+.photos-grid img:hover{transform:scale(1.05);border-color:#d4a830}
+.photo-label{font-size:10px;color:#8a8fa8;text-transform:uppercase;margin:10px 0 4px;font-weight:600;letter-spacing:.04em}
+
+/* Loading */
+.loading-msg{text-align:center;padding:60px;color:#8a8fa8;font-size:15px}
+
+/* Lightbox */
+.lb{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.9);align-items:center;justify-content:center;cursor:pointer}
+.lb.open{display:flex}
+.lb img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:8px}
+
+/* Responsive */
+@media(max-width:768px){
+  .top-section{flex-direction:column}
+  .photo-col{width:100%}
+  .bottom-row{grid-template-columns:1fr}
+  .field-grid.cols-3,.field-grid.cols-4,.field-grid.cols-5{grid-template-columns:1fr 1fr}
+  .content{padding:16px}
+}
+</style>
+  <meta name="robots" content="noindex,nofollow">
+  </head>
+<body>
+<div class="page">
+  <div class="topbar">
+    <div class="topbar-left">
+      <a class="topbar-logo" href="/dashboard.html">
+        <div class="topbar-logo-icon">LT</div>
+        <div class="topbar-logo-text">Luxe <span>Talent</span></div>
+      </a>
+      <a class="back-btn" href="/dashboard.html">&#8592; Performers</a>
+    </div>
+    <div class="topbar-actions" id="topActions">
+      <button class="act-btn" onclick="doCall()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call</button>
+      <button class="act-btn" onclick="doSMS()"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg> SMS</button>
+      <a class="act-btn gold" href="/dashboard.html">+ Add Performer</a>
+    </div>
+  </div>
+
+  <div class="content">
+    <div id="profileContent">
+      <div class="loading-msg">Loading performer...</div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lb" id="lb" onclick="this.classList.remove('open')"><img id="lbImg" src="" alt=""/></div>
+
+<script>
+(function(){
+const API = 'https://luxetalentsystems.com/api';
+const params = new URLSearchParams(window.location.search);
+const email = params.get('email');
+
+if (!email) {
+    document.getElementById('profileContent').innerHTML = '<div class="loading-msg" style="color:#f87171">No performer specified. <a href="/dashboard.html" style="color:#d4a830">Go back</a></div>';
+    return;
+}
+
+async function loadProfile() {
+    try {
+        const r = await fetch(API + '/performers.php?action=get&email=' + encodeURIComponent(email));
+        const p = await r.json();
+        if (p.error) throw new Error(p.error);
+        renderProfile(p);
+    } catch(e) {
+        document.getElementById('profileContent').innerHTML = '<div class="loading-msg" style="color:#f87171">Error: ' + esc(e.message) + '. <a href="/dashboard.html" style="color:#d4a830">Go back</a></div>';
+    }
+}
+
+function renderProfile(p) {
+    const fullName = ((p.first_name||'') + ' ' + (p.last_name||'')).trim();
+    const baseUrl = API.replace('/api','');
+    
+    // Helper: if path is already a full URL, use it; otherwise prepend baseUrl
+    function imgUrl(path) {
+        if (!path) return '';
+        path = path.replace(/\\\//g, '/');
+        if (path.startsWith('http://') || path.startsWith('https://')) return path;
+        return baseUrl + '/' + path;
+    }
+    
+    // Profile photo
+    let photoHTML = '<div class="photo-placeholder">&#128100;</div>';
+    if (p.profile_photo) {
+        try {
+            const arr = JSON.parse(p.profile_photo);
+            if (arr.length) photoHTML = `<img src="${imgUrl(arr[0])}" alt="${esc(fullName)}"/>`;
+        } catch(e) {
+            if (p.profile_photo) photoHTML = `<img src="${imgUrl(p.profile_photo)}" alt="${esc(fullName)}"/>`;
+        }
+    }
+
+    // Status class
+    const stClass = (p.status||'pending').toLowerCase().replace(/ /g,'_');
+
+    let html = `
+    <div class="perf-name">${esc(fullName)}</div>
+
+    <div class="top-section">
+      <div class="photo-col">${photoHTML}</div>
+      <div class="personal-col">
+        <div class="section-card">
+          <div class="section-title">Personal</div>
+          <div class="field-grid cols-4" style="margin-bottom:14px">
+            <div class="field-item"><div class="field-label">Applying For</div><div class="field-value">${esc(p.applying_for||'Webcam Model')}</div></div>
+            <div class="field-item"><div class="field-label">Primary Language</div><div class="field-value">${esc(p.primary_language||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Other Languages</div><div class="field-value">${esc(p.other_language||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Studio Fee</div><div class="field-value">${esc(p.studio_fee||'—')}</div></div>
+          </div>
+          <div class="field-grid cols-5" style="margin-bottom:14px">
+            <div class="field-item"><div class="field-label">Recruiter</div><div class="field-value">${esc(p.recruiter_name||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Platform</div><div class="field-value">${esc(p.platform||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Status</div><div class="field-value status ${stClass}">${esc((p.status||'pending').replace('_',' '))}</div></div>
+            <div class="field-item"><div class="field-label">Ethnicity</div><div class="field-value">${esc(p.ethnicity||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Stage Name</div><div class="field-value" style="color:#d4a830;font-weight:600">${esc(p.stage_name||'—')}</div></div>
+          </div>
+          <div class="field-grid cols-5" style="margin-bottom:14px">
+            <div class="field-item"><div class="field-label">First Name</div><div class="field-value">${esc(p.first_name||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Middle Name</div><div class="field-value">${esc(p.middle_name||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Last Name</div><div class="field-value">${esc(p.last_name||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Date of Birth</div><div class="field-value">${esc(p.date_of_birth||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Display Age</div><div class="field-value">${esc(p.display_age||'—')}</div></div>
+          </div>
+          <div class="field-grid cols-3">
+            <div class="field-item"><div class="field-label">Email Address</div><div class="field-value email"><a href="#" onclick="window.opener?window.opener.openEmailTo(this.textContent):window.parent.openEmailTo(this.textContent);return false;" data-orig="${p.email||''}" style="color:#d4a830">${esc(p.email||'—')}</a></div></div>
+            <div class="field-item"><div class="field-label">Phone</div><div class="field-value">${esc(p.phone||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Password</div><div class="field-value" style="font-family:ui-monospace,monospace;color:#d4a830">${esc(p.plain_password||'—')}</div></div>
+            <div class="field-item"><div class="field-label">Alt Stage Names</div><div class="field-value">${esc(p.alternate_user_names||'—')}</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="bottom-row">
+      <div class="section-card">
+        <div class="section-title">Physical</div>
+        <div class="field-grid cols-3" style="margin-bottom:12px">
+          <div class="field-item"><div class="field-label">Hair Color</div><div class="field-value">${esc(p.hair_color||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Hair Length</div><div class="field-value">${esc(p.hair_length||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Eye Color</div><div class="field-value">${esc(p.eyes_color||'—')}</div></div>
+        </div>
+        <div class="field-grid cols-3" style="margin-bottom:12px">
+          <div class="field-item"><div class="field-label">Height</div><div class="field-value">${esc(p.height||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Weight</div><div class="field-value">${esc(p.weight||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Build</div><div class="field-value">${esc(p.build||'—')}</div></div>
+        </div>
+        <div class="field-grid cols-3">
+          <div class="field-item"><div class="field-label">Breast Size</div><div class="field-value">${esc(p.breast_size||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Butt Size</div><div class="field-value">${esc(p.butt_size||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Pubic Hair</div><div class="field-value">${esc(p.pubic_hair||'—')}</div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title">Preferences</div>
+        <div class="field-grid cols-3" style="margin-bottom:12px">
+          <div class="field-item"><div class="field-label">Orientation</div><div class="field-value">${esc(p.orientation||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Sexual Preference</div><div class="field-value">${esc(p.sexual_preferences||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Interested In</div><div class="field-value">${esc(p.interested_in||'—')}</div></div>
+        </div>
+        <div class="field-grid cols-3">
+          <div class="field-item"><div class="field-label">Dress/Shirt Size</div><div class="field-value">${esc(p.dress_size||'—')}</div></div>
+        </div>
+      </div>
+
+      <div class="section-card">
+        <div class="section-title">Location</div>
+        <div class="field-grid cols-3" style="margin-bottom:12px">
+          <div class="field-item" style="grid-column:1/-1"><div class="field-label">Street Name</div><div class="field-value">${esc(p.street_address||'—')}</div></div>
+        </div>
+        <div class="field-grid cols-3" style="margin-bottom:12px">
+          <div class="field-item"><div class="field-label">City</div><div class="field-value">${esc(p.city||'—')}</div></div>
+          <div class="field-item"><div class="field-label">State</div><div class="field-value">${esc(p.state||'—')}</div></div>
+          <div class="field-item"><div class="field-label">Zip/Postal</div><div class="field-value">${esc(p.zip_code||'—')}</div></div>
+        </div>
+        <div class="field-grid cols-3">
+          <div class="field-item"><div class="field-label">Country</div><div class="field-value">${esc(p.country||'—')}</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="full-section">
+      <div class="section-card">
+        <div class="section-title">About Me</div>
+        <div class="about-text">${esc(p.about_me||'—')}</div>
+      </div>
+    </div>
+
+    <div class="full-section">
+      <div class="section-card">
+        <div class="section-title">What Turns You On</div>
+        <div class="about-text">${esc(p.what_turns_you_on||'—')}</div>
+      </div>
+    </div>
+
+    <div class="full-section">
+      <div class="section-card">
+        <div class="section-title">What Turns You Off</div>
+        <div class="about-text">${esc(p.what_turns_you_off||'—')}</div>
+      </div>
+    </div>`;
+
+    // Photos section
+    let photosHTML = '';
+    function addPhotos(label, data, isArray) {
+        if (!data) return;
+        let imgs = '';
+        if (isArray) {
+            try {
+                const arr = JSON.parse(data);
+                arr.forEach(u => { const url = imgUrl(u); imgs += `<img src="${url}" alt="${label}" onclick="openLB('${url}')"/>`; });
+            } catch(e) {
+                const url = imgUrl(data);
+                imgs = `<img src="${url}" alt="${label}" onclick="openLB('${url}')"/>`;
+            }
+        } else {
+            const url = imgUrl(data);
+            imgs = `<img src="${url}" alt="${label}" onclick="openLB('${url}')"/>`;
+        }
+        if (imgs) photosHTML += `<div class="photo-label">${label}</div>${imgs}`;
+    }
+    addPhotos('Profile Photos', p.profile_photo, true);
+    addPhotos('ID Front', p.id_front, false);
+    addPhotos('ID Back', p.id_back, false);
+    addPhotos('Face + ID', p.face_and_id, false);
+    addPhotos('Additional Photos', p.nude_photos, true);
+    if (p.signature_path) {
+        const sigUrl = imgUrl(p.signature_path);
+        photosHTML += `<div class="photo-label">Signature</div><img src="${sigUrl}" alt="Signature" style="max-height:50px;width:auto" onclick="openLB('${sigUrl}')"/>`;
+    }
+    if (p.signature_path && p.consent_token) {
+        const cUrl = API + '/consent-download.php?e=' + encodeURIComponent(String(p.email||'').toLowerCase()) + '&t=' + p.consent_token;
+        photosHTML += `<div class="photo-label">Signed Consent</div><a href="${cUrl}" target="_blank" rel="noopener" style="display:inline-block;background:#d4a830;color:#0e1117;font-size:12px;font-weight:600;border-radius:7px;padding:9px 14px;text-decoration:none">Download Consent PDF</a>`;
+    }
+
+    if (photosHTML) {
+        html += `<div class="full-section photos-section"><div class="section-card"><div class="section-title">Photos &amp; Documents</div><div class="photos-grid">${photosHTML}</div></div></div>`;
+    }
+
+    document.getElementById('profileContent').innerHTML = html;
+    document.title = fullName + ' · Luxe Talent System';
+
+    // Wire up Call/SMS buttons with phone
+    window.perfPhone = p.phone || '';
+    window.perfEmail = p.email || '';
+}
+
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+window.openLB = function(url) {
+    document.getElementById('lbImg').src = url;
+    document.getElementById('lb').classList.add('open');
+};
+
+window.doCall = function() {
+    if (window.perfPhone) window.open('tel:' + window.perfPhone);
+    else alert('No phone number on file');
+};
+
+window.doSMS = function() {
+    if (window.perfPhone) window.open('sms:' + window.perfPhone);
+    else alert('No phone number on file');
+};
+
+loadProfile();
+})();
+</script>
+</body>
+</html>

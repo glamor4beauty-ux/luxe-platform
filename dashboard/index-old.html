@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DivaFans Stream Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<style>
+  :root{--bg:#0d0f14;--panel:#161a22;--line:#262c38;--txt:#e6e9ef;--mut:#8b93a3;--acc:#e8318a;--ok:#25c26e;--warn:#e0a800}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+  header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--line)}
+  header h1{font-size:18px;margin:0;font-weight:600}
+  header .links{margin-left:auto;display:flex;gap:10px}
+  header a{color:var(--mut);text-decoration:none;font-size:14px;padding:6px 12px;border:1px solid var(--line);border-radius:8px}
+  header a:hover{color:var(--txt);border-color:var(--acc)}
+  .wrap{max-width:1100px;margin:0 auto;padding:22px;display:grid;grid-template-columns:1fr 320px;gap:22px}
+  @media(max-width:820px){.wrap{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h2{margin:0 0 14px;font-size:14px;letter-spacing:.04em;text-transform:uppercase;color:var(--mut)}
+  video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px}
+  .row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  input{flex:1;min-width:140px;background:#0d0f14;border:1px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:9px;font-size:15px}
+  button{background:var(--acc);color:#fff;border:0;padding:10px 16px;border-radius:9px;font-size:15px;font-weight:600;cursor:pointer}
+  button.sec{background:#232a36;color:var(--txt)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .stat{display:flex;align-items:center;gap:8px;font-size:14px;margin:6px 0}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--mut)}
+  .dot.live{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .dot.wait{background:var(--warn)}
+  .pub{background:#0d0f14;border:1px solid var(--line);border-radius:9px;padding:12px;margin-top:12px;font:13px/1.6 ui-monospace,Menlo,monospace;color:var(--mut);word-break:break-all}
+  .pub b{color:var(--txt)}
+  .hint{color:var(--mut);font-size:13px;margin-top:10px}
+</style>
+</head>
+<body>
+<header>
+  <h1>DivaFans Stream Dashboard</h1>
+  <div class="links">
+    <a id="studioLink" href="#">Studio</a>
+    <a id="restreamLink" href="#">Restream</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Live Viewer (HLS)</h2>
+    <video id="video" controls playsinline muted></video>
+    <div class="row">
+      <input id="stream" value="stream1" placeholder="stream name">
+      <button id="startBtn" onclick="start()">Start Viewer</button>
+      <button id="stopBtn" class="sec" onclick="stop()">Stop</button>
+    </div>
+    <div class="hint">Viewer bridges Red5 RTMP → HLS. First segments take ~5–8s after the performer goes live.</div>
+  </div>
+
+  <div class="card">
+    <h2>Status</h2>
+    <div class="stat"><span id="dLive" class="dot"></span><span id="tLive">Idle</span></div>
+    <div class="stat"><span id="dBridge" class="dot"></span><span id="tBridge">Bridge stopped</span></div>
+
+    <h2 style="margin-top:20px">Performer Publish</h2>
+    <div class="pub">
+      Server: <b>rtmp://162.35.180.58:1935/live</b><br>
+      Key: <b id="pubKey">stream1</b>
+    </div>
+    <div class="hint">Point OBS / the studio page here with the matching stream key.</div>
+  </div>
+</div>
+
+<script>
+// ---- editable links ----
+const STUDIO_URL   = 'https://studio.divafans.club';
+const RESTREAM_URL = '/restream';
+// -------------------------
+document.getElementById('studioLink').href   = STUDIO_URL;
+document.getElementById('restreamLink').href = RESTREAM_URL;
+
+let hls = null, poll = null;
+const $ = id => document.getElementById(id);
+const getStream = () => ($('stream').value.replace(/[^a-zA-Z0-9_-]/g,'') || 'stream1');
+
+$('stream').addEventListener('input', () => { $('pubKey').textContent = getStream(); });
+
+function setLive(state){ // 'live' | 'wait' | 'off'
+  const d=$('dLive'), t=$('tLive');
+  d.className='dot'+(state==='live'?' live':state==='wait'?' wait':'');
+  t.textContent = state==='live'?'Live':state==='wait'?'Waiting for stream…':'Idle';
+}
+function setBridge(on){
+  $('dBridge').className='dot'+(on?' live':'');
+  $('tBridge').textContent = on?'Bridge running':'Bridge stopped';
+}
+
+function playHLS(stream){
+  const url='/hls/'+stream+'.m3u8', v=$('video');
+  if(window.Hls && Hls.isSupported()){
+    if(hls) hls.destroy();
+    hls=new Hls({liveSyncDurationCount:3,maxLiveSyncPlaybackRate:1.5});
+    hls.loadSource(url); hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED, ()=>v.play().catch(()=>{}));
+    hls.on(Hls.Events.ERROR,(e,d)=>{ if(d.fatal){ try{hls.startLoad();}catch(_){} } });
+  } else if(v.canPlayType('application/vnd.apple.mpegurl')){
+    v.src=url; v.play().catch(()=>{});
+  }
+}
+
+async function status(stream){
+  try{
+    const r=await fetch('api/hls.php?action=status&stream='+encodeURIComponent(stream)+'&_='+Date.now());
+    return await r.json();
+  }catch(e){ return {ok:false}; }
+}
+
+async function start(){
+  const stream=getStream();
+  $('startBtn').disabled=true;
+  setLive('wait'); setBridge(false);
+  await fetch('api/hls.php?action=start&stream='+encodeURIComponent(stream));
+  let played=false;
+  clearInterval(poll);
+  poll=setInterval(async ()=>{
+    const s=await status(stream);
+    setBridge(!!s.bridge);
+    if(s.live){ setLive('live'); if(!played){ playHLS(stream); played=true; } }
+    else { setLive('wait'); played=false; }
+  },3000);
+  $('startBtn').disabled=false;
+}
+
+async function stop(){
+  const stream=getStream();
+  clearInterval(poll); poll=null;
+  if(hls){ hls.destroy(); hls=null; }
+  $('video').removeAttribute('src'); $('video').load();
+  await fetch('api/hls.php?action=stop&stream='+encodeURIComponent(stream));
+  setLive('off'); setBridge(false);
+}
+</script>
+</body>
+</html>

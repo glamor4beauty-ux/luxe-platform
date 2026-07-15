@@ -1,0 +1,228 @@
+<!doctype html>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Studio Console</title>
+<style>
+  :root{
+    --ink:#0E1116;--ink-2:#141922;--surface:#171C26;--surface-2:#1E2530;
+    --line:#283040;--text:#E8ECF3;--muted:#8B95A7;--faint:#5C6679;
+    --onair:#FF3340;--onair-glow:rgba(255,51,64,.55);--rec:#F2B01E;--ok:#36C28B;--action:#4C8DFF;
+    --radius:14px;--rail:64px;--sidebar:240px;--chat:330px;
+    --mono:ui-monospace,"SF Mono",Consolas,monospace;--ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--ui);background:radial-gradient(1200px 600px at 70% -10%,#1a2230 0%,transparent 60%),var(--ink);
+    color:var(--text);-webkit-font-smoothing:antialiased;overflow:hidden;height:100vh;height:100dvh}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input{font-family:inherit}
+  :focus-visible{outline:2px solid var(--action);outline-offset:2px;border-radius:6px}
+  .hidden{display:none !important}
+  #tally{position:fixed;top:0;left:0;right:0;height:3px;background:var(--line);z-index:50;transition:background .25s,box-shadow .25s}
+  body.onair #tally{background:var(--onair);box-shadow:0 0 18px 2px var(--onair-glow)}
+
+  /* login */
+  #login{position:fixed;inset:0;display:grid;place-items:center;padding:24px}
+  .card{width:min(400px,92vw);background:linear-gradient(180deg,var(--surface),var(--ink-2));border:1px solid var(--line);
+    border-radius:20px;padding:34px 30px;box-shadow:0 30px 80px -30px rgba(0,0,0,.8)}
+  .wordmark{display:flex;align-items:center;gap:11px;margin-bottom:26px}
+  .dot{width:13px;height:13px;border-radius:50%;background:var(--onair);box-shadow:0 0 14px var(--onair-glow)}
+  .wordmark b{font-size:19px;letter-spacing:.16em;text-transform:uppercase;font-weight:700}
+  .wordmark span{color:var(--faint);font-size:11px;letter-spacing:.34em;text-transform:uppercase;display:block;margin-top:2px}
+  label.fl{display:block;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin:14px 0 7px}
+  .field{width:100%;background:var(--ink);border:1px solid var(--line);border-radius:10px;padding:12px 13px;color:var(--text);font-size:14.5px}
+  .field:focus{border-color:var(--action);outline:none}
+  .enter{width:100%;margin-top:22px;padding:13px;border-radius:11px;background:var(--text);color:#0c0f14;font-weight:700;font-size:14.5px}
+  .enter:disabled{opacity:.5}
+  .err{margin-top:14px;text-align:center;color:var(--onair);font-size:12.5px;min-height:16px}
+
+  /* shell */
+  #app{display:none;height:100vh;height:100dvh}
+  #app.show{display:grid}
+  #app[data-role="admin"]{grid-template-columns:var(--rail) 1fr var(--chat);grid-template-rows:56px 1fr}
+  #app[data-role="admin"].expanded{grid-template-columns:var(--sidebar) 1fr var(--chat)}
+
+  header{grid-column:1 / -1;display:flex;align-items:center;gap:14px;padding:0 14px 0 16px;background:var(--ink-2);border-bottom:1px solid var(--line);min-width:0}
+  header .wordmark{margin:0}header .wordmark b{font-size:15px}
+  .burger{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--line);background:var(--surface);flex:none}
+  .burger:hover{color:var(--text)}
+  .status{display:flex;align-items:center;gap:8px;margin-left:4px}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:6px 10px;border-radius:8px;border:1px solid var(--line);color:var(--faint);background:var(--surface)}
+  .badge .pip{width:8px;height:8px;border-radius:50%;background:var(--faint)}
+  body.onair .badge.live{color:#fff;border-color:transparent;background:var(--onair)}
+  body.onair .badge.live .pip{background:#fff;animation:pulse 1.4s infinite}
+  body.onair .badge.recd{color:#1a1407;border-color:transparent;background:var(--rec)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .clock{font-family:var(--mono);font-size:17px;font-variant-numeric:tabular-nums;margin-left:auto}
+  .clock small{color:var(--faint);font-size:10px;letter-spacing:.2em;text-transform:uppercase;display:block;text-align:right;margin-bottom:-2px}
+  .who{display:flex;align-items:center;gap:9px;padding-left:12px;margin-left:4px;border-left:1px solid var(--line)}
+  .avatar{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#3a4256,#525d78);display:grid;place-items:center;font-size:12px;font-weight:700}
+  .who small{color:var(--faint);font-size:11px;display:block}.who .name{font-size:13px;font-weight:600}
+  .signout{color:var(--faint);font-size:12px;padding:6px 8px;border-radius:7px}.signout:hover{color:var(--text);background:var(--surface)}
+  .chat-toggle{display:none}
+
+  aside{background:var(--ink-2);border-right:1px solid var(--line);overflow-y:auto;padding:14px 10px;min-width:0}
+  .sb-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);padding:0 8px 8px;white-space:nowrap;overflow:hidden}
+  .sb-item{display:flex;align-items:center;gap:12px;padding:10px;border-radius:10px;color:var(--muted);font-size:13.5px;font-weight:500;white-space:nowrap;text-decoration:none;cursor:pointer}
+  .sb-item:hover{background:var(--surface);color:var(--text)}.sb-item.active{background:var(--surface-2);color:var(--text)}
+  .sb-item.golive{color:var(--ok)}
+  #app[data-role="admin"]:not(.expanded) aside .sb-title{opacity:0}
+  #app[data-role="admin"]:not(.expanded) aside .sb-item span{display:none}
+  #app[data-role="admin"]:not(.expanded) aside .sb-item{justify-content:center;padding:11px 0}
+
+  main{padding:16px;display:flex;flex-direction:column;gap:14px;min-width:0;overflow:hidden}
+  .stage{position:relative;flex:1;min-height:0;background:#05070b;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .stage iframe{width:100%;height:100%;border:0;display:block;background:#05070b}
+  .controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:11px 16px;border-radius:11px;font-size:13.5px;font-weight:650;border:1px solid var(--line);background:var(--surface-2);color:var(--text);transition:.15s}
+  .btn:hover{border-color:#3b4456}.btn.danger{color:var(--onair);border-color:var(--onair)}.btn.danger:hover{background:var(--onair);color:#fff}
+  .btn:disabled{opacity:.45;cursor:default}
+  .ctl-field{display:flex;flex-direction:column;gap:5px}
+  .ctl-field label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  .pushright{margin-left:auto}.cd{font-family:var(--mono);font-size:20px;font-variant-numeric:tabular-nums;color:var(--muted)}
+  .cd small{display:block;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--faint);text-align:right;font-family:var(--ui)}
+
+  .chat{background:var(--ink-2);border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+  .chat-head{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}
+  .chat-head h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+  .viewers{font-size:12px;color:var(--muted)}
+  .chat iframe{flex:1;border:0;width:100%;background:var(--ink-2)}
+
+  /* recordings overlay */
+  .rec-panel{position:absolute;inset:16px;background:var(--ink-2);border:1px solid var(--line);border-radius:var(--radius);z-index:6;display:none;flex-direction:column;overflow:hidden}
+  .rec-panel.open{display:flex}
+  .rec-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--line)}
+  .rec-list{overflow-y:auto;padding:8px}
+  .rec-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:10px}.rec-row:hover{background:var(--surface)}
+  .rec-empty{padding:30px;text-align:center;color:var(--faint);font-size:13px}
+
+  /* MOBILE */
+  @media (max-width:860px){
+    #app[data-role="admin"]{grid-template-columns:1fr !important;grid-template-rows:52px 1fr}
+    aside{position:fixed;top:52px;bottom:0;left:0;width:var(--sidebar);z-index:40;transform:translateX(-100%);transition:transform .22s}
+    #app.expanded aside{transform:none;box-shadow:30px 0 60px -30px #000}
+    #app.expanded aside .sb-title{opacity:1}#app.expanded aside .sb-item span{display:inline}
+    #app.expanded aside .sb-item{justify-content:flex-start;padding:10px}
+    .chat{position:fixed;top:52px;bottom:0;right:0;width:min(340px,92vw);z-index:40;transform:translateX(100%);transition:transform .22s}
+    #app.chat-open .chat{transform:none;box-shadow:-30px 0 60px -30px #000}
+    .chat-toggle{display:inline-flex}
+    header{gap:8px;padding:0 8px}.clock{font-size:14px}.who .name{display:none}.who small{display:none}
+    .badge{padding:5px 8px;font-size:10px}.controls{padding:10px}
+    main{padding:10px;gap:10px}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="tally"></div>
+
+<section id="login">
+  <div class="card">
+    <div class="wordmark"><span class="dot"></span><div><b>Studio</b><span>Live Console</span></div></div>
+    <label class="fl" for="u">Username</label>
+    <input class="field" id="u" autocomplete="username">
+    <label class="fl" for="p">Password</label>
+    <input class="field" id="p" type="password" autocomplete="current-password">
+    <button class="enter" id="enter">Sign in</button>
+    <div class="err" id="err"></div>
+  </div>
+</section>
+
+<div id="app" data-role="admin">
+  <header>
+    <button class="burger" id="burger" aria-label="Menu"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <div class="wordmark"><span class="dot"></span><div><b>Studio</b></div></div>
+    <div class="status">
+      <span class="badge live"><span class="pip"></span>On Air</span>
+      <span class="badge recd"><span class="pip"></span>Rec</span>
+    </div>
+    <div class="clock"><small>Elapsed</small><span id="elapsed">00:00:00</span></div>
+    <button class="badge chat-toggle" id="chatToggle" style="margin-left:12px">Chat</button>
+    <div class="who"><div class="avatar" id="avatar">A</div><div><div class="name" id="whoName">—</div><small id="whoRole">—</small></div><button class="signout" id="signout">Sign out</button></div>
+  </header>
+
+  <aside id="sidebar">
+    <div class="sb-title">Broadcast</div>
+    <a class="sb-item golive" href="/live"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M10 8l6 4-6 4V8z"/></svg><span>Go Live</span></a>
+    <div class="sb-item active" id="navLive"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg><span>Live stage</span></div>
+    <div class="sb-item" id="navRecordings"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg><span>Recordings</span></div>
+    <a class="sb-item" href="/studio/models.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span>Accounts</span></a>
+    <a class="sb-item" href="/admin" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.1-1l2-1.6-2-3.4-2.4 1a7 7 0 00-1.7-1l-.4-2.6h-4l-.4 2.6a7 7 0 00-1.7 1l-2.4-1-2 3.4 2 1.6a7 7 0 000 2l-2 1.6 2 3.4 2.4-1a7 7 0 001.7 1l.4 2.6h4l.4-2.6a7 7 0 001.7-1l2.4 1 2-3.4-2-1.6a7 7 0 00.1-1z"/></svg><span>Owncast admin</span></a>
+  </aside>
+
+  <main>
+    <div class="stage" id="stage"><iframe id="ocVideo" title="Live video" allowfullscreen referrerpolicy="origin" allow="autoplay; fullscreen"></iframe></div>
+    <div class="rec-panel" id="recPanel">
+      <div class="rec-head"><h3 style="margin:0;font-size:13px;letter-spacing:.06em;text-transform:uppercase">Recordings · VOD</h3><button class="btn mini" id="recClose">Close</button></div>
+      <div class="rec-list" id="recList"></div>
+    </div>
+    <div class="controls">
+      <button class="btn danger" id="endBtn" style="display:none">■ End broadcast</button>
+      <div class="ctl-field"><label>Countdown (min)</label>
+        <div style="display:flex;gap:6px;align-items:center"><input class="field" id="cdMin" type="number" min="0" max="600" value="30" style="width:70px;background:var(--surface-2);padding:9px"><button class="btn" id="cdStart" style="padding:9px 12px">Set</button></div>
+      </div>
+      <div class="pushright"><div class="cd" id="countdown"><small>Countdown</small>30:00</div></div>
+    </div>
+  </main>
+
+  <div class="chat">
+    <div class="chat-head"><h3>Live chat</h3><span class="viewers"><span id="viewerCount">0</span> watching</span></div>
+    <iframe id="ocChat" title="Live chat"></iframe>
+  </div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const app=$("#app"),body=document.body;
+let role="admin",cdTimer=null,cdSec=1800,startMs=null;
+
+async function api(path,opts){ return fetch("/studio/api/"+path,Object.assign({headers:{'Content-Type':'application/json'},credentials:"same-origin"},opts)); }
+async function boot(){ try{ const d=await (await api("me.php")).json(); if(d.ok){ enter(d); return; } }catch(e){} $("#login").classList.remove("hidden"); }
+function enter(d){
+  role=d.role||"performer";
+  // performers go straight to the broadcast page — they don't need the console
+  if(role!=="admin"){ location.href="/live"; return; }
+  app.dataset.role="admin";
+  $("#whoName").textContent=d.name; $("#whoRole").textContent="Console"; $("#avatar").textContent=(d.name||"?")[0].toUpperCase();
+  $("#ocVideo").src="/embed/video?initiallyMuted=true"; $("#ocChat").src="/embed/chat/readwrite";
+  $("#login").classList.add("hidden"); app.classList.add("show"); startStatus();
+}
+$("#enter").addEventListener("click",doLogin);
+$("#p").addEventListener("keydown",e=>{ if(e.key==="Enter") doLogin(); });
+async function doLogin(){
+  const b=$("#enter"); b.disabled=true; $("#err").textContent="";
+  try{ const d=await (await api("login.php",{method:"POST",body:JSON.stringify({username:$("#u").value,password:$("#p").value})})).json();
+    if(d.ok) enter(d); else { $("#err").textContent="Invalid username or password."; b.disabled=false; }
+  }catch(e){ $("#err").textContent="Sign-in failed."; b.disabled=false; }
+}
+$("#signout").addEventListener("click",async()=>{ try{await api("logout.php",{method:"POST"});}catch(e){} location.reload(); });
+$("#burger").addEventListener("click",()=>app.classList.toggle("expanded"));
+$("#chatToggle").addEventListener("click",()=>app.classList.toggle("chat-open"));
+
+function fmt(s){const h=String(Math.floor(s/3600)).padStart(2,"0"),m=String(Math.floor(s%3600/60)).padStart(2,"0"),x=String(s%60).padStart(2,"0");return h+":"+m+":"+x;}
+async function poll(){ try{ const d=await (await fetch("/api/status",{cache:"no-store"})).json();
+    const on=d.online===true; body.classList.toggle("onair",on); $("#viewerCount").textContent=d.viewerCount??0;
+    if(on&&d.lastConnectTime) startMs=Date.parse(d.lastConnectTime);
+    $("#elapsed").textContent=(on&&startMs)?fmt(Math.max(0,Math.floor((Date.now()-startMs)/1000))):"00:00:00"; if(!on)startMs=null;
+    $("#endBtn").style.display=""; $("#endBtn").disabled=!on;
+  }catch(e){} }
+function startStatus(){ poll(); setInterval(poll,3000); }
+
+$("#endBtn").addEventListener("click",async()=>{ const b=$("#endBtn"); b.disabled=true; b.textContent="Ending…";
+  try{ await api("disconnect.php",{method:"POST"}); }catch(e){} setTimeout(()=>{ b.innerHTML="■ End broadcast"; poll(); },1500); });
+
+$("#navRecordings").addEventListener("click",openRec);
+$("#recClose").addEventListener("click",()=>$("#recPanel").classList.remove("open"));
+async function openRec(){ $("#recPanel").classList.add("open"); const l=$("#recList"); l.innerHTML='<div class="rec-empty">Loading…</div>';
+  try{ const d=await (await api("recordings.php")).json();
+    if(!d.items||!d.items.length){ l.innerHTML='<div class="rec-empty">No recordings yet.</div>'; return; }
+    l.innerHTML=""; d.items.forEach(it=>{ const r=document.createElement("div"); r.className="rec-row";
+      const mb=it.size?(it.size/1048576).toFixed(0)+" MB":""; r.innerHTML='<div><div class="nm"></div><div style="color:var(--faint);font-size:11.5px">'+((it.date||"").replace("T"," ").slice(0,16))+" · "+mb+'</div></div><div class="pushright"><button class="btn">Play</button></div>';
+      r.querySelector(".nm").textContent=it.name; r.querySelector("button").addEventListener("click",()=>play(it.url)); l.appendChild(r); });
+  }catch(e){ l.innerHTML='<div class="rec-empty">Could not load.</div>'; } }
+function play(url){ $("#recPanel").classList.remove("open"); $("#stage").innerHTML='<video controls autoplay playsinline style="width:100%;height:100%;object-fit:contain;background:#05070b"></video>'; $("#stage").querySelector("video").src=url; }
+
+$("#cdStart").addEventListener("click",()=>{ cdSec=Math.max(0,parseInt($("#cdMin").value||"0",10))*60; clearInterval(cdTimer); renderCd();
+  cdTimer=setInterval(()=>{cdSec--;renderCd();if(cdSec<=-3599)clearInterval(cdTimer);},1000); });
+function renderCd(){ const el=$("#countdown"),neg=cdSec<0,a=Math.abs(cdSec),m=String(Math.floor(a/60)).padStart(2,"0"),s=String(a%60).padStart(2,"0");
+  el.innerHTML="<small>Countdown</small>"+(neg?"-":"")+m+":"+s; el.style.color=cdSec<=0?"var(--onair)":cdSec<=60?"var(--rec)":"var(--muted)"; }
+renderCd(); boot();
+</script>

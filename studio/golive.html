@@ -1,0 +1,125 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Go Live</title>
+<style>
+  :root{--ink:#0E1116;--surface:#171C26;--surface-2:#1E2530;--line:#283040;--text:#E8ECF3;
+    --muted:#8B95A7;--faint:#5C6679;--onair:#FF3340;--ok:#36C28B;--ui:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:var(--ui);background:var(--ink);color:var(--text);min-height:100vh;
+    min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:14px}
+  h1{font-size:15px;letter-spacing:.16em;text-transform:uppercase;margin:6px 0 14px;display:flex;align-items:center;gap:9px}
+  .dot{width:11px;height:11px;border-radius:50%;background:var(--onair);box-shadow:0 0 12px rgba(255,51,64,.6)}
+  .stage{width:min(960px,100%);height:78vh;background:#05070b;border:1px solid var(--line);
+    border-radius:14px;overflow:hidden;position:relative}
+  video{width:100%;height:100%;object-fit:cover;background:#05070b;display:block}
+  .live-tag{position:absolute;top:12px;left:12px;display:none;align-items:center;gap:7px;background:var(--onair);
+    color:#fff;font-size:11px;font-weight:700;letter-spacing:.12em;padding:6px 11px;border-radius:8px}
+  body.live .live-tag{display:inline-flex}
+  .live-tag .p{width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.4s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .bar{width:min(960px,100%);display:flex;gap:12px;flex-wrap:wrap;align-items:end;margin-top:14px}
+  .fld{display:flex;flex-direction:column;gap:6px;flex:1;min-width:150px}
+  .fld label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--faint)}
+  select{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:12px;color:var(--text);font:inherit;font-size:14px;width:100%}
+  .go{padding:14px 28px;border:none;border-radius:11px;background:var(--ok);color:#062018;font-weight:750;font-size:16px;cursor:pointer;flex:0 0 auto}
+  .go.stop{background:var(--onair);color:#fff}
+  .go:disabled{opacity:.5;cursor:default}
+  .msg{width:min(960px,100%);margin-top:12px;font-size:13.5px;color:var(--muted);min-height:18px}
+  .msg.err{color:var(--onair)}.msg.ok{color:var(--ok)}
+  a{color:#4C8DFF}
+  @media (max-width:640px){
+    .bar{flex-direction:column;align-items:stretch}
+    .fld{min-width:0}
+    .go{width:100%;padding:16px}
+    h1{font-size:13px}
+  }
+
+  html,body{height:100%;overflow:hidden}
+  #prev{position:fixed;inset:0;width:100%;height:100%;object-fit:cover}
+  .gearbtn{position:fixed;top:14px;right:14px;z-index:6;width:44px;height:44px;border-radius:50%;
+    background:rgba(20,25,34,.8);border:1px solid var(--line);color:var(--text);font-size:20px;cursor:pointer}
+  .scrim{position:fixed;inset:0;z-index:8;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.2s}
+  body.panel .scrim{opacity:1;pointer-events:auto}
+  .oc{position:fixed;left:0;right:0;bottom:0;z-index:9;background:var(--surface);border-top:1px solid var(--line);
+    border-radius:20px 20px 0 0;padding:16px;transform:translateY(110%);transition:transform .26s}
+  body.panel .oc{transform:translateY(0)}
+  @media(min-width:900px){.oc{left:50%;right:auto;width:440px;border-radius:16px;bottom:20px;transform:translate(-50%,140%)}
+    body.panel .oc{transform:translate(-50%,0)}#prev{object-fit:contain}}
+  body.rot180 #prev{transform:rotate(180deg)}
+  #rotBtn{width:100%;padding:12px;margin-top:8px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2,#1E2530);color:var(--text,#E8ECF3);font:inherit;font-size:14px;cursor:pointer}
+</style>
+
+<h1><span class="dot"></span> Studio · Go Live</h1>
+<div class="stage"><video id="prev" autoplay muted playsinline></video><span class="live-tag"><span class="p"></span>LIVE</span></div>
+<button class="gearbtn" onclick="document.body.classList.toggle('panel')">⚙</button>
+<div class="scrim" onclick="document.body.classList.remove('panel')"></div>
+<div class="oc"><div class="bar">
+  <div class="fld"><label>Camera</label><select id="cam"></select></div>
+  <div class="fld"><label>Microphone</label><select id="mic"></select></div>
+  <button class="go" id="go">Go Live</button>
+<button id="rotBtn" onclick="document.body.classList.toggle('rot180')">↻ Rotate 180°</button>
+</div>
+<div class="msg" id="msg">Checking sign-in…</div></div>
+
+<script>
+const WHIP_URL="/live/whip", $=s=>document.querySelector(s);
+let stream=null, pc=null, live=false;
+
+async function guard(){
+  try{ const d=await (await fetch("/studio/api/me.php",{credentials:"same-origin"})).json();
+    if(!d.ok){ blocked(); return false; } return true;
+  }catch(e){ blocked(); return false; }
+}
+function blocked(){ $("#msg").className="msg err";
+  $("#msg").innerHTML='Please <a href="/studio/">log in</a> first, then come back here.'; $("#go").disabled=true; }
+
+async function initDevices(){
+  if(!(await guard())) return;
+  try{
+    const tmp=await navigator.mediaDevices.getUserMedia({video:true,audio:true});
+    tmp.getTracks().forEach(t=>t.stop());
+    const devs=await navigator.mediaDevices.enumerateDevices();
+    const cam=$("#cam"), mic=$("#mic"); cam.innerHTML=""; mic.innerHTML="";
+    devs.filter(d=>d.kind==="videoinput").forEach((d,i)=>cam.add(new Option(d.label||("Camera "+(i+1)),d.deviceId)));
+    devs.filter(d=>d.kind==="audioinput").forEach((d,i)=>mic.add(new Option(d.label||("Microphone "+(i+1)),d.deviceId)));
+    await preview();
+    $("#msg").className="msg"; $("#msg").textContent="Pick your camera and microphone, then tap Go Live.";
+  }catch(e){ $("#msg").className="msg err"; $("#msg").textContent="Camera/microphone permission is required: "+e.message; }
+}
+async function preview(){
+  if(stream) stream.getTracks().forEach(t=>t.stop());
+  stream=await navigator.mediaDevices.getUserMedia({
+    video:{deviceId:$("#cam").value?{exact:$("#cam").value}:undefined,width:{ideal:1920},height:{ideal:1080},frameRate:{ideal:30}},
+    audio:{deviceId:$("#mic").value?{exact:$("#mic").value}:undefined}});
+  $("#prev").srcObject=stream;
+}
+$("#cam").addEventListener("change",preview);
+$("#mic").addEventListener("change",preview);
+
+async function goLive(){
+  $("#msg").className="msg"; $("#msg").textContent="Connecting…";
+  pc=new RTCPeerConnection({iceServers:[{urls:"stun:stun.l.google.com:19302"}]});
+  stream.getTracks().forEach(t=>pc.addTrack(t,stream));
+  /* Let the browser negotiate its natural video codec (VP8) with MediaMTX; the
+     server-side ffmpeg bridge transcodes to H264 for Owncast. Forcing H264 here
+     caused MediaMTX to drop the video track (audio-only reached Owncast). */
+  const o=await pc.createOffer(); await pc.setLocalDescription(o);
+  await new Promise(r=>{ if(pc.iceGatheringState==="complete")return r();
+    const t=setTimeout(r,2000); pc.addEventListener("icegatheringstatechange",()=>{ if(pc.iceGatheringState==="complete"){clearTimeout(t);r();} }); });
+  try{
+    const res=await fetch(WHIP_URL,{method:"POST",headers:{"Content-Type":"application/sdp"},body:pc.localDescription.sdp,credentials:"same-origin"});
+    if(res.status===401){ $("#msg").className="msg err"; $("#msg").innerHTML='Session expired — <a href="/studio/">log in</a> again.'; pc.close(); pc=null; return; }
+    if(!res.ok) throw new Error("server "+res.status);
+    await pc.setRemoteDescription({type:"answer",sdp:await res.text()});
+    pc.addEventListener("connectionstatechange",()=>{
+      if(pc.connectionState==="connected"){ live=true; document.body.classList.add("live");
+        $("#go").textContent="End broadcast"; $("#go").classList.add("stop"); $("#msg").className="msg ok"; $("#msg").textContent="You are live."; setTimeout(()=>document.body.classList.remove("panel"),900); }
+      if(["failed","disconnected"].includes(pc.connectionState)&&live){ stop(); } });
+  }catch(e){ $("#msg").className="msg err"; $("#msg").textContent="Could not connect: "+e.message; if(pc){pc.close();pc=null;} }
+}
+function stop(){ if(pc){pc.close();pc=null;} live=false; document.body.classList.remove("live");
+  $("#go").textContent="Go Live"; $("#go").classList.remove("stop"); $("#msg").className="msg"; $("#msg").textContent="Stopped."; }
+$("#go").addEventListener("click",()=>{ if(live) stop(); else goLive(); });
+initDevices();
+</script>

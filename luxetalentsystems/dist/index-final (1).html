@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Luxe Talent — Webcam Talent Management</title>
+<meta name="description" content="Register to become a webcam model. Complete the form. All fields are required.">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0d14;color:#e8eaf0;font-family:'DM Sans',system-ui,sans-serif;min-height:100vh}
+
+/* ── Top Nav ── */
+.lux-nav{position:sticky;top:0;z-index:1000;background:rgba(10,13,20,.95);backdrop-filter:blur(16px);border-bottom:1px solid rgba(212,168,48,.12);padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between}
+.lux-nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.lux-nav-logo{width:34px;height:34px;background:linear-gradient(135deg,#d4a830,#e8bf44);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:#0a0d14}
+.lux-nav-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:#e8eaf0;letter-spacing:.02em}
+.lux-nav-title span{color:#d4a830}
+.lux-nav-right{display:flex;align-items:center;gap:16px}
+.lux-nav-link{font-size:12px;font-weight:600;color:#6a6f88;text-decoration:none;letter-spacing:.04em;text-transform:uppercase;transition:color .15s}
+.lux-nav-link:hover{color:#e8eaf0}
+
+/* ── Login Button + Dropdown ── */
+.login-wrap{position:relative}
+.login-btn{padding:8px 20px;background:transparent;border:1.5px solid #d4a830;color:#d4a830;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;letter-spacing:.03em}
+.login-btn:hover,.login-btn.open{background:#d4a830;color:#0a0d14}
+.login-dd{display:none;position:absolute;top:calc(100% + 10px);right:0;width:300px;background:#111622;border:1px solid #1e2330;border-radius:12px;padding:20px;box-shadow:0 16px 48px rgba(0,0,0,.6);z-index:1001}
+.login-dd.show{display:block;animation:ddIn .15s ease}
+@keyframes ddIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.login-dd::before{content:'';position:absolute;top:-6px;right:22px;width:12px;height:12px;background:#111622;border:1px solid #1e2330;border-right:none;border-bottom:none;transform:rotate(45deg)}
+.dd-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:#d4a830;margin-bottom:14px;text-align:center}
+.dd-field{margin-bottom:10px}
+.dd-field label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:#6a6f88;margin-bottom:4px}
+.dd-field input{width:100%;background:#0a0d14;border:1px solid #1e2330;border-radius:8px;padding:10px 12px;color:#e8eaf0;font-size:13px;font-family:inherit;outline:none}
+.dd-field input:focus{border-color:#d4a830}
+.dd-submit{width:100%;padding:10px;background:#d4a830;color:#0a0d14;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;transition:background .15s}
+.dd-submit:hover{background:#e8bf44}
+.dd-submit:disabled{opacity:.5;cursor:not-allowed}
+.dd-error{font-size:12px;color:#f87171;margin-top:8px;min-height:16px;text-align:center}
+.dd-forgot{display:block;text-align:center;font-size:11px;color:#6a6f88;margin-top:10px;text-decoration:none}
+.dd-forgot:hover{color:#d4a830}
+
+/* ── Hero ── */
+.hero{text-align:center;padding:50px 20px 30px;position:relative}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(212,168,48,.06) 0%,transparent 70%);pointer-events:none}
+.hero h1{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;color:#e8eaf0;margin-bottom:8px;position:relative}
+.hero h1 span{color:#d4a830}
+.hero p{font-size:14px;color:#6a6f88;max-width:500px;margin:0 auto;line-height:1.7}
+.hero-bar{width:80px;height:3px;background:linear-gradient(to right,#f97316,#d4a830,#f59e0b);margin:16px auto 0;border-radius:4px}
+
+/* ── Mobile nav ── */
+.mobile-menu{display:none}
+@media(max-width:640px){
+  .lux-nav-link{display:none}
+  .mobile-menu{display:block}
+  .lux-nav-title{font-size:15px}
+  .login-dd{right:-20px;width:calc(100vw - 40px);max-width:320px}
+  .hero h1{font-size:24px}
+}
+
+/* ── Google Translate ── */
+#google_translate_element{position:absolute;top:8px;left:10px;z-index:100}
+</style>
+
+<!-- Registration form styles (same as current) -->
+<style>
+.lux-reg{max-width:640px;margin:0 auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.lux-reg .info-box{background:rgba(212,168,48,.06);border:1px solid rgba(212,168,48,.2);border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:12px;color:#c0c4d0}
+.lux-reg .info-box p{margin:0 0 6px}.lux-reg .info-box p:last-child{margin-bottom:0}
+.lux-reg .tag-new{color:#d4a830;font-size:11px;font-weight:600;letter-spacing:.05em}
+.lux-reg .lux-card{background:#1a1f2e;border:1px solid #2a2f3e;border-radius:14px;padding:22px}
+.lux-reg .pills{display:flex;gap:6px;justify-content:center;margin-bottom:12px;flex-wrap:wrap}
+.lux-reg .pill{padding:4px 10px;border-radius:999px;background:#1a1f2e;border:1px solid #2a2f3e;font-size:11px;color:#8a8fa8;cursor:default}
+.lux-reg .pill.done{background:rgba(74,222,128,.08);border-color:rgba(74,222,128,.4);color:#4ade80}
+.lux-reg .pill.active{background:rgba(212,168,48,.12);border-color:#d4a830;color:#d4a830;font-weight:600}
+.lux-reg .step{display:none}.lux-reg .step.active{display:block}
+.lux-reg .step-title{font-size:18px;font-weight:600;color:#d4a830;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #2a2f3e}
+.lux-reg .warn{background:rgba(212,168,48,.08);border-left:3px solid #d4a830;padding:10px 12px;border-radius:4px;font-size:12px;color:#c0c4d0;margin-bottom:14px}
+.lux-reg .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lux-reg .field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.lux-reg .span2{grid-column:1/-1}
+.lux-reg .field label{font-size:11px;color:#c0c4d0;font-weight:500;text-transform:uppercase;letter-spacing:.03em}
+.lux-reg .gold{color:#d4a830}
+.lux-reg input[type=text],.lux-reg input[type=email],.lux-reg input[type=tel],.lux-reg input[type=password],.lux-reg input[type=number],.lux-reg input[type=date],.lux-reg select,.lux-reg textarea{background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-family:inherit;font-size:13px;width:100%}
+.lux-reg input:focus,.lux-reg select:focus,.lux-reg textarea:focus{outline:none;border-color:#d4a830}
+.lux-reg textarea{min-height:70px;resize:vertical}
+.lux-reg input[type=date]{color-scheme:dark}
+.lux-reg .chk-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 11px;background:#0e1117;border:1px solid #2a2f3e;border-radius:999px;font-size:12px;cursor:pointer;color:#c0c4d0;user-select:none}
+.lux-reg .chk-pill input{accent-color:#d4a830;margin:0}
+.lux-reg .chk-pill.on{background:rgba(212,168,48,.12);border-color:#d4a830;color:#d4a830}
+.lux-reg .pw-block{background:rgba(212,168,48,.04);border:1px solid rgba(212,168,48,.2);border-radius:10px;padding:14px}
+.lux-reg .pw-header{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#d4a830;margin-bottom:10px}
+.lux-reg .pw-header svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+.lux-reg .pw-hint{font-size:11px;color:#8a8fa8;margin-top:8px}
+.lux-reg .drop-zone{border:2px dashed #2a2f3e;border-radius:10px;padding:20px;text-align:center;cursor:pointer;background:#0e1117;transition:border-color .15s,background .15s}
+.lux-reg .drop-zone:hover{border-color:#d4a830;background:rgba(212,168,48,.04)}
+.lux-reg .drop-zone svg{width:24px;height:24px;fill:none;stroke:#8a8fa8;stroke-width:2;display:block;margin:0 auto 6px}
+.lux-reg .drop-zone p{margin:0;font-size:12px;color:#8a8fa8}
+.lux-reg .drop-zone .hl{color:#d4a830;font-weight:600}
+.lux-reg .drop-zone.filled{border-color:#4ade80;background:rgba(74,222,128,.05);border-style:solid}
+.lux-reg .drop-zone.filled svg{stroke:#4ade80}
+.lux-reg .drop-zone .file-count{color:#4ade80;font-weight:600;margin-left:4px}
+.lux-reg .consent-box{background:rgba(212,168,48,.04);border:1px solid rgba(212,168,48,.2);border-radius:10px;padding:14px}
+.lux-reg .consent-box .hdr{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.lux-reg .consent-box .hdr span{font-size:13px;color:#e8eaf0;font-weight:600}
+.lux-reg .consent-box .read-btn{background:transparent;border:1px solid #d4a830;color:#d4a830;border-radius:6px;padding:6px 14px;font-size:12px;cursor:pointer}
+.lux-reg .consent-box .desc{font-size:11px;color:#8a8fa8;margin-top:8px}
+.lux-reg .consent-box .signed-ok{display:none;margin-top:8px;color:#4ade80;font-size:12px;font-weight:600}
+.lux-reg .consent-box.signed .signed-ok{display:block}
+.lux-reg .err-msg{color:#f87171;font-size:13px;margin-top:12px;min-height:18px}
+.lux-reg .nav-row{display:flex;align-items:center;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid #2a2f3e}
+.lux-reg .nav-row .spacer{flex:1}
+.lux-reg .btn-prev,.lux-reg .btn-next{padding:10px 22px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:600;border:none;font-family:inherit}
+.lux-reg .btn-prev{background:transparent;border:1px solid #2a2f3e;color:#c0c4d0}
+.lux-reg .btn-prev:hover{border-color:#d4a830;color:#d4a830}
+.lux-reg .btn-next{background:#d4a830;color:#0e1117}
+.lux-reg .btn-next:hover{background:#e8bf44}
+.lux-reg .btn-next:disabled{opacity:.5;cursor:not-allowed}
+.lux-reg .progress-wrap{margin-top:14px}
+.lux-reg .progress-label{font-size:11px;color:#8a8fa8;text-align:center;margin-bottom:4px}
+.lux-reg .progress-bar{height:4px;background:#2a2f3e;border-radius:999px;overflow:hidden}
+.lux-reg .progress-fill{height:100%;background:#d4a830;border-radius:999px;transition:width .3s}
+.lux-consent-bg{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.88);overflow-y:auto;padding:20px}
+.lux-consent-bg.open{display:block}
+.lux-consent{max-width:660px;margin:20px auto;background:#1a1f2e;border:1px solid #2a2f3e;border-radius:16px;padding:28px;position:relative}
+.lux-consent .x{position:absolute;top:12px;right:16px;background:transparent;border:none;color:#8a8fa8;font-size:22px;cursor:pointer}
+.lux-consent h2{font-size:15px;font-weight:700;color:#d4a830;text-align:center;margin-bottom:4px}
+.lux-consent .sub{text-align:center;font-size:11px;color:#8a8fa8;margin-bottom:14px}
+.lux-consent .body{font-size:12px;color:#c0c4d0;line-height:1.75;max-height:300px;overflow-y:auto;border:1px solid #2a2f3e;border-radius:8px;padding:12px;margin-bottom:16px}
+.lux-consent .body p{margin:0 0 8px}
+.lux-consent .accepted-by{border-top:1px solid #2a2f3e;padding-top:12px;margin-bottom:12px;font-size:12px;color:#e8eaf0;font-weight:600}
+.lux-consent .sig-wrap{position:relative;border:1px solid #d4a830;border-radius:8px;background:#ffffff}
+.lux-consent canvas{display:block;width:100%;height:120px;border-radius:8px;cursor:crosshair;touch-action:none}
+.lux-consent .clear-btn{position:absolute;top:6px;right:8px;background:transparent;border:1px solid #2a2f3e;color:#8a8fa8;font-size:11px;border-radius:4px;padding:2px 8px;cursor:pointer}
+.lux-consent .sig-hint{font-size:10px;color:#8a8fa8;margin:4px 0 0}
+/* Task 1 additions */
+.luxe-hp{position:absolute!important;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;opacity:0}
+.lux-consent .sig-colors{display:flex;align-items:center;gap:8px;margin-top:8px}
+.lux-consent .sig-colors>span{font-size:11px;color:#8a8fa8}
+.lux-consent .sig-sw{font-size:12px;color:#c0c4d0;background:#161a23;border:1px solid #2a2f3e;border-radius:6px;padding:4px 12px;cursor:pointer}
+.lux-consent .sig-sw.active{border-color:#d4a830;color:#e8eaf0;box-shadow:inset 0 0 0 1px #d4a830}
+.luxe-dl-btn{display:inline-block;margin-top:14px;font-size:13px;font-weight:700;color:#000!important;background:#d4a830;border-radius:8px;padding:10px 18px;text-decoration:none}
+.luxe-dl-btn:hover{background:#e6bd47}
+.lux-consent .footer-info{font-size:12px;color:#8a8fa8;line-height:2;margin:12px 0 14px}
+.lux-consent .accept-btn{width:100%;padding:12px;background:#d4a830;color:#0e1117;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer}
+.lux-consent .m-err{color:#f87171;font-size:12px;text-align:center;margin-top:8px;display:none}
+.lux-reg #scheduleSection{display:none}
+.lux-reg .sh{font-size:16px;font-weight:600;color:#d4a830;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.lux-reg .sh .wk{display:flex;align-items:center;gap:6px}
+.lux-reg .sh .wb{background:transparent;border:1px solid #2a2f3e;color:#c0c4d0;border-radius:5px;padding:3px 8px;font-size:11px;cursor:pointer;font-family:inherit}
+.lux-reg .sh .wb:hover{border-color:#d4a830;color:#d4a830}
+.lux-reg .sh .wl{font-size:13px;color:#e8eaf0;font-weight:600;min-width:60px;text-align:center}
+.lux-reg .stbl{width:100%;border-collapse:collapse;font-size:12px}
+.lux-reg .stbl th{background:#0e1117;color:#8a8fa8;font-weight:500;text-transform:uppercase;font-size:9px;letter-spacing:.04em;padding:5px 6px;text-align:left;border-bottom:1px solid #2a2f3e}
+.lux-reg .stbl td{padding:4px 6px;border-bottom:1px solid rgba(42,47,62,.4);color:#c0c4d0;vertical-align:middle}
+.lux-reg .stbl tr.on td{background:rgba(74,222,128,.04)}
+.lux-reg .stbl .day-tog{width:16px;height:16px;accent-color:#d4a830;cursor:pointer}
+.lux-reg .stbl .dn{font-weight:600;color:#e8eaf0;white-space:nowrap}
+.lux-reg .stbl input[type=time]{background:#1a1f2e;border:1px solid #2a2f3e;border-radius:4px;padding:3px 4px;color:#e8eaf0;font-size:11px;width:80px;color-scheme:dark}
+.lux-reg .stbl input[type=time]:focus{border-color:#d4a830;outline:none}
+.lux-reg .stbl input[type=time]:disabled{opacity:.3}
+.lux-reg .stbl .hrs{font-size:11px;color:#4ade80;font-weight:600;min-width:44px}
+.lux-reg .stbl .hrs.off{color:#8a8fa8;font-weight:400}
+.lux-reg .sfoot{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.lux-reg .save-sched{background:#d4a830;color:#0e1117;border:none;border-radius:6px;padding:7px 18px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit}
+.lux-reg .save-sched:hover{background:#e8bf44}
+.lux-reg .sched-msg{font-size:12px;min-height:16px}
+.lux-reg .sched-msg.ok{color:#4ade80}.lux-reg .sched-msg.fail{color:#f87171}
+@media(max-width:640px){.lux-reg .grid2{grid-template-columns:1fr}.lux-reg .stbl input[type=time]{width:68px}}
+.gradient-bar{width:100%;height:3px;border-radius:4px;background:linear-gradient(to right,#f97316,#d4a830,#f59e0b)}
+/* KB Widget */
+.kb-widget{background:#131720;border:1px solid #1e2330;border-radius:14px;overflow:hidden;margin-bottom:20px}
+.kb-widget-inner{display:flex;height:420px}
+.kb-left{width:140px;background:#0e1117;border-right:1px solid #1e2330;display:flex;flex-direction:column;padding:10px 8px;gap:6px;flex-shrink:0}
+.kb-left-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4ade80;margin-bottom:4px;padding:0 4px}
+.kb-topic{padding:9px 10px;background:rgba(212,168,48,.06);border:1px solid rgba(212,168,48,.15);border-radius:8px;font-size:12px;color:#d4a830;cursor:pointer;text-align:center;font-weight:600;transition:all .15s}
+.kb-topic:hover{background:rgba(212,168,48,.15);border-color:#d4a830}
+.kb-topic.active{background:#d4a830;color:#0e1117}
+.kb-right{flex:1;display:flex;flex-direction:column;min-width:0}
+.kb-results{flex:1;overflow-y:auto;padding:14px;font-size:13px;color:#c0c4d0;line-height:1.7}
+.kb-results .kb-welcome{color:#8a8fa8;text-align:center;padding-top:40px;font-size:13px}
+.kb-results .kb-welcome svg{width:40px;height:40px;stroke:#3a3f4e;fill:none;stroke-width:1.5;display:block;margin:0 auto 10px}
+.kb-results .kb-answer{background:rgba(74,222,128,.04);border:1px solid rgba(74,222,128,.12);border-radius:10px;padding:12px;margin-bottom:10px}
+.kb-results .kb-answer-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#4ade80;margin-bottom:6px}
+.kb-results .kb-answer-text{white-space:pre-wrap;font-size:13px;line-height:1.7;color:#e8eaf0}
+.kb-results .kb-q{color:#d4a830;font-weight:600;margin-bottom:8px;font-size:13px}
+.kb-input-wrap{border-top:1px solid #1e2330;padding:8px 10px;display:flex;gap:6px;align-items:flex-end}
+.kb-input-wrap textarea{flex:1;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:8px 10px;color:#e8eaf0;font-size:13px;font-family:inherit;resize:none;outline:none;line-height:1.4}
+.kb-input-wrap textarea:focus{border-color:#d4a830}
+.kb-send{width:36px;height:36px;background:#d4a830;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.kb-send svg{width:16px;height:16px;stroke:#0e1117;fill:none;stroke-width:2.5}
+.kb-tabs{display:flex;border-top:1px solid #1e2330}
+.kb-tab{flex:1;padding:10px;font-size:13px;font-weight:700;border:none;cursor:pointer;text-align:center;font-family:inherit;transition:all .15s}
+.kb-tab.kb-active{background:#4ade80;color:#0e1117}
+.kb-tab.kb-chat-btn{background:rgba(212,168,48,.15);color:#d4a830;cursor:pointer}
+.kb-tab.kb-chat-btn.active{background:#d4a830;color:#0e1117}
+.vc-msg{max-width:80%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;word-break:break-word}
+.vc-msg.visitor{align-self:flex-end;background:#d4a830;color:#0e1117;border-bottom-right-radius:4px}
+.vc-msg.agent{align-self:flex-start;background:#1a2744;color:#60a5fa;border-bottom-left-radius:4px;border:1px solid rgba(96,165,250,0.15)}
+.vc-msg.system{align-self:center;background:rgba(212,168,48,0.06);color:#d4a830;font-size:12px;font-style:italic;border-radius:8px}
+.vc-msg .vc-time{font-size:10px;opacity:.5;margin-top:3px}
+@media(max-width:640px){.kb-widget-inner{flex-direction:column;height:auto}.kb-left{width:100%;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid #1e2330;padding:8px}.kb-left-title{display:none}.kb-topic{flex:1;min-width:70px;padding:6px 4px;font-size:11px}.kb-results{min-height:250px}}
+/* Footer */
+.lux-footer{background:#070a10;border-top:1px solid #1e2330;padding:30px 0 20px;margin-top:40px;font-size:13px;color:#6a6f88}
+.lux-footer h5{color:#d4a830;font-size:14px;font-weight:600;margin-bottom:10px}
+.lux-footer a{color:#8a8fa8;text-decoration:none}
+.lux-footer a:hover{color:#d4a830}
+.lux-footer ul{list-style:none;padding:0}
+.lux-footer li{margin-bottom:6px}
+.lux-footer button{background:none;border:none;color:#8a8fa8;cursor:pointer;font-size:13px;padding:0}
+.lux-footer button:hover{color:#d4a830}
+a:link {
+  color: #61F527;
+}
+
+/* visited link */
+a:visited {
+  color: #61F527;
+}
+
+/* ===== AI Registration Assistant ===== */
+#regAssistant{background:#11151c;border:1px solid rgba(212,168,48,.2);border-radius:14px;
+  overflow:hidden;margin-bottom:16px}
+#regAssistant .ra-bar{display:flex;align-items:center;gap:10px;padding:13px 16px;
+  border-bottom:1px solid rgba(212,168,48,.12);background:rgba(212,168,48,.03)}
+#regAssistant .ra-dot{width:32px;height:32px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,#d4a830,#e8bf44);display:flex;align-items:center;justify-content:center}
+#regAssistant .ra-dot svg{width:17px;height:17px}
+#regAssistant .ra-bartxt{flex:1;min-width:0}
+#regAssistant .ra-bartxt b{font-size:14px;display:block;color:#e8eaf0}
+#regAssistant .ra-bartxt small{font-size:11px;color:#4ade80}
+#regAssistant .ra-restart{background:transparent;border:1px solid #2a2f3e;color:#8a8fa8;
+  font-size:11px;border-radius:6px;padding:5px 10px;cursor:pointer;font-family:inherit}
+#regAssistant .ra-restart:hover{border-color:#d4a830;color:#d4a830}
+#regAssistant .ra-body{padding:20px 16px 22px}
+#regAssistant .prog{height:4px;background:#161a23;border-radius:3px;overflow:hidden}
+#regAssistant .prog>i{display:block;height:100%;width:0;background:linear-gradient(90deg,#d4a830,#e8bf44);
+  transition:width .3s ease}
+#regAssistant .prog-lbl{font-size:11px;color:#8a8fa8;margin:4px 0 16px}
+#regAssistant .msg{display:flex;gap:10px;margin-bottom:16px}
+#regAssistant .msg .av{width:28px;height:28px;border-radius:50%;flex:none;
+  background:linear-gradient(135deg,#d4a830,#e8bf44);display:flex;align-items:center;justify-content:center}
+#regAssistant .msg .av svg{width:14px;height:14px}
+#regAssistant .bubble{background:rgba(212,168,48,.06);border:1px solid rgba(212,168,48,.18);
+  border-radius:4px 12px 12px 12px;padding:12px 14px;font-size:14px;line-height:1.6;color:#e8eaf0}
+#regAssistant h2.q{font-size:15px;font-weight:600;line-height:1.5;margin:0}
+#regAssistant .choice{width:100%;text-align:left;background:#161a23;border:1px solid #2a2f3e;
+  color:#e8eaf0;border-radius:10px;padding:14px 16px;font-size:14px;font-weight:500;cursor:pointer;
+  font-family:inherit;margin-top:10px;display:flex;align-items:center;justify-content:space-between;
+  gap:10px;transition:border-color .15s,background .15s}
+#regAssistant .choice:hover{border-color:#d4a830;background:#1b2030}
+#regAssistant .choice .sub{font-size:11px;color:#d4a830;font-weight:600}
+#regAssistant .choice-row{display:flex;gap:10px;margin-top:10px}
+#regAssistant .choice-row .choice{flex:1;width:auto;margin-top:0;justify-content:center;text-align:center}
+#regAssistant .opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+#regAssistant .opt{background:#161a23;border:1px solid #2a2f3e;color:#c0c4d0;border-radius:8px;
+  padding:9px 14px;font-size:13px;cursor:pointer;font-family:inherit}
+#regAssistant .opt:hover{border-color:#d4a830;color:#e8eaf0}
+#regAssistant .opt.sel{border-color:#d4a830;color:#e8eaf0;box-shadow:inset 0 0 0 1px #d4a830;background:#1b2030}
+#regAssistant .field{margin-top:4px}
+#regAssistant .field textarea,#regAssistant .field input{width:100%;background:#161a23;
+  border:1px solid #2a2f3e;color:#e8eaf0;border-radius:9px;padding:11px 13px;font-size:14px;
+  font-family:inherit;resize:vertical}
+#regAssistant .field textarea:focus,#regAssistant .field input:focus{outline:none;border-color:#d4a830}
+#regAssistant .field textarea{min-height:78px;line-height:1.5}
+#regAssistant .hint{font-size:11px;color:#8a8fa8;margin-top:7px}
+#regAssistant .err{font-size:12px;color:#f87171;margin-top:8px;display:none}
+#regAssistant .nav{display:flex;align-items:center;gap:10px;margin-top:20px}
+#regAssistant .btn{font-family:inherit;font-size:14px;font-weight:600;border-radius:9px;
+  padding:11px 20px;cursor:pointer;border:1px solid #2a2f3e}
+#regAssistant .btn-ghost{background:transparent;color:#c0c4d0}
+#regAssistant .btn-ghost:hover{border-color:#d4a830;color:#d4a830}
+#regAssistant .btn-ghost:disabled{opacity:.35;cursor:not-allowed}
+#regAssistant .btn-gold{background:#d4a830;color:#0e1117;border-color:#d4a830;margin-left:auto}
+#regAssistant .btn-gold:hover{background:#e8bf44}
+#regAssistant .skip{background:none;border:none;color:#8a8fa8;font-size:12px;cursor:pointer;
+  font-family:inherit;text-decoration:underline;margin-top:12px}
+#regAssistant .skip:hover{color:#d4a830}
+#regAssistant .plat{background:#161a23;border:1px solid #2a2f3e;border-radius:10px;
+  padding:13px 15px;margin-top:10px}
+#regAssistant .plat b{color:#d4a830;font-size:13px;display:block;margin-bottom:4px}
+#regAssistant .plat p{font-size:13px;color:#c0c4d0;line-height:1.55;margin:0}
+#regAssistant .divider{height:1px;background:#2a2f3e;margin:20px 0 4px}
+#regAssistant .kb-link{margin-top:18px;text-align:center}
+#regAssistant .kb-link button{background:none;border:none;color:#8a8fa8;font-size:12px;
+  cursor:pointer;font-family:inherit}
+#regAssistant .kb-link button:hover{color:#d4a830}
+#regAssistant .kb-panel{margin-top:14px;border:1px solid #2a2f3e;border-radius:10px;
+  background:#161a23;overflow:hidden;display:none}
+#regAssistant .kb-panel.open{display:block}
+#regAssistant .kb-head{padding:11px 14px;font-size:12px;color:#d4a830;font-weight:600;
+  border-bottom:1px solid #2a2f3e;display:flex;justify-content:space-between}
+#regAssistant .kb-head span{cursor:pointer;color:#8a8fa8}
+#regAssistant .faq{border-bottom:1px solid #2a2f3e}
+#regAssistant .faq:last-child{border-bottom:none}
+#regAssistant .faq q{display:block;padding:11px 14px;font-size:13px;cursor:pointer;quotes:none;color:#e8eaf0}
+#regAssistant .faq q:hover{color:#d4a830}
+#regAssistant .faq p{display:none;padding:0 14px 12px;font-size:12px;color:#c0c4d0;line-height:1.55;margin:0}
+#regAssistant .faq.open p{display:block}
+#regAssistant .recap{margin-top:14px;border:1px solid #2a2f3e;border-radius:10px;overflow:hidden}
+#regAssistant .recap>summary{padding:11px 14px;font-size:13px;color:#d4a830;cursor:pointer;list-style:none}
+#regAssistant .recap>summary::-webkit-details-marker{display:none}
+#regAssistant .recap table{width:100%;font-size:12px;border-top:1px solid #2a2f3e}
+#regAssistant .recap td{padding:7px 14px;border-bottom:1px solid rgba(42,47,62,.5);vertical-align:top;color:#e8eaf0}
+#regAssistant .recap td:first-child{color:#8a8fa8;width:42%}
+#regAssistant .step-list{counter-reset:s;margin:6px 0 0;padding:0}
+#regAssistant .step-list li{list-style:none;display:flex;gap:11px;padding:9px 0;font-size:13px;
+  color:#c0c4d0;align-items:flex-start}
+#regAssistant .step-list li::before{counter-increment:s;content:counter(s);flex:none;width:22px;
+  height:22px;border-radius:50%;background:rgba(212,168,48,.12);color:#d4a830;font-size:11px;
+  font-weight:700;display:flex;align-items:center;justify-content:center}
+</style>
+
+<!-- ════════════════════════════════════════════════════════════════════
+     SEO — Organization + JobPosting structured data
+     Auto-installed into /index.html by install.sh
+     Edit the description / keywords / role title below as needed.
+     ════════════════════════════════════════════════════════════════════ -->
+
+<!-- Primary meta -->
+<meta name="description" content="Luxe Model Collective is hiring webcam models and video content creators. Work from home, set your own schedule, earn industry-leading payouts. Apply now.">
+<meta name="keywords" content="webcam model jobs, adult content creator, work from home, content creator hiring, remote modeling, studio representation, online performer">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://luxetalentsystems.com/">
+
+<!-- Open Graph (for social shares) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Luxe Model Collective">
+<meta property="og:title" content="Luxe Model Collective — Webcam Model & Content Creator Studio">
+<meta property="og:description" content="Join Luxe Model Collective. Hiring webcam models and video content creators. Work from home, earn industry-leading payouts.">
+<meta property="og:image" content="https://luxetalentsystems.com/images/LUXELogo12.png">
+<meta property="og:url" content="https://luxetalentsystems.com/">
+
+<!-- Organization schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Luxe Model Collective",
+  "url": "https://luxetalentsystems.com/",
+  "logo": "https://luxetalentsystems.com/images/LUXELogo12.png",
+  "email": "support@luxetalentsystems.com",
+  "brand": {
+    "@type": "Brand",
+    "name": "Luxe Model Collective"
+  },
+  "parentOrganization": {
+    "@type": "Organization",
+    "name": "Luxe Model Collective"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "100 M Street SE",
+    "addressLocality": "Washington",
+    "addressRegion": "DC",
+    "addressCountry": "US"
+  },
+  "areaServed": {
+    "@type": "Place",
+    "name": "Worldwide"
+  },
+  "naics": "711510",
+  "keywords": "webcam model jobs, adult content creator, work from home, content creator hiring, remote modeling, studio representation, online performer"
+}
+</script>
+
+<!-- Job Posting schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "JobPosting",
+  "title": "Webcam Model / Video Content Creator",
+  "description": "<p>Join Luxe Model Collective. We are hiring webcam models and video content creators to work from home on your own schedule.</p><p>What we offer: industry-leading payouts, training and onboarding support, marketing assistance, a professional community, and direct payment via Cash App, Zelle, PayPal, or bank transfer.</p><p>Apply through our online registration form. Immediate openings available.</p>",
+  "datePosted": "2026-06-20",
+  "directApply": true,
+  "employmentType": ["FULL_TIME", "PART_TIME"],
+  "jobImmediateStart": true,
+  "jobLocationType": "TELECOMMUTE",
+  "applicantLocationRequirements": {
+    "@type": "Country",
+    "name": "US"
+  },
+  "eligibilityToWorkRequirement": "Must be at least 18 years of age and authorized to work in the United States.",
+  "applicationContact": {
+    "@type": "ContactPoint",
+    "email": "support@luxetalentsystems.com",
+    "contactType": "Recruiter"
+  },
+  "hiringOrganization": {
+    "@type": "Organization",
+    "name": "Luxe Model Collective",
+    "sameAs": "https://luxetalentsystems.com/",
+    "logo": "https://luxetalentsystems.com/images/LUXELogo12.png"
+  },
+  "jobLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "100 M Street SE",
+      "addressLocality": "Washington",
+      "addressRegion": "DC",
+      "postalCode": "20003",
+      "addressCountry": "US"
+    }
+  }
+}
+</script>
+<!-- ════════════════════════════════════════════════════════════════════ -->
+
+</head>
+<body>
+
+<!-- ═══ Top Nav ═══ -->
+<div class="lux-nav">
+  <a class="lux-nav-brand" href="/">
+    <div class="lux-nav-logo">LT</div>
+    <div class="lux-nav-title">Luxe <span>Talent</span></div>
+  </a>
+  <div class="lux-nav-right">
+    <a class="lux-nav-link" href="https://luxetalentsystems.com" target="_blank">Luxe Model Collective</a>
+    <a class="lux-nav-link" href="#" target="_blank">DivaFans</a>
+    <div class="login-wrap">
+      <button class="login-btn" id="loginToggle" onclick="toggleLogin()">Login</button>
+      <div class="login-dd" id="loginDropdown">
+        <div class="dd-title">Welcome Back</div>
+        <div class="dd-field">
+          <label>Email</label>
+          <input type="email" id="loginEmail" placeholder="your@email.com" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div class="dd-field">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="your password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="dd-submit" id="loginSubmit" onclick="doLogin()">Sign In</button>
+        <div class="dd-error" id="loginError"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Hero ═══ -->
+<div class="hero" id="register">
+  <h1>Online Performer <span>Registration</span></h1>
+  <p>Join the fastest-growing webcam talent collective. Register below, set your schedule, and start earning.</p>
+  <div class="hero-bar"></div>
+</div>
+
+<div id="google_translate_element" style="text-align:center;margin-bottom:10px"></div>
+<script>function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en'},'google_translate_element');}</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+<!-- ═══ Main Content ═══ -->
+<div class="container">
+<div class="row">
+
+<!-- LEFT COLUMN: Registration Form -->
+<div class="col-12 col-md-6">
+<div class="lux-reg">
+  <div class="info-box">
+  <div class="row">
+  <div class="col-12 col-md-4"><div id="introWrap" style="position:relative;display:inline-block;border-radius:8px;overflow:hidden"><img id="introImage" src="/uploads/put_this_image_here.JPG" alt="Luxe Model Collective" style="width:200px;height:auto;border-radius:8px;display:block"></div></div>
+  <div class="col-12 col-md-6"><p style="color:white;font-size: 17px">Welcome to Luxe Model Collective.  Would you like to register as a freelance model or be associated with our studio?</p>
+  <div style="height:30px"></div>
+  <div><img src="/uploads/button1.png" alt="Independent Freelance Model" style="cursor:pointer" onclick="luxeChoose('freelance')"></div>
+  <div><img src="/uploads/button2.png" alt="Associate with Studio" style="cursor:pointer" onclick="luxeChoose('studio')"></div>
+  <div id="luxeStartOver" style="display:none;text-align:right;margin-top:8px"><a href="#" onclick="luxeBackToChoice();return false" style="color:#4ade80;font-size:14px;text-decoration:none">Start Over</a></div></div>
+</div>
+  <div id="luxeLiveImage" style="margin-top:14px;text-align:center"><img src="/uploads/replace-blank.png" alt="Live" style="max-width:100%;border-radius:12px;display:block;margin:0 auto"></div>
+  <div id="luxeFlowContent" style="display:none"></div>
+  
+  
+   <p>
+  <p class="d-inline-flex gap-1">
+  <a data-bs-toggle="collapse" href="#terms" role="button" aria-expanded="false" aria-controls="terms">
+    Studio Terms and Conditions
+  </a>
+</p>
+<div class="collapse" id="terms">
+  <div class="card card-body" data-bs-theme="dark" >
+   <p style="font-size:13px"><strong>By completing this form you give Luxe Model Collective permission to register your account on your behalf. </strong> Your registration must be completed and you go online within 48 hours after approval. The minimun hours for studio representaion is 10 hours per week,  You must upload your committed schedule weekly using the app or by emailing our support.  All videos, photos and content must be approved before uploading. You must coply with the platform's rules and regulations.
+   You may not use any external links to other websites or pages.  You cannot ask any member for thier personal information or cash advances. You cannot give any member your personal information.</p>
+  </div>
+</div>
+  </div>
+
+  <div id="regAssistant">
+    <div class="ra-bar">
+      <div class="ra-dot"><svg viewBox="0 0 24 24" fill="none" stroke="#0e1117" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></svg></div>
+      <div class="ra-bartxt"><b>Luxe Assistant</b><small id="raStatus">Online &mdash; here to help</small></div>
+      <button class="ra-restart" id="raRestart" type="button">Restart</button>
+    </div>
+    <div class="ra-body" id="raBody"></div>
+  </div>
+  <div id="raBackWrap" style="display:none;margin-bottom:10px"><a id="raBackLink" href="#" style="color:#8a8fa8;font-size:13px;text-decoration:none">&larr; Start over &mdash; change applicant type</a></div>
+  <div class="pills" id="pills" style="display:none"></div>
+
+  <div class="lux-card" id="regCard" style="display:none">
+    <div id="formArea">
+      <input type="hidden" id="f_role" value="performer"/>
+
+      <!-- Step 1 -->
+      <div class="step active" data-step="0">
+        <div class="step-title">Step 1: Basic Info</div>
+        <div class="warn">You are registering for Video content creator, Webcam Model or My.Club Creator. You may receive two ID verification emails that are time sensitive. Please reply. Registrations not completed within 48 hours will be deleted.</div>
+        <div class="grid2">
+          <div class="field span2"><label>Recruiter Name *</label><select id="f_recruiterName"><option value="">Select a Recruiter</option><option value="Clarence">Clarence</option></select></div>
+          <div class="field span2"><label>Platforms <span class="gold">*</span></label><div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px" id="platWrap"></div></div>
+          <div class="field"><label>First Name *</label><input type="text" id="f_firstName" autocomplete="given-name"/></div>
+          <div class="field"><label>Middle Name</label><input type="text" id="f_middleName"/></div>
+          <div class="field"><label>Last Name *</label><input type="text" id="f_lastName" autocomplete="family-name"/></div>
+          <div class="field"><label>Email *</label><input type="email" id="f_email" autocomplete="email"/></div>
+          <div class="field span2"><label>Phone *</label><input type="tel" id="f_phone" autocomplete="tel"/></div>
+          <div class="field span2" id="smsOptinWrap">
+            <div style="background:rgba(212,168,48,.04);border:1px solid rgba(212,168,48,.2);border-radius:10px;padding:12px 14px">
+              <p style="font-size:11px;color:#8a8fa8;line-height:1.6;margin:0 0 10px">We will send you text messages about your account. Message and data rates may apply. Message frequency varies. Reply STOP to unsubscribe, HELP for help. <strong>You must choose one:</strong></p>
+              <div style="display:flex;flex-wrap:wrap;gap:16px">
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#e8eaf0;cursor:pointer"><input type="checkbox" id="smsYes" style="width:16px;height:16px"/> Send Text Messages</label>
+                <label style="display:flex;align-items:center;gap:7px;font-size:13px;color:#e8eaf0;cursor:pointer"><input type="checkbox" id="smsNo" style="width:16px;height:16px"/> Do Not Send Text Messages</label>
+              </div>
+            </div>
+          </div>
+          <div class="field span2"><label>Date of Birth *</label><input type="date" id="f_dateOfBirth"/></div>
+          <div class="field span2"><div class="pw-block"><div class="pw-header"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Create your performer portal password</div><div class="grid2"><div class="field"><label class="gold">Password *</label><input type="password" id="f_password" autocomplete="new-password" placeholder="choose a password"/></div><div class="field"><label class="gold">Confirm *</label><input type="password" id="f_confirmPassword" autocomplete="new-password" placeholder="repeat password"/></div></div><div class="pw-hint">You will use this email + password to log into the performer portal.</div></div></div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step" data-step="1">
+        <div class="step-title">Step 2: Stage &amp; Address</div>
+        <div class="warn">If you have a Stripchat account, delete the old account or enter a new email.</div>
+        <div class="grid2">
+          <div class="field"><label>Stage Name *</label><input type="text" id="f_stageName"/></div>
+          <div class="field"><label>Alt Stage Names</label><input type="text" id="f_alternateUsernames" placeholder="comma separated"/></div>
+          <div class="field"><label>Street Address *</label><input type="text" id="f_streetAddress" autocomplete="street-address"/></div>
+          <div class="field"><label>City *</label><input type="text" id="f_city" autocomplete="address-level2"/></div>
+          <div class="field"><label>State / Province *</label><input type="text" id="f_state" autocomplete="address-level1"/></div>
+          <div class="field"><label>Zip / Postal Code *</label><input type="text" id="f_zipCode" autocomplete="postal-code"/></div>
+          <div class="field span2"><label>Country *</label><input type="text" id="f_country" autocomplete="country-name"/></div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step" data-step="2">
+        <div class="step-title">Step 3: Physical</div>
+        <div class="grid2">
+          <div class="field"><label>Display Age</label><input type="number" id="f_displayAge" min="18" max="99"/></div>
+          <div class="field"><label>Primary Language *</label><input type="text" id="f_primaryLanguage" placeholder="English"/></div>
+          <div class="field"><label>Other Languages</label><input type="text" id="f_otherLanguage"/></div>
+          <div class="field"><label>Height *</label><input type="text" id="f_height"/></div>
+          <div class="field"><label>Weight *</label><input type="text" id="f_weight"/></div>
+          <div class="field"><label>Build *</label><select id="f_build"><option value="">Select</option><option>Skinny</option><option>Athletic</option><option>Medium</option><option>BBW</option></select></div>
+          <div class="field"><label>Ethnicity *</label><select id="f_ethnicity"><option value="">Select</option><option>Asian</option><option>Black</option><option>Hispanic</option><option>Indian</option><option>Latin American</option><option>Middle Eastern</option><option>Native American</option><option>White</option></select></div>
+          <div class="field"><label>Eye Color *</label><select id="f_eyeColor"><option value="">Select</option><option>Blue</option><option>Brown</option><option>Black</option><option>Green</option><option>Grey</option><option>Other</option></select></div>
+          <div class="field"><label>Hair Color *</label><select id="f_hairColor"><option value="">Select</option><option>Blonde</option><option>Black</option><option>Brown</option><option>Fire Red</option><option>Auburn</option><option>Orange</option><option>Pink</option></select></div>
+          <div class="field"><label>Hair Length *</label><select id="f_hairLength"><option value="">Select</option><option>Bald</option><option>Crew Cut</option><option>Short</option><option>Shoulder Length</option><option>Long</option></select></div>
+          <div class="field"><label>Breast Size *</label><select id="f_breastSize"><option value="">Select</option><option>Tiny</option><option>Normal</option><option>Big</option><option>Huge</option><option>Male</option></select></div>
+          <div class="field"><label>Butt Size *</label><select id="f_buttSize"><option value="">Select</option><option>Small</option><option>Normal</option><option>Big</option><option>Huge</option><option>Male</option></select></div>
+          <div class="field"><label>Pubic Hair *</label><select id="f_pubicHair"><option value="">Select</option><option>Hairy</option><option>Shaved</option><option>Trimmed</option></select></div>
+          <div class="field"><label>Dress Size *</label><select id="f_dressSize"><option value="">Select</option><option>XS</option><option>Small</option><option>Medium</option><option>Large</option><option>XL</option><option>2XL</option><option>3XL</option></select></div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step" data-step="3">
+        <div class="step-title">Step 4: Preferences</div>
+        <div class="grid2">
+          <div class="field"><label>Orientation *</label><select id="f_orientation"><option value="">Select...</option><option>Straight</option><option>Gay</option><option>Lesbian</option><option>Bisexual</option><option>Trans</option><option>Non-binary</option><option>Other</option></select></div>
+          <div class="field"><label>Sexual Preferences</label><select id="f_sexualPreferences"><option value="">Select</option><option>Bisexual</option><option>Straight</option><option>Lesbian</option></select></div>
+          <div class="field span2"><label>Interested In *</label><select id="f_interestedIn"><option value="">Select...</option><option>Males</option><option>Females</option><option>Both</option></select></div>
+          <div class="field span2"><label>About Me *</label><textarea id="f_aboutMe" placeholder="Tell us about yourself..."></textarea></div>
+          <div class="field span2"><label>What turns you on? *</label><textarea id="f_turnsOn"></textarea></div>
+          <div class="field span2"><label>What turns you off? *</label><textarea id="f_turnsOff"></textarea></div>
+        </div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="step" data-step="4">
+        <div class="step-title">Step 5: Photos &amp; ID</div>
+        <div class="warn">Bring camera close to your face. Then bring ID close without overlapping. Finally, bring ID close to camera. ID must be clear and readable.</div>
+        <div class="grid2">
+          <div class="field span2"><label>Profile Photo *</label><div class="drop-zone" id="dz_profilePhotos"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Tap to select photo or <span class="hl">browse</span> <span class="file-count" id="ct_profilePhotos"></span></p></div><input type="file" id="fi_profilePhotos" accept="image/*" multiple style="display:none"/></div>
+          <div class="field"><label>ID Front *</label><div class="drop-zone" id="dz_idFront"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Tap or <span class="hl">browse</span></p></div><input type="file" id="fi_idFront" accept="image/*" style="display:none"/></div>
+          <div class="field"><label>ID Back</label><div class="drop-zone" id="dz_idBack"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Tap or <span class="hl">browse</span></p></div><input type="file" id="fi_idBack" accept="image/*" style="display:none"/></div>
+          <div class="field span2"><label>Face + ID Photo</label><div class="drop-zone" id="dz_faceAndId"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Tap or <span class="hl">browse</span></p></div><input type="file" id="fi_faceAndId" accept="image/*" style="display:none"/></div>
+        </div>
+      </div>
+
+      <!-- Step 6 -->
+      <div class="step" data-step="5">
+        <div class="step-title">Step 6: More Photos &amp; Consent</div>
+        <div class="grid2">
+          <div class="field span2"><label>Additional Photos <span style="color:#8a8fa8;font-weight:400;text-transform:none">(optional)</span></label><div class="drop-zone" id="dz_morePhotos"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Tap to select or <span class="hl">browse</span> <span class="file-count" id="ct_morePhotos"></span></p></div><input type="file" id="fi_morePhotos" accept="image/*" multiple style="display:none"/></div>
+          <div class="field span2"><div class="consent-box" id="consentBox"><div class="hdr"><span>Photo &amp; Video Consent and Release</span><button type="button" class="read-btn" id="openConsent">Read Document</button></div><p class="desc">You must read and sign this document before submitting.</p><div class="signed-ok">&#10003; Document signed</div></div></div>
+          <div class="luxe-hp" aria-hidden="true"><label>Leave this field empty<input type="text" id="luxe_hp" name="company_website" tabindex="-1" autocomplete="off"></label></div>
+          <input type="hidden" id="luxe_token" name="luxe_token" value="">
+        </div>
+      </div>
+
+      <!-- Step: Teaser Videos (content creators) -->
+      <div class="step" data-step="6">
+        <div class="step-title">Teaser Videos</div>
+        <div class="warn">Upload 1&ndash;3 short teaser videos that showcase your content. MP4 or MOV recommended, 100 MB maximum per video.</div>
+        <div class="grid2">
+          <div class="field span2"><label>Teaser Videos *</label><div class="drop-zone" id="dz_teaserVideos"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><p>Tap to select videos or <span class="hl">browse</span> <span class="file-count" id="ct_teaserVideos"></span></p></div><input type="file" id="fi_teaserVideos" accept="video/*" multiple style="display:none"/></div>
+        </div>
+      </div>
+      <div class="err-msg" id="errMsg"></div>
+      <div class="nav-row"><button class="btn-prev" id="btnPrev" style="display:none">&#8592; Previous</button><span class="spacer"></span><button class="btn-next" id="btnNext">Next &#8594;</button></div>
+    </div>
+  </div>
+
+  <div class="progress-wrap" id="progressWrap" style="display:none">
+    <div class="progress-label" id="progressLabel">Step 1 of 6</div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:16.67%"></div></div>
+  </div>
+
+  <div id="scheduleSection">
+    <div class="lux-card" style="margin-top:16px">
+      <div class="sh"><span>Your Schedule</span><div class="wk"><button class="wb" id="weekPrev">&#9664;</button><span class="wl" id="weekLabel">Week 1</span><button class="wb" id="weekNext">&#9654;</button></div></div>
+      <table class="stbl"><thead><tr><th></th><th>Day</th><th>Start</th><th>End</th><th>Hrs</th></tr></thead><tbody id="schedBody"></tbody></table>
+      <div class="sfoot"><button class="save-sched" id="saveSched">Save</button><div class="sched-msg" id="schedMsg"></div></div>
+    </div>
+  </div>
+
+  <div id="confirmSection" style="display:none">
+    <div class="lux-card" style="margin-top:16px;text-align:center;padding:30px 22px">
+      <div style="width:56px;height:56px;border-radius:50%;background:#4ade80;display:flex;align-items:center;justify-content:center;margin:0 auto 14px"><svg viewBox="0 0 24 24" style="width:28px;height:28px;fill:none;stroke:#0e1117;stroke-width:3"><polyline points="20 6 9 17 4 12"/></svg></div>
+      <h2 style="color:#4ade80;font-size:20px;margin-bottom:12px">Registration Complete!</h2>
+      <p style="color:#c0c4d0;font-size:13px;line-height:1.6;margin-bottom:8px">Your registration was submitted successfully.</p>
+      <p style="color:#c0c4d0;font-size:13px;line-height:1.6;margin-bottom:20px">Visit your <a href="/" style="color:#d4a830;font-weight:600;text-decoration:underline">performer dashboard</a> — click Login at the top right to sign in.</p>
+      <div style="background:#0e1117;border:1px solid #d4a830;border-radius:10px;padding:16px;text-align:left;max-width:380px;margin:0 auto">
+        <div style="font-size:11px;color:#d4a830;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px">Performer Login</div>
+        <div style="font-size:13px;color:#8a8fa8;margin-bottom:6px">Email: <span style="color:#e8eaf0;font-weight:600;font-family:ui-monospace,monospace" id="confirmEmail"></span></div>
+        <div style="font-size:13px;color:#8a8fa8">Password: <span style="color:#e8eaf0;font-weight:600;font-family:ui-monospace,monospace" id="confirmPassword"></span></div>
+      </div>
+      <a id="consentDownloadLink" class="luxe-dl-btn" target="_blank" rel="noopener" style="display:none">Download Signed Consent (PDF)</a>
+    </div>
+  </div>
+</div>
+<div class="gradient-bar"></div>
+</div>
+
+<!-- RIGHT COLUMN: KB Widget + Platform Info -->
+<div class="col-12 col-md-6">
+  <div class="kb-widget">
+    <div class="kb-widget-inner">
+      <div class="kb-left">
+        <div class="kb-left-title">Platforms</div>
+        <div class="kb-topic" onclick="kbSearch('Stripchat')">Stripchat</div>
+        <div class="kb-topic" onclick="kbSearch('Bongacams')">Bongacams</div>
+        <div class="kb-topic" onclick="kbSearch('My.Club')">My.Club</div>
+        <div class="kb-topic" onclick="kbSearch('Live Jasmin')">Live Jasmin</div>
+        <div class="kb-topic" onclick="kbSearch('Content Creator')">Creator</div>
+      </div>
+      <div class="kb-right">
+        <div id="kbView" style="display:flex;flex-direction:column;flex:1;min-height:0">
+          <div class="kb-results" id="kbResults"><div class="kb-welcome"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Search our knowledgebase or select a platform</div></div>
+          <div class="kb-input-wrap"><textarea id="kbInput" rows="2" placeholder="Ask a question..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();kbSearch()}"></textarea><button class="kb-send" onclick="kbSearch()"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button></div>
+        </div>
+        <div id="chatView" style="display:none;flex-direction:column;flex:1;min-height:0">
+          <div id="vChatStart" style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;gap:10px">
+            <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;align-self:flex-start"><span id="vcDot" style="width:8px;height:8px;border-radius:50%;background:#64748b"></span><span id="vcOnlineText" style="color:#8a8fa8">Checking...</span></div>
+            <p style="color:#8a8fa8;font-size:12px;text-align:center;margin:0">Chat with a recruiter or get instant help</p>
+            <input type="text" id="vcName" placeholder="Your name" style="width:100%;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-size:13px;outline:none"/>
+            <input type="email" id="vcEmail" placeholder="Your email" style="width:100%;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-size:13px;outline:none"/>
+            <button onclick="vcStartChat()" style="width:100%;padding:10px;background:#d4a830;color:#0e1117;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer">Start Chat</button>
+          </div>
+          <div id="vChatActive" style="display:none;flex-direction:column;flex:1;min-height:0">
+            <div id="vChatMsgs" style="flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:6px"></div>
+            <div id="vChatTyping" style="display:none;padding:4px 12px;font-size:11px;color:#8a8fa8;font-style:italic">Agent is typing...</div>
+            <div style="border-top:1px solid #1e2330;padding:8px 10px;display:flex;gap:6px;align-items:flex-end">
+              <textarea id="vChatInput" rows="1" placeholder="Type a message..." style="flex:1;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:8px 10px;color:#e8eaf0;font-size:13px;font-family:inherit;resize:none;outline:none" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();vcSendMsg()}" oninput="vcTyping()"></textarea>
+              <button onclick="vcSendMsg()" class="kb-send"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+              <button onclick="vcTTS()" class="kb-send" style="background:#1a2744" title="Read last message"><svg viewBox="0 0 24 24" style="stroke:#60a5fa"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/></svg></button>
+            </div>
+          </div>
+          <div id="vChatClosed" style="display:none;flex:1;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px;text-align:center">
+            <p style="color:#4ade80;font-size:14px;font-weight:600;margin:0">Chat ended</p>
+            <button onclick="vcReset()" style="padding:8px 16px;background:#d4a830;color:#0e1117;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">New Chat</button>
+          </div>
+        </div>
+        <div class="kb-tabs">
+          <div class="kb-tab kb-active" id="kbTabBtn" onclick="switchWidgetTab('kb')">Knowledgebase</div>
+          <div class="kb-tab kb-chat-btn" id="chatTabBtn" onclick="switchWidgetTab('chat')">Chat</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="color:#e8eaf0;padding:0 10px">
+    <h4 style="color:#4ade80;margin-bottom:8px">Bongacams</h4>
+    <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin-bottom:20px">BongaCams is like the perfect combo of stability and freedom! Go live from anywhere, even your phone, and earn at your own pace. 18+ welcome anytime.</p>
+    <h4 style="color:#4ade80;margin-bottom:8px">Stripchat</h4>
+    <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin-bottom:20px">Engage with a diverse audience, showcase your talents, and earn competitive payouts. Earnings depend on engagement, consistency, and performance quality.</p>
+    <h4 style="color:#4ade80;margin-bottom:8px">My.Club</h4>
+    <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin-bottom:20px">Personalized "Call Me" link for enhanced fan engagement. Share your unique link to promote conversations with your followers.</p>
+    <h4 style="color:#4ade80;margin-bottom:8px">Live Jasmin</h4>
+    <p style="font-size:13px;color:#8a8fa8;line-height:1.7">Get up to 100% share! 35 million daily users. Standard, Fast, and Instant payouts. Multiple languages supported.</p>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- ═══ Footer ═══ -->
+<div class="lux-footer">
+<div class="container"><div class="row">
+  <div class="col-md-3" style="margin-bottom:20px"><a href="#" style="border:1px solid #d4a830;color:#d4a830;padding:8px 16px;border-radius:8px;font-size:13px;font-weight:600;display:inline-block">Time</a></div>
+  <div class="col-md-3" style="margin-bottom:20px"><h5>Quick Links</h5><ul><li><a href="/Privacy Policy.html">Privacy Policy</a></li><li><a href="/Terms And Conditions.html">Terms And Conditions</a></li></ul></div>
+  <div class="col-md-3" style="margin-bottom:20px"><h5>Services</h5><ul><li><a href="/">Be A Webcam Model</a></li></ul></div>
+  <div class="col-md-3"><h5>Our Location</h5><p>Luxe Model Collective<br>100 M Street SE #600<br>Washington, DC 20003</p></div>
+</div></div>
+</div>
+
+<!-- ═══ Consent Modal ═══ -->
+<div class="lux-consent-bg" id="consentModal">
+  <div class="lux-consent">
+    <button class="x" id="closeConsent">&#10005;</button>
+    <h2>PHOTO AND VIDEO CONSENT AND RELEASE</h2>
+    <p class="sub" id="consentDate">&#8212;</p>
+    <div class="body">
+      <p>Effective as of the date shown below, approval for past use and permission for present and future use is being granted to performers name of performers Address, performers City, Alaska, performers Zip/postal code, (E-mail address: performers email), to use a picture or voice recording of performers Name. Permission is being given by the undersigned, performers Name, of Luxe Model Collective/Clarence McSween, Washington, District of Columbia, 20003 (the "Recorded Party"), as more fully explained in this Consent and Release. The undersigned is an adult and fully authorized to sign this Consent and Release. </p>
+ 
+<p>I understand that these materials may be used for promotional, commercial, and distribution purposes on the platforms I have selected on this registration form. I waive any right to inspect or approve the finished product.</p>
+
+<p>I confirm that I am at least 18 years of age and am voluntarily participating in this engagement. I release and discharge Luxe Model Collective from any liability arising from the use of these materials.</p>    
+ 
+<p>For a valuable 80% of gross video sale, Webcam modeling 80%, receipt of which is hereby acknowledged, the undersigned hereby grants to performers name its agents, employees, licensees, and successors in interest (collectively, the "Released Party") all ownership rights and the absolute and irrevocable right and permission to copyright, use and publish the recorded image and/or voice of performers Name (the "Image and/or Voice") that has been (or is being) obtained pursuant to this Consent and Release. </p>
+  
+<p>The Image and/or Voice may be copyrighted, used and/or published individually or in conjunction with other photography, video works, and recordings, and in any medium (including without limitation, print publications, public broadcast, CD-ROM format) and for any lawful purpose, including without limitation, trade, exhibition, illustration, promotion, publicity, advertising and electronic publication. </p>
+  
+<p>The undersigned represents and warrants that (i) no other party has been granted an exclusive license with respect to the Image and/or Voice, and (ii) no other party's authorization or consent is required with respect to the permission granted to the Released Party under this Consent and Release. </p>
+  
+<p>The undersigned waives any right that the undersigned may have to inspect or approve the Released Party's use of the Image and/or Voice, or the advertising copy or printed matter that may be used in connection with the use and/or publication of the Image and/or Voice. The undersigned releases the Released Party (and all persons acting under its permission or authority) from all claims for libel, slander, invasion of privacy, infringement of copyright or right of publicity, or any other claim related to the Image and/or Voice (collectively, "Claims"). This release includes without limitation any Claims related to blurring, distortion, alteration, optical illusion, digital alteration, use in composite form, whether intentional or otherwise, or use of a fictitious name, that may occur or be produced in the processing or publication of the Image and/or Voice.</p> 
+  
+<p>THE UNDERSIGNED WARRANTS THAT THE UNDERSIGNED HAS READ THIS CONSENT AND RELEASE PRIOR TO THE SIGNING OF THIS DOCUMENT, THAT THE UNDERSIGNED UNDERSTANDS IT, AND THAT THE UNDERSIGNED FREELY ENTERS INTO THIS CONSENT AND RELEASE. 
+</div>
+    <div class="accepted-by">Accepted By: Luxe Model Collective &#8212; Clarence McSween</div>
+    <p style="font-size:11px;color:#8a8fa8;margin:0 0 6px">By (draw your signature below):</p>
+    <div class="sig-wrap"><canvas id="sigCanvas" width="580" height="120"></canvas><button type="button" class="clear-btn" id="clearSig">Clear</button></div>
+    <div class="sig-colors"><span>Ink colour:</span><button type="button" class="sig-sw active" id="swBlack" data-c="#111111">Black</button><button type="button" class="sig-sw" id="swBlue" data-c="#1a3fb8">Blue</button></div>
+    <p class="sig-hint">Sign above using black or blue ink only.</p>
+    <div class="footer-info" id="consentFooter">&#8212;</div>
+    <button type="button" class="accept-btn" id="acceptConsent">I Accept &amp; Sign</button>
+    <p class="m-err" id="modalErr">Please write your signature before accepting. Signature must be legible</p>
+  </div>
+</div>
+<!-- ═══ LOGIN JS ═══ -->
+<script>
+// Check if already logged in
+(function(){
+    var u = JSON.parse(localStorage.getItem('luxeUser')||localStorage.getItem('luxe_user')||'null');
+    if(u && u.email && u.role) {
+        var isStaff = (u.role === 'Superadmin' || u.role === 'admin' || u.role === 'recruiter');
+        window.location.href = isStaff ? '/dashboard.html' : '/performer.html';
+    }
+})();
+
+window.toggleLogin = function() {
+    var dd = document.getElementById('loginDropdown');
+    var btn = document.getElementById('loginToggle');
+    var show = !dd.classList.contains('show');
+    dd.classList.toggle('show', show);
+    btn.classList.toggle('open', show);
+    if(show) setTimeout(function(){ document.getElementById('loginEmail').focus(); }, 100);
+};
+
+// Close dropdown on outside click
+document.addEventListener('click', function(e) {
+    var wrap = document.querySelector('.login-wrap');
+    if(wrap && !wrap.contains(e.target)) {
+        document.getElementById('loginDropdown').classList.remove('show');
+        document.getElementById('loginToggle').classList.remove('open');
+    }
+});
+
+window.doLogin = async function() {
+    var email = document.getElementById('loginEmail').value.trim();
+    var pw = document.getElementById('loginPassword').value;
+    var err = document.getElementById('loginError');
+    var btn = document.getElementById('loginSubmit');
+    if(!email || !pw) { err.textContent = 'Enter email and password'; return; }
+    btn.disabled = true; btn.textContent = 'Signing in...'; err.textContent = '';
+    try {
+        var r = await fetch('/api/login.php?action=login', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({email:email, password:pw})
+        });
+        var d = await r.json();
+        if(d.success) {
+            localStorage.setItem('luxeUser', JSON.stringify({
+                email: d.email, role: d.role, firstName: d.firstName,
+                lastName: d.lastName, stageName: d.stageName
+            }));
+            localStorage.setItem('luxe_user', JSON.stringify({
+                email: d.email, role: d.role, firstName: d.firstName,
+                lastName: d.lastName, stageName: d.stageName
+            }));
+            if(d.role === 'Superadmin' || d.role === 'admin' || d.role === 'recruiter') window.location.href = '/dashboard.html';
+            else window.location.href = '/performer.html';
+        } else {
+            err.textContent = d.error || 'Login failed';
+            btn.disabled = false; btn.textContent = 'Sign In';
+        }
+    } catch(e) {
+        err.textContent = 'Network error';
+        btn.disabled = false; btn.textContent = 'Sign In';
+    }
+};
+</script>
+
+<!-- ═══ KB + Chat Widget JS ═══ -->
+<script>
+(function(){
+const CHAT_API = 'https://luxetalentsystems.com/api/chat.php';
+const KB_API = 'https://luxetalentsystems.com/api/ai-kb.php';
+const KB_SEARCH = 'https://luxetalentsystems.com/api/knowledgebase.php';
+let vcSessionId=null,vcLastTs='',vcPollTimer=null,vcTypingTimer=null,vcName='',vcAudioCtx=null,vcOriginalTitle='',vcUnreadInTitle=0;
+
+window.switchWidgetTab=function(tab){document.getElementById('kbView').style.display=tab==='kb'?'flex':'none';document.getElementById('chatView').style.display=tab==='chat'?'flex':'none';document.getElementById('kbTabBtn').classList.toggle('kb-active',tab==='kb');document.getElementById('kbTabBtn').style.background=tab==='kb'?'':'transparent';document.getElementById('chatTabBtn').classList.toggle('active',tab==='chat');document.getElementById('chatTabBtn').style.background=tab==='chat'?'#d4a830':'rgba(212,168,48,.15)';document.getElementById('chatTabBtn').style.color=tab==='chat'?'#0e1117':'#d4a830';if(tab==='chat')vcCheckOnline()};
+
+window.kbSearch=async function(query){var input=document.getElementById('kbInput');var q=query||(input?input.value.trim():'');if(!q)return;if(input)input.value='';document.querySelectorAll('.kb-topic').forEach(function(t){t.classList.remove('active')});if(query){document.querySelectorAll('.kb-topic').forEach(function(t){if(t.textContent.trim()===query)t.classList.add('active')})}var results=document.getElementById('kbResults');results.innerHTML='<div style="text-align:center;color:#8a8fa8;padding:20px;font-size:12px">Searching...</div>';try{var r=await fetch(KB_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});var d=await r.json();var answer=d.answer||d.reply||d.response||'No results found.';results.innerHTML='<div class="kb-q">Q: '+esc(q)+'</div><div class="kb-answer"><div class="kb-answer-label">Knowledge Base</div><div class="kb-answer-text">'+esc(answer)+'</div></div>'}catch(e){try{var r2=await fetch(KB_SEARCH+'?action=search&q='+encodeURIComponent(q));var d2=await r2.json();if(d2.results&&d2.results.length>0){var html='<div class="kb-q">Q: '+esc(q)+'</div>';d2.results.forEach(function(item){html+='<div class="kb-answer"><div class="kb-answer-label">'+esc(item.category||'Result')+'</div><div class="kb-answer-text">'+esc(item.answer||item.content||'')+'</div></div>'});results.innerHTML=html}else{results.innerHTML='<div class="kb-q">Q: '+esc(q)+'</div><div class="kb-answer"><div class="kb-answer-text">No results found.</div></div>'}}catch(e2){results.innerHTML='<div class="kb-answer"><div class="kb-answer-text" style="color:#f87171">Search unavailable.</div></div>'}}results.scrollTop=0};
+
+window.vcCheckOnline=async function(){try{var r=await fetch(CHAT_API+'?action=check_online');var d=await r.json();var dot=document.getElementById('vcDot');var txt=document.getElementById('vcOnlineText');if(d.online){dot.style.background='#4ade80';dot.style.boxShadow='0 0 6px rgba(74,222,128,0.5)';txt.textContent='Agent Online';txt.style.color='#4ade80'}else{dot.style.background='#64748b';dot.style.boxShadow='none';txt.textContent='Leave a message';txt.style.color='#8a8fa8'}}catch(e){}
+  // Resume a saved chat session if one exists from a prior reload.
+  if(!vcSessionId){try{var saved=JSON.parse(sessionStorage.getItem('lc_session')||'null');if(saved&&saved.id){vcSessionId=saved.id;vcLastTs=saved.lastTs||saved.lastId||'';vcName=saved.name||'';document.getElementById('vChatStart').style.display='none';document.getElementById('vChatActive').style.display='flex';vcPollMessages();vcPollTimer=setInterval(vcPollMessages,3000)}}catch(e){sessionStorage.removeItem('lc_session')}}
+};
+window.vcStartChat=async function(){vcName=document.getElementById('vcName').value.trim();var email=document.getElementById('vcEmail').value.trim();if(!vcName){alert('Please enter your name');return}try{var r=await fetch(CHAT_API+'?action=start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:vcName,email:email})});var d=await r.json();if(!d.ok)throw new Error(d.error||'failed');vcSessionId=d.session_id;vcLastTs='';sessionStorage.setItem('lc_session',JSON.stringify({id:vcSessionId,lastTs:'',name:vcName}));document.getElementById('vChatStart').style.display='none';document.getElementById('vChatActive').style.display='flex';vcPollMessages();vcPollTimer=setInterval(vcPollMessages,3000)}catch(e){alert('Failed: '+e.message)}};
+window.vcSendMsg=async function(){if(!vcSessionId)return;var input=document.getElementById('vChatInput');var msg=input.value.trim();if(!msg)return;input.value='';vcAddMsg('visitor',msg);try{await fetch(CHAT_API+'?action=send',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:vcSessionId,message:msg,name:vcName})});fetch(CHAT_API+'?action=visitor_typing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:vcSessionId,typing:false})})}catch(e){}};
+window.vcPollMessages=async function(){if(!vcSessionId)return;try{var r=await fetch(CHAT_API+'?action=poll&session_id='+vcSessionId+'&last_ts='+encodeURIComponent(vcLastTs||''));var d=await r.json();if(d.messages&&d.messages.length>0){d.messages.forEach(function(m){vcLastTs=m.created_at;if(m.sender_type!=='visitor'){vcAddMsg(m.sender_type,m.message,m.sender_name);vcOnIncoming()}});sessionStorage.setItem('lc_session',JSON.stringify({id:vcSessionId,lastTs:vcLastTs,name:vcName}))}document.getElementById('vChatTyping').style.display=d.agent_typing?'block':'none';if(d.status==='closed'){clearInterval(vcPollTimer);sessionStorage.removeItem('lc_session');document.getElementById('vChatActive').style.display='none';document.getElementById('vChatClosed').style.display='flex'}}catch(e){}};
+
+/* Sound + title-bump when an agent message arrives. */
+function vcOnIncoming(){
+  try{if(!vcAudioCtx)vcAudioCtx=new (window.AudioContext||window.webkitAudioContext)();var o=vcAudioCtx.createOscillator();var g=vcAudioCtx.createGain();o.connect(g);g.connect(vcAudioCtx.destination);o.frequency.setValueAtTime(880,vcAudioCtx.currentTime);o.frequency.exponentialRampToValueAtTime(660,vcAudioCtx.currentTime+0.2);g.gain.setValueAtTime(0.18,vcAudioCtx.currentTime);g.gain.exponentialRampToValueAtTime(0.001,vcAudioCtx.currentTime+0.3);o.start();o.stop(vcAudioCtx.currentTime+0.3)}catch(e){}
+  if(document.hidden){if(!vcOriginalTitle)vcOriginalTitle=document.title;vcUnreadInTitle+=1;document.title='('+vcUnreadInTitle+') '+vcOriginalTitle}
+}
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&vcOriginalTitle){document.title=vcOriginalTitle;vcUnreadInTitle=0}});
+function vcAddMsg(type,text,name){var c=document.getElementById('vChatMsgs');var div=document.createElement('div');div.className='vc-msg '+type;var time=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});var label=(type==='agent'&&name)?'<div style="font-size:10px;opacity:.6">'+esc(name)+'</div>':'';div.innerHTML=label+esc(text)+'<div class="vc-time">'+time+'</div>';c.appendChild(div);c.scrollTop=c.scrollHeight}
+window.vcTyping=function(){if(!vcSessionId)return;fetch(CHAT_API+'?action=visitor_typing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:vcSessionId,typing:true})});clearTimeout(vcTypingTimer);vcTypingTimer=setTimeout(function(){fetch(CHAT_API+'?action=visitor_typing',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:vcSessionId,typing:false})})},2000)};
+window.vcTTS=function(){if(!window.speechSynthesis)return;var msgs=document.querySelectorAll('#vChatMsgs .vc-msg.agent, #vChatMsgs .vc-msg.system');if(!msgs.length)return;var last=msgs[msgs.length-1].textContent.replace(/\d{1,2}:\d{2}\s*(AM|PM)?/gi,'').trim();var u=new SpeechSynthesisUtterance(last);u.rate=0.9;window.speechSynthesis.speak(u)};
+window.vcReset=function(){vcSessionId=null;vcLastTs='';clearInterval(vcPollTimer);sessionStorage.removeItem('lc_session');document.getElementById('vChatClosed').style.display='none';document.getElementById('vChatActive').style.display='none';document.getElementById('vChatStart').style.display='flex';document.getElementById('vChatMsgs').innerHTML='';vcCheckOnline()};
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}
+setTimeout(vcCheckOnline,2000);
+})();
+</script>
+
+<!-- ═══ REGISTRATION + SCHEDULE JS ═══ -->
+<script>
+(function(){
+"use strict";
+const $=id=>document.getElementById(id);
+const val=id=>{const el=$(id);return el?(el.value||'').trim():'';};
+const TOTAL=6,PILL_NAMES=['Basic','Address','Physical','Prefs','Photos','Consent'],WEBCAM_PLATFORMS=['Stripchat','My.Club','Bongacams','Live Jasmin'],CREATOR_PLATFORMS=['Content Creator'];
+// Registration settings loaded from server (platforms available, max, opt-in)
+var LUXE_REG_CFG=null, LUXE_MAX_PLATFORMS=99;
+var PLAT_LABELS={stripchat:'Stripchat',bongacams:'Bongacams',myclub:'My.Club',livejasmin:'Live Jasmin',creator:'Content Creator'};
+function luxeLoadRegCfg(){
+  return fetch('/api/reg-settings.php?action=get').then(function(r){return r.json();}).then(function(d){
+    if(d&&d.ok&&d.config){LUXE_REG_CFG=d.config;LUXE_MAX_PLATFORMS=parseInt(d.config.max_platforms)||99;}
+  }).catch(function(){});
+}
+const STEP_NAMES={0:'Basic',1:'Address',2:'Physical',3:'Prefs',4:'Photos',5:'Consent',6:'Teaser Videos'};
+const FLOW_STEPS={webcam:[0,1,2,3,4,5],creator:[0,1,6,5]};
+let step=0,regFlow='webcam',consentSigned=false,sigDataURL=null,sigHasInk=false,regEmail='',regLastName='',regPassword='',regConsentToken='';
+const fieldCache={};
+const platWrap=$('platWrap');
+function buildPlatforms(){platWrap.innerHTML='';
+  var list;
+  if(regFlow==='creator'){ list=CREATOR_PLATFORMS; }
+  else if(LUXE_REG_CFG&&LUXE_REG_CFG.platforms){
+    // Only settings-enabled webcam platforms
+    list=[];
+    ['stripchat','bongacams','myclub','livejasmin'].forEach(function(k){ if(LUXE_REG_CFG.platforms[k]) list.push(PLAT_LABELS[k]); });
+    if(!list.length) list=WEBCAM_PLATFORMS; // fallback if none enabled
+  } else { list=WEBCAM_PLATFORMS; }
+  list.forEach(function(p){var l=document.createElement('label');l.className='chk-pill';l.innerHTML='<input type="checkbox" value="'+p+'"/>'+p;var c=l.querySelector('input');if(regFlow==='creator'){c.checked=true;l.classList.add('on');}c.addEventListener('change',function(){
+    // enforce max platforms from settings
+    var checked=platWrap.querySelectorAll('input:checked');
+    if(c.checked && checked.length>LUXE_MAX_PLATFORMS){ c.checked=false; l.classList.remove('on'); return; }
+    l.classList.toggle('on',c.checked);
+  });platWrap.appendChild(l);});}
+luxeLoadRegCfg().then(function(){ buildPlatforms(); });
+// SMS opt-in: mutually exclusive + helper
+(function(){var y=$('smsYes'),n=$('smsNo');if(y&&n){y.addEventListener('change',function(){if(y.checked)n.checked=false;});n.addEventListener('change',function(){if(n.checked)y.checked=false;});}})();
+function smsConsentValue(){var y=$('smsYes'),n=$('smsNo');if(y&&y.checked)return 'yes';if(n&&n.checked)return 'no';return '';}
+function renderPills(){var seq=FLOW_STEPS[regFlow];var pos=seq.indexOf(step);$('pills').innerHTML=seq.map(function(sn,i){var c=i===pos?'pill active':(i<pos?'pill done':'pill');return'<span class="'+c+'">'+(i+1)+'. '+STEP_NAMES[sn]+'</span>'}).join('')}
+function showStep(n){step=n;var seq=FLOW_STEPS[regFlow];var pos=seq.indexOf(n);var total=seq.length;document.querySelectorAll('.lux-reg .step').forEach(function(el){el.classList.toggle('active',+el.dataset.step===n)});$('btnPrev').style.display=pos<=0?'none':'inline-block';$('btnNext').textContent=pos===total-1?'Submit \u2713':'Next \u2192';$('errMsg').textContent='';$('progressLabel').textContent='Step '+(pos+1)+' of '+total;$('progressFill').style.width=((pos+1)/total*100).toFixed(1)+'%';renderPills();window.scrollTo({top:document.getElementById('register').offsetTop-70,behavior:'smooth'})}
+[{z:'dz_profilePhotos',i:'fi_profilePhotos',c:'ct_profilePhotos',m:true},{z:'dz_idFront',i:'fi_idFront',c:null,m:false},{z:'dz_idBack',i:'fi_idBack',c:null,m:false},{z:'dz_faceAndId',i:'fi_faceAndId',c:null,m:false},{z:'dz_morePhotos',i:'fi_morePhotos',c:'ct_morePhotos',m:true},{z:'dz_teaserVideos',i:'fi_teaserVideos',c:'ct_teaserVideos',m:true}].forEach(cfg=>{const zone=$(cfg.z),inp=$(cfg.i);if(!zone||!inp)return;zone.addEventListener('click',function(e){e.preventDefault();e.stopPropagation();inp.value='';inp.click()});inp.addEventListener('change',function(){if(inp.files.length>0){zone.classList.add('filled');if(cfg.m){const ct=$(cfg.c);if(ct)ct.textContent='('+inp.files.length+' file'+(inp.files.length>1?'s':'')+')'}else{const p=zone.querySelector('p');if(p)p.innerHTML='<span class="hl">\u2713 '+inp.files[0].name+'</span>'}}else{zone.classList.remove('filled');if(cfg.c){const ct=$(cfg.c);if(ct)ct.textContent=''}}})});
+function validate(n){const e=[];if(n===0){if(!val('f_recruiterName'))e.push('Select a recruiter');if(!platWrap.querySelectorAll('input:checked').length)e.push('Select at least one platform');if(!val('f_firstName'))e.push('First name required');if(!val('f_lastName'))e.push('Last name required');if(!/^\S+@\S+\.\S+$/.test(val('f_email')))e.push('Valid email required');if(!val('f_phone'))e.push('Phone required');if((!LUXE_REG_CFG||LUXE_REG_CFG.sms_optin_required!==false)&&!smsConsentValue())e.push('Please choose Send or Do Not Send Text Messages');if(!val('f_dateOfBirth'))e.push('Date of birth required');else{const a=(Date.now()-new Date(val('f_dateOfBirth')).getTime())/(365.25*864e5);if(a<18)e.push('Must be 18+')}if(val('f_password').length<6)e.push('Password min 6 characters');if(val('f_password')!==val('f_confirmPassword'))e.push('Passwords do not match')}if(n===1){if(!val('f_stageName'))e.push('Stage name required');if(!val('f_streetAddress'))e.push('Street address required');if(!val('f_city'))e.push('City required');if(!val('f_state'))e.push('State required');if(!val('f_zipCode'))e.push('Zip code required');if(!val('f_country'))e.push('Country required')}if(n===2){['f_primaryLanguage','f_height','f_weight','f_build','f_ethnicity','f_eyeColor','f_hairColor','f_hairLength','f_breastSize','f_buttSize','f_pubicHair','f_dressSize'].forEach(id=>{if(!val(id))e.push('All physical fields required')})}if(n===3){if(!val('f_orientation'))e.push('Orientation required');if(!val('f_interestedIn'))e.push('Interested in required');if(!val('f_aboutMe'))e.push('About me required');if(!val('f_turnsOn'))e.push('Turns on required');if(!val('f_turnsOff'))e.push('Turns off required')}if(n===4){if(!$('fi_profilePhotos').files.length)e.push('Profile photo required');if(!$('fi_idFront').files.length)e.push('ID front required')}if(n===5){if(!consentSigned)e.push('Sign the consent document')}if(n===6){if(!$('fi_teaserVideos')||!$('fi_teaserVideos').files.length)e.push('At least one teaser video required')}return e}
+$('btnPrev').addEventListener('click',()=>{var seq=FLOW_STEPS[regFlow];var pos=seq.indexOf(step);if(pos>0)showStep(seq[pos-1])});
+$('btnNext').addEventListener('click',()=>{const errs=validate(step);if(errs.length){$('errMsg').textContent=errs[0];return}document.querySelectorAll('.step.active input,.step.active select,.step.active textarea').forEach(el=>{if(el.id&&el.id.startsWith('f_'))fieldCache[el.id]=el.value});var seq=FLOW_STEPS[regFlow];var pos=seq.indexOf(step);if(pos===seq.length-1)return submitRegistration();showStep(seq[pos+1])});
+let sigCtx=null,drawing=false,lastX=0,lastY=0,sigColor='#111111';
+function initSig(){const c=$('sigCanvas');sigCtx=c.getContext('2d');sigCtx.fillStyle='#ffffff';sigCtx.fillRect(0,0,c.width,c.height);sigCtx.lineWidth=2.4;sigCtx.lineCap='round';sigCtx.lineJoin='round';sigHasInk=false;function p(e){const r=c.getBoundingClientRect();const t=e.touches?e.touches[0]:e;return{x:(t.clientX-r.left)*(c.width/r.width),y:(t.clientY-r.top)*(c.height/r.height)}}function s(e){drawing=true;sigHasInk=true;const q=p(e);lastX=q.x;lastY=q.y}function m(e){if(!drawing)return;e.preventDefault();const q=p(e);sigCtx.strokeStyle=sigColor;sigCtx.beginPath();sigCtx.moveTo(lastX,lastY);sigCtx.lineTo(q.x,q.y);sigCtx.stroke();lastX=q.x;lastY=q.y}function u(){drawing=false}c.onmousedown=s;c.onmousemove=m;c.onmouseup=u;c.onmouseout=u;c.ontouchstart=s;c.ontouchmove=m;c.ontouchend=u}
+$('openConsent').addEventListener('click',()=>{$('consentModal').classList.add('open');$('consentDate').textContent=new Date().toLocaleDateString();$('consentFooter').innerHTML='Date: '+new Date().toLocaleDateString()+'<br>Email: '+(val('f_email')||fieldCache['f_email']||'\u2014');$('modalErr').style.display='none';setTimeout(initSig,50)});
+$('closeConsent').addEventListener('click',()=>$('consentModal').classList.remove('open'));
+$('clearSig').addEventListener('click',initSig);
+$('acceptConsent').addEventListener('click',()=>{if(!sigHasInk){$('modalErr').style.display='block';return}sigDataURL=$('sigCanvas').toDataURL('image/png');consentSigned=true;$('consentBox').classList.add('signed');$('consentModal').classList.remove('open')});
+(function(){var b=$('swBlack'),u=$('swBlue');function pick(x,c){sigColor=c;if(b)b.classList.toggle('active',x===b);if(u)u.classList.toggle('active',x===u)}if(b)b.onclick=function(){pick(b,'#111111')};if(u)u.onclick=function(){pick(u,'#1a3fb8')}})();
+fetch('https://luxetalentsystems.com/api/formtoken.php').then(function(r){return r.json()}).then(function(d){var t=$('luxe_token');if(t&&d&&d.token)t.value=d.token}).catch(function(){});
+async function submitRegistration(){const btn=$('btnNext');btn.disabled=true;btn.textContent='Submitting...';$('errMsg').textContent='';const fd=new FormData();['recruiterName','firstName','middleName','lastName','email','phone','password','stageName','alternateUsernames','streetAddress','city','state','zipCode','country','dateOfBirth','displayAge','primaryLanguage','otherLanguage','height','weight','build','ethnicity','eyeColor','hairColor','hairLength','breastSize','buttSize','pubicHair','dressSize','orientation','sexualPreferences','interestedIn','aboutMe','turnsOn','turnsOff'].forEach(f=>{let v=val('f_'+f);if(!v&&fieldCache['f_'+f])v=fieldCache['f_'+f].trim();fd.append(f,v)});fd.append('role',val('f_role'));fd.append('platforms',Array.from(platWrap.querySelectorAll('input:checked')).map(c=>c.value).join(','));fd.append('flow',regFlow);fd.append('applying_for',regFlow==='creator'?'Content Creator':'Webcam Model');const pp=$('fi_profilePhotos').files;for(let i=0;i<pp.length;i++)fd.append('profilePhotos[]',pp[i]);if($('fi_idFront').files[0])fd.append('idFront',$('fi_idFront').files[0]);if($('fi_idBack').files[0])fd.append('idBack',$('fi_idBack').files[0]);if($('fi_faceAndId').files[0])fd.append('faceAndId',$('fi_faceAndId').files[0]);const mp=$('fi_morePhotos').files;for(let i=0;i<mp.length;i++)fd.append('morePhotos[]',mp[i]);if($('fi_teaserVideos')){const tv=$('fi_teaserVideos').files;for(let i=0;i<tv.length;i++)fd.append('teaserVideos[]',tv[i]);}fd.append('signature',sigDataURL||'');fd.append('signature_color',sigColor==='#1a3fb8'?'blue':'black');fd.append('sms_consent',smsConsentValue());fd.append('company_website',$('luxe_hp')?$('luxe_hp').value:'');fd.append('luxe_token',$('luxe_token')?$('luxe_token').value:'');try{const res=await fetch('https://luxetalentsystems.com/api/register.php',{method:'POST',body:fd});const data=await res.json();if(data.success){regEmail=data.email;regLastName=data.lastName||val('f_lastName')||fieldCache['f_lastName']||'';regPassword=val('f_password')||fieldCache['f_password']||'';regConsentToken=data.consent_token||'';if(regConsentToken){var dl=$('consentDownloadLink');if(dl){dl.href='https://luxetalentsystems.com/api/consent-download.php?e='+encodeURIComponent(data.email)+'&t='+regConsentToken;dl.style.display='inline-block'}}showSchedule()}else{$('errMsg').textContent=data.error||'Submission failed';btn.disabled=false;btn.textContent='Submit \u2713'}}catch(err){$('errMsg').textContent='Network error: '+err.message;btn.disabled=false;btn.textContent='Submit \u2713'}}
+let currentWeek=1,calDays=[];
+function showSchedule(){$('regCard').style.display='none';$('progressWrap').style.display='none';$('pills').style.display='none';$('scheduleSection').style.display='block';window.scrollTo({top:0,behavior:'smooth'});fetchCurrentWeek()}
+async function fetchCurrentWeek(){try{const r=await fetch('https://luxetalentsystems.com/api/schedule.php?action=current_week');const d=await r.json();currentWeek=d.week_number||1}catch(e){currentWeek=1}loadWeek(currentWeek)}
+async function loadWeek(w){currentWeek=w;$('weekLabel').textContent='Week '+w;try{const r=await fetch('https://luxetalentsystems.com/api/schedule.php?action=get_calendar&week='+w);const d=await r.json();if(d.error){$('schedMsg').textContent=d.error;$('schedMsg').className='sched-msg fail';return}calDays=d.days;renderTable();loadSavedEntries()}catch(e){$('schedMsg').textContent='Failed to load';$('schedMsg').className='sched-msg fail'}}
+function renderTable(){const body=$('schedBody');body.innerHTML='';calDays.forEach(d=>{const tr=document.createElement('tr');tr.dataset.date=d.date;const ds=d.day.substring(0,3);const dt=d.display.split(' ')[1]||d.display;tr.innerHTML='<td><input type="checkbox" class="day-tog"/></td><td class="dn">'+ds+' '+dt+'</td><td><input type="time" class="ti-s" value="10:00" disabled/></td><td><input type="time" class="ti-e" value="18:00" disabled/></td><td class="hrs off">\u2014</td>';const cb=tr.querySelector('.day-tog'),ts=tr.querySelector('.ti-s'),te=tr.querySelector('.ti-e'),hr=tr.querySelector('.hrs');cb.addEventListener('change',()=>{const on=cb.checked;tr.classList.toggle('on',on);ts.disabled=!on;te.disabled=!on;hr.textContent=on?calcHrs(ts.value,te.value):'\u2014';hr.classList.toggle('off',!on)});ts.addEventListener('change',()=>{hr.textContent=calcHrs(ts.value,te.value)});te.addEventListener('change',()=>{hr.textContent=calcHrs(ts.value,te.value)});body.appendChild(tr)})}
+function calcHrs(s,e){if(!s||!e)return'\u2014';const[sh,sm]=s.split(':').map(Number),[eh,em]=e.split(':').map(Number);let d=(eh*60+em)-(sh*60+sm);if(d<=0)d+=1440;return(d/60).toFixed(1)+'h'}
+async function loadSavedEntries(){try{const r=await fetch('https://luxetalentsystems.com/api/schedule.php?action=get_week&email='+encodeURIComponent(regEmail)+'&week='+currentWeek);const rows=await r.json();if(!rows.length)return;rows.forEach(r=>{const tr=$('schedBody').querySelector('[data-date="'+r.start_date+'"]');if(!tr)return;tr.querySelector('.day-tog').checked=true;tr.classList.add('on');const ts=tr.querySelector('.ti-s'),te=tr.querySelector('.ti-e');ts.disabled=false;te.disabled=false;ts.value=r.start_time.substring(0,5);te.value=r.end_time.substring(0,5);tr.querySelector('.hrs').textContent=calcHrs(ts.value,te.value);tr.querySelector('.hrs').classList.remove('off')})}catch(e){}}
+$('weekPrev').addEventListener('click',()=>{if(currentWeek>1)loadWeek(currentWeek-1)});
+$('weekNext').addEventListener('click',()=>{if(currentWeek<156)loadWeek(currentWeek+1)});
+$('saveSched').addEventListener('click',async function(){const btn=this;btn.disabled=true;btn.textContent='Saving...';$('schedMsg').textContent='';const entries=[];$('schedBody').querySelectorAll('tr.on').forEach(tr=>{entries.push({start_date:tr.dataset.date,start_time:tr.querySelector('.ti-s').value,end_time:tr.querySelector('.ti-e').value})});try{const res=await fetch('https://luxetalentsystems.com/api/schedule.php?action=save_week',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:regEmail,lastName:regLastName,week:currentWeek,entries})});const data=await res.json();if(data.success){$('schedMsg').textContent='Week '+currentWeek+' saved!';$('schedMsg').className='sched-msg ok';loadSavedEntries();setTimeout(()=>{$('scheduleSection').style.display='none';$('confirmEmail').textContent=regEmail;$('confirmPassword').textContent=regPassword;$('confirmSection').style.display='block';window.scrollTo({top:0,behavior:'smooth'})},1500)}else{$('schedMsg').textContent=data.error||'Save failed';$('schedMsg').className='sched-msg fail'}}catch(e){$('schedMsg').textContent='Network error';$('schedMsg').className='sched-msg fail'}btn.disabled=false;btn.textContent='Save'});
+renderPills();
+
+/* ====================== AI Registration Assistant ====================== */
+/* Runs inside the registration IIFE — shares $, val, showStep, FLOW_STEPS,
+   STEP_NAMES, regFlow, platWrap with the form engine above. */
+(function(){
+  var raBody = $('raBody'), raStatus = $('raStatus');
+  if(!raBody) return;
+
+  var RA_PLATINFO = {
+    webcam: [
+      ['BongaCams','BongaCams is the perfect combo of stability and freedom. Go live from anywhere \u2014 even your phone \u2014 and earn at your own pace. 18+ welcome anytime.'],
+      ['Stripchat','Engage with a diverse audience, showcase your talents, and earn competitive payouts. Earnings depend on engagement, consistency, and performance quality.'],
+      ['My.Club','A personalized "Call Me" link for enhanced fan engagement. Share your unique link to promote conversations with your followers.'],
+      ['Live Jasmin','Get up to 100% share. 35 million daily users. Standard, Fast, and Instant payouts. Multiple languages supported.']
+    ],
+    creator: [
+      ['Content Creator','We are looking for amateur and professional video content creators \u2014 solo performers and couples welcome. Build a library of content and earn on every sale.']
+    ]
+  };
+
+  var RA_FAQ = [
+    ['How long does approval take?','After you submit, you may receive up to two ID-verification emails depending on the platform. Reply to them as soon as possible \u2014 they are time-sensitive. Registrations not completed within 48 hours are removed.'],
+    ['What ID do I need?','A clear, readable government photo ID. You will upload the front (and back if it has one), plus a photo of your face next to your ID.'],
+    ['I already have a Stripchat account.','Delete the old account, or register here using a different email address.'],
+    ['What does the studio expect?','A minimum of 10 hours per week online, your committed schedule uploaded weekly through the app, and all photos and videos approved before posting.']
+  ];
+
+  /* Question ids match the f_* form fields. */
+  var RA_QUESTIONS = [
+    {id:'recruiterName',q:"Who invited you to apply? Choose your recruiter.",type:'select'},
+    {id:'platforms',q:"Which platforms would you like to join? Pick all that interest you.",type:'multi',flows:['webcam']},
+    {id:'firstName',q:"Let's start with your name. What's your first name?",type:'text'},
+    {id:'middleName',q:"Do you have a middle name?",type:'text',opt:true,ph:'Leave blank if none'},
+    {id:'lastName',q:"And your last name?",type:'text'},
+    {id:'email',q:"What's the best email address to reach you?",type:'email',ph:'you@example.com'},
+    {id:'phone',q:"What's your phone number?",type:'tel',ph:'+1 555 123 4567'},
+    {id:'dateOfBirth',q:"What's your date of birth? You must be 18 or older to apply.",type:'date'},
+    {id:'password',q:"Create a password for your performer portal. At least 6 characters.",type:'password',ph:'Choose a password'},
+    {id:'confirmPassword',q:"Please type that password once more to confirm.",type:'password',ph:'Repeat password'},
+    {id:'stageName',q:"What stage name would you like to perform under?",type:'text'},
+    {id:'alternateUsernames',q:"Any alternate stage names you also use?",type:'text',opt:true,ph:'Comma-separated, or leave blank'},
+    {id:'streetAddress',q:"What's your street address?",type:'text'},
+    {id:'city',q:"Which city do you live in?",type:'text'},
+    {id:'state',q:"What state or province?",type:'text'},
+    {id:'zipCode',q:"And your zip or postal code?",type:'text'},
+    {id:'country',q:"Which country?",type:'text'},
+    {id:'displayAge',q:"What age would you like shown on your public profile?",type:'number',opt:true,ph:'Optional',flows:['webcam']},
+    {id:'primaryLanguage',q:"What's your primary language?",type:'text',ph:'e.g. English',flows:['webcam']},
+    {id:'otherLanguage',q:"Any other languages you speak?",type:'text',opt:true,ph:'Optional',flows:['webcam']},
+    {id:'height',q:"How tall are you?",type:'text',ph:'e.g. 5 ft 6 in or 168 cm',flows:['webcam']},
+    {id:'weight',q:"What's your weight?",type:'text',ph:'e.g. 130 lb or 59 kg',flows:['webcam']},
+    {id:'build',q:"How would you describe your build?",type:'select',flows:['webcam']},
+    {id:'ethnicity',q:"What's your ethnicity?",type:'select',flows:['webcam']},
+    {id:'eyeColor',q:"Eye colour?",type:'select',flows:['webcam']},
+    {id:'hairColor',q:"Hair colour?",type:'select',flows:['webcam']},
+    {id:'hairLength',q:"Hair length?",type:'select',flows:['webcam']},
+    {id:'breastSize',q:"Breast size?",type:'select',flows:['webcam']},
+    {id:'buttSize',q:"Butt size?",type:'select',flows:['webcam']},
+    {id:'pubicHair',q:"Pubic hair?",type:'select',flows:['webcam']},
+    {id:'dressSize',q:"Dress size?",type:'select',flows:['webcam']},
+    {id:'orientation',q:"What's your orientation?",type:'select',flows:['webcam']},
+    {id:'sexualPreferences',q:"Any sexual preferences you'd like noted?",type:'select',opt:true,flows:['webcam']},
+    {id:'interestedIn',q:"Who are you interested in?",type:'select',flows:['webcam']},
+    {id:'aboutMe',q:"Tell us a little about yourself. This appears on your profile.",type:'long',flows:['webcam']},
+    {id:'turnsOn',q:"What turns you on?",type:'long',flows:['webcam']},
+    {id:'turnsOff',q:"What turns you off?",type:'long',flows:['webcam']}
+  ];
+
+  var raState = {answers:{}, idx:0};
+
+  function raEl(html){var d=document.createElement('div');d.innerHTML=html;return d.firstChild;}
+  function raAv(){return '<div class="av"><svg viewBox="0 0 24 24" fill="none" stroke="#0e1117" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9.5 13.9 11.4 12 16l-1.9-4.6L5.5 9.5l4.6-1.9z"/></svg></div>';}
+  function raPretty(id){return id.replace(/([A-Z])/g,' $1').replace(/^./,function(c){return c.toUpperCase();});}
+  function raActiveQuestions(){
+    return RA_QUESTIONS.filter(function(q){return !q.flows||q.flows.indexOf(regFlow)>=0;});
+  }
+  function raSelectOptions(id){
+    var sel=$('f_'+id);
+    if(!sel||!sel.options)return [];
+    return Array.prototype.slice.call(sel.options)
+      .map(function(o){return o.value;})
+      .filter(function(v){return v!=='';});
+  }
+  function raPlatformOptions(){
+    return Array.prototype.slice.call(platWrap.querySelectorAll('input[type=checkbox]'))
+      .map(function(c){return c.value;});
+  }
+
+  /* ---------- greeting ---------- */
+  function raScreenGreeting(){
+    raStatus.textContent='Online \u2014 here to help';
+    raBody.innerHTML='';
+    raBody.appendChild(raEl('<div class="msg">'+raAv()+'<div class="bubble">Hi, I\u2019m the Luxe '+
+      'Assistant. I\u2019ll help you apply to Luxe Model Collective \u2014 it only takes a few minutes.'+
+      '<br><br>To begin: are you applying as a <b>Webcam Model</b> or a <b>Content Creator</b>?</div></div>'));
+    var row=raEl('<div class="choice-row"></div>');
+    var b1=raEl('<button type="button" class="choice">Webcam Model</button>');
+    var b2=raEl('<button type="button" class="choice">Content Creator</button>');
+    b1.onclick=function(){regFlow='webcam';buildPlatforms();raScreenPlatforms();};
+    b2.onclick=function(){regFlow='creator';buildPlatforms();raScreenPlatforms();};
+    row.appendChild(b1);row.appendChild(b2);
+    raBody.appendChild(row);
+  }
+
+  /* ---------- platforms + path choice ---------- */
+  function raScreenPlatforms(){
+    raBody.innerHTML='';
+    var lead = regFlow==='webcam'
+      ? 'Great choice. Here are the webcam platforms you can join \u2014 you can pick more than one.'
+      : 'Wonderful. Here\u2019s what content creation with Luxe looks like.';
+    raBody.appendChild(raEl('<div class="msg">'+raAv()+'<div class="bubble">'+lead+'</div></div>'));
+    RA_PLATINFO[regFlow].forEach(function(p){
+      raBody.appendChild(raEl('<div class="plat"><b>'+p[0]+'</b><p>'+p[1]+'</p></div>'));
+    });
+    raBody.appendChild(raEl('<div class="divider"></div>'));
+    raBody.appendChild(raEl('<div class="msg">'+raAv()+'<div class="bubble">How would you like to '+
+      'complete your registration?</div></div>'));
+    var help=raEl('<button type="button" class="choice"><span>Help me complete it<br>'+
+      '<span class="sub">Recommended \u2014 I\u2019ll guide you</span></span><span>\u2192</span></button>');
+    var self=raEl('<button type="button" class="choice"><span>I\u2019ll complete it myself</span><span>\u2192</span></button>');
+    help.onclick=raStartWizard;
+    self.onclick=raScreenManual;
+    raBody.appendChild(help);raBody.appendChild(self);
+  }
+
+  /* ---------- wizard ---------- */
+  function raStartWizard(){
+    if(regFlow==='creator' && !raState.answers.platforms) raState.answers.platforms=['Content Creator'];
+    raState.idx=0;
+    raRenderQuestion();
+  }
+
+  function raRenderQuestion(){
+    var QL=raActiveQuestions();
+    var q=QL[raState.idx], total=QL.length;
+    raStatus.textContent='Question '+(raState.idx+1)+' of '+total;
+    raBody.innerHTML='';
+
+    var prog=raEl('<div class="prog"><i></i></div>');
+    raBody.appendChild(prog);
+    raBody.appendChild(raEl('<div class="prog-lbl">Question '+(raState.idx+1)+' of '+total+'</div>'));
+    setTimeout(function(){prog.firstChild.style.width=((raState.idx+1)/total*100)+'%';},20);
+
+    raBody.appendChild(raEl('<div class="msg">'+raAv()+'<div class="bubble"><h2 class="q">'+q.q+'</h2></div></div>'));
+    var area=raEl('<div></div>');
+    raBody.appendChild(area);
+    var errBox=raEl('<div class="err"></div>');
+    var saved=raState.answers[q.id];
+
+    if(q.type==='select'){
+      var opts=raEl('<div class="opts"></div>');
+      raSelectOptions(q.id).forEach(function(o){
+        var btn=raEl('<button type="button" class="opt">'+o+'</button>');
+        if(saved===o) btn.className='opt sel';
+        btn.onclick=function(){raState.answers[q.id]=o;raGoNext();};
+        opts.appendChild(btn);
+      });
+      area.appendChild(opts);
+      if(q.opt){
+        var sk=raEl('<button type="button" class="skip">Skip this question</button>');
+        sk.onclick=function(){raState.answers[q.id]='';raGoNext();};
+        area.appendChild(sk);
+      }
+      raBody.appendChild(raNavRow(null,null));
+      raAddKB();
+      return;
+    }
+
+    if(q.type==='multi'){
+      var chosen={};
+      (saved||[]).forEach(function(v){chosen[v]=1;});
+      var wrap=raEl('<div class="opts"></div>');
+      raPlatformOptions().forEach(function(o){
+        var btn=raEl('<button type="button" class="opt">'+o+'</button>');
+        if(chosen[o]) btn.className='opt sel';
+        btn.onclick=function(){
+          if(chosen[o]){delete chosen[o];btn.className='opt';}
+          else{chosen[o]=1;btn.className='opt sel';}
+        };
+        wrap.appendChild(btn);
+      });
+      area.appendChild(wrap);
+      area.appendChild(raEl('<div class="hint">Pick at least one. You can choose several.</div>'));
+      area.appendChild(errBox);
+      raBody.appendChild(raNavRow(function(){
+        var picks=Object.keys(chosen);
+        if(!picks.length) return 'Please choose at least one platform.';
+        raState.answers[q.id]=picks;
+        return null;
+      },errBox));
+      raAddKB();
+      return;
+    }
+
+    var fieldWrap=raEl('<div class="field"></div>');
+    var input;
+    if(q.type==='long') input=raEl('<textarea rows="5"></textarea>');
+    else if(q.type==='date'){
+      input=raEl('<input type="date">');
+      var mx=new Date();mx.setFullYear(mx.getFullYear()-18);
+      input.max=mx.toISOString().slice(0,10);
+    }
+    else if(q.type==='number') input=raEl('<input type="number" min="18" max="99">');
+    else if(q.type==='email') input=raEl('<input type="email">');
+    else if(q.type==='tel') input=raEl('<input type="tel">');
+    else if(q.type==='password') input=raEl('<input type="password">');
+    else input=raEl('<textarea rows="3"></textarea>');
+    if(q.ph) input.placeholder=q.ph;
+    if(saved!=null && saved!=='') input.value=saved;
+    fieldWrap.appendChild(input);
+    area.appendChild(fieldWrap);
+    area.appendChild(raEl('<div class="hint">'+(q.opt?'Optional \u2014 you can leave this blank.':'This field is required.')+'</div>'));
+    area.appendChild(errBox);
+    setTimeout(function(){try{input.focus();}catch(e){}},30);
+
+    raBody.appendChild(raNavRow(function(){
+      var v=(input.value||'').trim();
+      if(!v && !q.opt) return 'Please answer this question to continue.';
+      if(v){
+        if(q.type==='email' && !/^\S+@\S+\.\S+$/.test(v)) return 'Please enter a valid email address.';
+        if(q.id==='password' && v.length<6) return 'Password must be at least 6 characters.';
+        if(q.id==='confirmPassword' && v!==raState.answers.password) return 'The passwords don\u2019t match.';
+        if(q.type==='date'){
+          var age=(Date.now()-new Date(v).getTime())/(365.25*864e5);
+          if(age<18) return 'You must be at least 18 years old to apply.';
+        }
+      }
+      raState.answers[q.id]=v;
+      return null;
+    },errBox));
+    raAddKB();
+  }
+
+  function raNavRow(validate,errBox){
+    var row=raEl('<div class="nav"></div>');
+    var back=raEl('<button type="button" class="btn btn-ghost">\u2190 Back</button>');
+    back.disabled = raState.idx===0;
+    back.onclick=function(){ if(raState.idx>0){raState.idx--;raRenderQuestion();} };
+    row.appendChild(back);
+    if(validate){
+      var last = raState.idx===raActiveQuestions().length-1;
+      var cont=raEl('<button type="button" class="btn btn-gold">'+(last?'Finish':'Continue \u2192')+'</button>');
+      cont.onclick=function(){
+        var err=validate();
+        if(err){ if(errBox){errBox.textContent=err;errBox.style.display='block';} return; }
+        raGoNext();
+      };
+      row.appendChild(cont);
+    }
+    return row;
+  }
+
+  function raGoNext(){
+    if(raState.idx<raActiveQuestions().length-1){ raState.idx++; raRenderQuestion(); }
+    else raScreenHandoff();
+  }
+
+  function raAddKB(){
+    var link=raEl('<div class="kb-link"><button type="button">Have a question? Ask our help desk</button></div>');
+    var panel=raEl('<div class="kb-panel"></div>');
+    panel.appendChild(raEl('<div class="kb-head">Help desk <span>close</span></div>'));
+    RA_FAQ.forEach(function(f){
+      var item=raEl('<div class="faq"><q>'+f[0]+'</q><p>'+f[1]+'</p></div>');
+      item.querySelector('q').onclick=function(){ item.classList.toggle('open'); };
+      panel.appendChild(item);
+    });
+    panel.querySelector('.kb-head span').onclick=function(){panel.classList.remove('open');};
+    link.querySelector('button').onclick=function(){panel.classList.toggle('open');};
+    raBody.appendChild(link);
+    raBody.appendChild(panel);
+  }
+
+  /* ---------- handoff ---------- */
+  function raScreenHandoff(){
+    raStatus.textContent='Almost done';
+    raBody.innerHTML='';
+    var creator = regFlow==='creator';
+    var lead = creator
+      ? 'Perfect \u2014 I\u2019ve got all your details. Two quick things are left, and these you\u2019ll do on the form:'
+      : 'Perfect \u2014 I\u2019ve got all your details. Three quick things are left, and these you\u2019ll do on the form:';
+    raBody.appendChild(raEl('<div class="msg">'+raAv()+'<div class="bubble">'+lead+'</div></div>'));
+    var hSteps = creator
+      ? '<li>Upload your profile photo, a clear photo of your ID, and your teaser videos</li>'+
+        '<li>Read and sign the consent form \u2014 digital signature, black or blue, your choice</li>'
+      : '<li>Upload your profile photo</li>'+
+        '<li>Upload your ID \u2014 front and back</li>'+
+        '<li>Read and sign the consent form \u2014 digital signature, black or blue, your choice</li>';
+    raBody.appendChild(raEl('<ul class="step-list">'+hSteps+'</ul>'));
+
+    var QL=raActiveQuestions();
+    var recap=raEl('<details class="recap"><summary>Review my answers ('+QL.length+')</summary></details>');
+    var tbl=raEl('<table></table>');
+    QL.forEach(function(q){
+      var v=raState.answers[q.id];
+      if(v==null||v==='') v='\u2014';
+      if(Object.prototype.toString.call(v)==='[object Array]') v=v.join(', ');
+      if(q.id==='password'||q.id==='confirmPassword') v='\u2022\u2022\u2022\u2022\u2022\u2022';
+      tbl.appendChild(raEl('<tr><td>'+raPretty(q.id)+'</td><td>'+String(v)+'</td></tr>'));
+    });
+    recap.appendChild(tbl);
+    raBody.appendChild(recap);
+
+    var row=raEl('<div class="nav"></div>');
+    var back=raEl('<button type="button" class="btn btn-ghost">\u2190 Back</button>');
+    back.onclick=function(){raState.idx=raActiveQuestions().length-1;raRenderQuestion();};
+    var cont=raEl('<button type="button" class="btn btn-gold">Continue to upload \u2192</button>');
+    cont.onclick=function(){
+      raApplyToForm();
+      raShowForm(regFlow==='creator'?6:4);
+    };
+    row.appendChild(back);row.appendChild(cont);
+    raBody.appendChild(row);
+  }
+
+  /* ---------- write wizard answers into the real form fields ---------- */
+  function raApplyToForm(){
+    raActiveQuestions().forEach(function(q){
+      var v=raState.answers[q.id];
+      if(v==null) return;
+      if(q.id==='platforms'){
+        var picks=v||[];
+        Array.prototype.slice.call(platWrap.querySelectorAll('input[type=checkbox]')).forEach(function(c){
+          var on=picks.indexOf(c.value)>=0;
+          c.checked=on;
+          if(c.parentNode) c.parentNode.classList.toggle('on',on);
+        });
+        return;
+      }
+      var fld=$('f_'+q.id);
+      if(fld) fld.value=v;
+    });
+  }
+
+  /* ---------- reveal the real form ---------- */
+  function raShowForm(stepNum){
+    $('regAssistant').style.display='none';
+    $('pills').style.display='';
+    $('regCard').style.display='';
+    $('progressWrap').style.display='';
+    var bw=$('raBackWrap');if(bw)bw.style.display='';
+    showStep(stepNum);
+  }
+
+  /* ---------- "complete manually" ---------- */
+  function raScreenManual(){
+    raApplyToForm();   // harmless: nothing answered yet, but keeps state consistent
+    raShowForm(FLOW_STEPS[regFlow][0]);
+    var bw=$('raBackWrap');if(bw)bw.style.display='';
+  }
+
+  function raReset(){
+    raState={answers:{},idx:0};
+    $('pills').style.display='none';
+    $('regCard').style.display='none';
+    $('progressWrap').style.display='none';
+    var bw=$('raBackWrap');if(bw)bw.style.display='none';
+    $('regAssistant').style.display='';
+    raScreenGreeting();
+  }
+
+  $('raRestart').addEventListener('click',raReset);
+  var _bl=$('raBackLink');if(_bl)_bl.addEventListener('click',function(ev){ev.preventDefault();
+    // FIX 5: go back to the freelance/studio start, not the assistant
+    var rc=$('regCard');if(rc)rc.style.display='none';
+    var pills=$('pills');if(pills)pills.style.display='none';
+    var pw=$('progressWrap');if(pw)pw.style.display='none';
+    if(window.luxeBackToChoice)window.luxeBackToChoice();
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  window.raScreenManual=raScreenManual;
+  var _ra=$('regAssistant');if(_ra)_ra.style.display='none';
+})();
+})();
+</script>
+<script>
+/* Luxe freelance/studio flow — self-contained */
+(function(){
+  function $id(id){return document.getElementById(id);}
+  window.stopIntroVideo=function(cb){
+    var wrap=$id("introWrap"),v=$id("introVideo");
+    if(v)v.loop=false;
+    if(wrap){wrap.style.transition="opacity .5s ease,max-height .5s ease,margin .5s ease";wrap.style.opacity="0";
+      setTimeout(function(){if(v){try{v.pause();}catch(e){}}wrap.style.maxHeight="0";wrap.style.margin="0";wrap.style.overflow="hidden";if(cb)cb();},500);
+    }else if(cb){cb();}
+  };
+  window.luxeChoose=function(path){
+    stopIntroVideo(function(){
+      var host=$id("luxeFlowContent");if(!host)return;
+      host.innerHTML=(path==="freelance")?luxeFreelanceHTML():luxeStudioHTML();
+      host.style.display="block";
+      var li=$id("luxeLiveImage");if(li)li.style.display="none";
+      var so=$id("luxeStartOver");if(so)so.style.display="block";
+    });
+  };
+  window.luxeBackToChoice=function(){
+    var host=$id("luxeFlowContent");if(host){host.style.display="none";host.innerHTML="";}
+    var so=$id("luxeStartOver");if(so)so.style.display="none";
+    var li=$id("luxeLiveImage");if(li)li.style.display="";
+    var wrap=$id("introWrap"),v=$id("introVideo");
+    if(wrap){wrap.style.opacity="1";wrap.style.maxHeight="";wrap.style.margin="";wrap.style.overflow="";}
+    if(v){v.loop=true;try{v.play();}catch(e){}}
+  };
+  window.luxeStartStudioReg=function(){
+    var host=$id("luxeFlowContent");if(host)host.style.display="none";
+    var so=$id("luxeStartOver");if(so)so.style.display="none";
+    var li=$id("luxeLiveImage");if(li)li.style.display="none";
+    // open the real registration form directly
+    if(window.raScreenManual){try{raScreenManual();}catch(e){}}
+    var rc=$id("regCard");if(rc){rc.style.display="";rc.scrollIntoView({behavior:"smooth",block:"start"});}
+  };
+  function luxeStudioHTML(){
+    return '<div class="luxe-flow-card"><div class="luxe-flow-top"><h3 class="luxe-flow-h">Studio Association</h3></div>'
+      + '<div class="luxe-scroll">'
+      + '<p>Luxe Model Collective is a webcam talent management platform designed to help creators manage their online presence. The system features a mobile-friendly interface with live chat, photo uploads, AI knowledgebase tools, and a Performer Dashboard for tracking earnings and accessing training.</p>'
+      + '<div class="luxe-reach"><div class="lrc"><b>40M+</b><span>Webcam Modeling &mdash; potential viewers globally</span></div><div class="lrc"><b>131M+</b><span>Content Creator &mdash; viewers incl. Playboy live</span></div></div>'
+      + '<div class="luxe-svc-t">Services included</div>'
+      + '<ul class="luxe-svc"><li>Fully managed fast-track webcam model system</li><li>Professional, state-of-the-art training and mentoring</li><li>Premium profile content</li><li>Marketing and promotions</li><li>Video production and editing</li><li>Content distribution</li><li>Networking and social media presence</li></ul>'
+      + '<p class="luxe-note">No experience required &mdash; designed for both amateur and experienced models dedicated to their craft.</p>'
+      + '<div class="luxe-agr-title">Model Agreement</div><div class="luxe-agr">'
+      + '<p>This Agreement is entered into by and between Luxe Model Collective ("Agency") and the applicant ("Model") completing this registration. The Model enters into this Agreement as, and shall continue to be, an independent contractor.</p>'
+      + '<p><b>1. Age Verification (18+).</b> The Model represents and certifies they are at least eighteen (18) years of age, and all information provided is true and accurate. Any misrepresentation of age voids this Agreement immediately.</p>'
+      + '<p><b>2. Appointment.</b> The Model appoints Luxe Model Collective to represent them in matters regarding modeling, content creation, camming, and related business for the platforms coordinated by the Agency.</p>'
+      + '<p><b>3. Consent to Adult Content.</b> The Model acknowledges the services involve the creation, performance, streaming, and distribution of adult-oriented content, entered into freely and voluntarily.</p>'
+      + '<p><b>4. Agency Compensation.</b> The Agency shall retain a set percentage of all monies, tokens, fees, and tips received, with the Model receiving the remainder as stated at registration.</p>'
+      + '<p><b>5. Content Ownership.</b> The Model retains rights to their likeness and grants the Agency a license to use, publish, and promote the Model\'s name, stage name, and content for the duration of the term.</p>'
+      + '<p><b>6. Independent Contractor.</b> For taxes and regulations, the Model is an independent contractor responsible for their own fees.</p>'
+      + '<p><b>7. Professional Conduct.</b> Both Parties will conduct themselves professionally. The Agency may terminate on thirty (30) days\' notice for breach; the Model may terminate immediately for Agency breach.</p>'
+      + '<p><b>8. Confidentiality.</b> Both Parties agree to maintain strict confidentiality except as required by law.</p>'
+      + '<p><b>9. Termination.</b> Either Party may sever this Agreement by written notice. If the Agency terminates, it continues services for no more than thirty (30) days.</p>'
+      + '<p><b>10. Work Responsibilities.</b> If the Model misses scheduled sessions (streams, bookings, or content commitments) on repeated occasions without prior notice, the Agency may terminate without prior notice.</p>'
+      + '<p><b>11. Governing Law.</b> Disputes will first be settled amicably; failing that, in the courts of the applicable jurisdiction.</p>'
+      + '<p>By proceeding with registration and signing, the Model acknowledges they have read, understood, and agree to these terms. A personalized, signed copy will be generated and emailed upon completion of registration.</p>'
+      + '</div></div>'
+      + '<div class="luxe-flow-bottom"><span class="luxe-plat-settings">Platform: <a href="/dashboard.html#settings" target="_blank">Settings</a></span>'
+      + '<button type="button" class="luxe-btn" onclick="luxeStartStudioReg()">Start Registration &rarr;</button></div></div>';
+  }
+  function luxeFreelanceHTML(){
+    var links=[["Bongacams","https://bongamodels.com?fuid=Ezmator7700"],["My.Club","https://my.club/invite/005sn9x"],["Live Jasmin","https://modelcenter.livejasmin.com/PC_2431014"],["xVideos","https://my.sheer.com/referral/luxemodels/join"]];
+    var btns=links.map(function(l){return '<a class="luxe-ref" href="'+l[1]+'" target="_blank" rel="noopener">'+l[0]+' &#8599;</a>';}).join("");
+    return '<div class="luxe-flow-card"><div class="luxe-flow-top"><h3 class="luxe-flow-h">Independent Freelance Model</h3></div>'
+      + '<div class="luxe-scroll"><p>Freelance modeling is a self-represented career where you act as your own agent, taking total control of your bookings, portfolio, and rates. It offers immense flexibility and lets you keep 100% of your earnings, though it requires strong entrepreneurial skills for consistent marketing and networking.</p>'
+      + '<div class="luxe-svc-t">Select Your Platform</div><div class="luxe-refs">'+btns+'</div></div></div>';
+  }
+})();
+</script>
+<style>
+.luxe-flow-card{background:#0e1422;border:1px solid #2a2f3e;border-radius:12px;padding:20px;margin-top:14px;color:#c8ccd8}
+.luxe-flow-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.luxe-flow-h{color:#e8eaf0;font-size:18px;margin:0}
+.luxe-scroll{max-height:300px;overflow-y:auto;padding-right:8px;margin-top:8px}
+.luxe-flow-card p{font-size:14px;line-height:1.65;margin:0 0 14px}
+.luxe-reach{display:flex;gap:12px;flex-wrap:wrap;margin:14px 0}
+.luxe-reach .lrc{flex:1;min-width:150px;background:#0b0f1a;border:1px solid #2a2f3e;border-radius:10px;padding:12px;text-align:center}
+.luxe-reach .lrc b{display:block;font-size:22px;color:#d4a830}
+.luxe-reach .lrc span{font-size:11px;color:#8a8fa8}
+.luxe-svc-t{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#d4a830;margin:16px 0 8px}
+.luxe-svc{margin:0;padding-left:18px;font-size:14px}.luxe-svc li{margin-bottom:5px}
+.luxe-note{font-style:italic;color:#8a8fa8;margin-top:12px}
+.luxe-agr-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#d4a830;margin:18px 0 8px;padding-top:14px;border-top:1px solid #2a2f3e}
+.luxe-agr{font-size:12.5px;line-height:1.7;color:#b8bcc8}.luxe-agr p{margin:0 0 10px}.luxe-agr b{color:#d4d8e4}
+.luxe-refs{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0}
+.luxe-ref{display:inline-block;background:#12182a;border:1px solid #2a2f3e;border-radius:8px;padding:10px 18px;color:#e8eaf0;text-decoration:none;font-weight:600;font-size:14px}
+.luxe-ref:hover{border-color:#d4a830;color:#d4a830}
+.luxe-flow-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:14px;border-top:1px solid #2a2f3e;flex-wrap:wrap;gap:10px}
+.luxe-plat-settings{font-size:13px;color:#8a8fa8}.luxe-plat-settings a{color:#d4a830;text-decoration:none}
+.luxe-btn{background:#d4a830;color:#0e1117;border:none;border-radius:8px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer}
+</style>
+</body>
+</html>

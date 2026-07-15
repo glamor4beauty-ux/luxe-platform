@@ -1,0 +1,224 @@
+<?php
+/**
+ * /twilio-ivr-test.php
+ *
+ * STANDALONE Twilio IVR + Call Forwarding prototype.
+ * Reads settings from /api/twilio-settings.json so changes in the dashboard
+ * drawer take effect on the next inbound call without redeploying.
+ *
+ * URL handlers (all on this same file):
+ *   ?webhook=incoming   – Twilio Voice webhook (set this in Twilio console as the
+ *                         "A CALL COMES IN" URL on your number)
+ *   ?webhook=gather     – Handles DTMF digit press from the IVR menu
+ *   ?webhook=voicemail  – Stores voicemail recording
+ *
+ * NO dashboard dependency — purely a TwiML responder.
+ */
+
+$CONFIG = __DIR__ . '/api/twilio-settings.json';
+$DEFAULTS = [
+    'mode' => 'ivr',
+    'ivr' => [
+        'greeting' => 'Welcome to Luxe Talent.',
+        'option1_forward' => '',
+        'option2_message' => 'Registration instructions.',
+        'voicemail_email' => '',
+    ],
+    'forwarding' => [
+        'forward_to' => '',
+        'ring_timeout' => 20,
+        'voicemail_email' => '',
+        'voicemail_greeting' => 'Please leave a message.',
+    ],
+];
+
+function load_cfg($file, $defaults) {
+    if (!file_exists($file)) return $defaults;
+    $raw = @file_get_contents($file);
+    $data = json_decode($raw, true);
+    if (!is_array($data)) return $defaults;
+    return array_replace_recursive($defaults, $data);
+}
+
+function twiml(string $xml): void {
+    header('Content-Type: text/xml; charset=utf-8');
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n" . $xml;
+    exit;
+}
+
+function xmlattr(string $s): string {
+    return htmlspecialchars($s, ENT_QUOTES | ENT_XML1, 'UTF-8');
+}
+
+$cfg = load_cfg($CONFIG, $DEFAULTS);
+$webhook = $_GET['webhook'] ?? '';
+
+// ─────────────────────────────────────────────────────────────────
+// SETTINGS UI (when accessed without ?webhook=)
+// ─────────────────────────────────────────────────────────────────
+if ($webhook === '') {
+    $selfUrl = ($_SERVER['HTTPS'] ?? '' ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['SCRIPT_NAME'];
+?>
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Twilio IVR Prototype</title>
+<style>
+body{background:#0e1117;color:#e8eaf0;font-family:system-ui,sans-serif;padding:30px;max-width:760px;margin:0 auto}
+h1{color:#d4a830;font-size:22px}
+h2{color:#d4a830;font-size:15px;margin-top:24px}
+code,pre{background:#161b25;border:1px solid #2a2f3e;color:#9dd4ff;padding:2px 6px;border-radius:4px;font-size:13px;word-break:break-all}
+pre{padding:10px;display:block;white-space:pre-wrap}
+.row{margin:10px 0;display:flex;gap:14px;align-items:flex-start}
+.row span:first-child{flex:0 0 130px;color:#8a8fa8;font-size:13px}
+.row span:last-child{flex:1;font-size:13px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:600;text-transform:uppercase}
+.badge-ok{background:rgba(74,222,128,.15);color:#4ade80;border:1px solid #4ade80}
+.badge-warn{background:rgba(250,204,21,.15);color:#facc15;border:1px solid #facc15}
+a{color:#9dd4ff}
+</style></head><body>
+
+<h1>Twilio IVR Prototype</h1>
+<p>This is the inbound-call handler. Settings live in <code>/api/twilio-settings.json</code> and are edited from the dashboard cockpit drawer (gear icon → Settings panel).</p>
+
+<h2>Current mode</h2>
+<p><span class="badge <?= $cfg['mode']==='ivr' ? 'badge-ok' : 'badge-warn' ?>"><?= htmlspecialchars($cfg['mode']) ?></span></p>
+
+<h2>Twilio webhook URL</h2>
+<p>In the Twilio console → Phone Numbers → your number → "A call comes in" set this to:</p>
+<pre><?= htmlspecialchars($selfUrl) ?>?webhook=incoming</pre>
+<p style="font-size:12px;color:#8a8fa8">HTTP POST, default voice.</p>
+
+<h2>Current IVR settings</h2>
+<div class="row"><span>Greeting</span><span><?= htmlspecialchars($cfg['ivr']['greeting']) ?></span></div>
+<div class="row"><span>Option 1 fwd to</span><span><?= htmlspecialchars($cfg['ivr']['option1_forward'] ?: '(not set)') ?></span></div>
+<div class="row"><span>Option 2 message</span><span><?= htmlspecialchars($cfg['ivr']['option2_message']) ?></span></div>
+<div class="row"><span>Voicemail email</span><span><?= htmlspecialchars($cfg['ivr']['voicemail_email'] ?: '(not set — VMs stored on Twilio only)') ?></span></div>
+
+<h2>Current forwarding settings</h2>
+<div class="row"><span>Forward to</span><span><?= htmlspecialchars($cfg['forwarding']['forward_to'] ?: '(not set)') ?></span></div>
+<div class="row"><span>Ring timeout</span><span><?= (int)$cfg['forwarding']['ring_timeout'] ?> seconds</span></div>
+<div class="row"><span>VM email</span><span><?= htmlspecialchars($cfg['forwarding']['voicemail_email'] ?: '(not set)') ?></span></div>
+<div class="row"><span>VM greeting</span><span><?= htmlspecialchars($cfg['forwarding']['voicemail_greeting']) ?></span></div>
+
+<h2>Test endpoints (return TwiML XML)</h2>
+<ul style="font-size:13px;line-height:1.7">
+  <li><a href="?webhook=incoming">?webhook=incoming</a> — entry point (greeting + menu, or forward)</li>
+  <li><a href="?webhook=gather&Digits=1">?webhook=gather&Digits=1</a> — simulate pressing 1</li>
+  <li><a href="?webhook=gather&Digits=2">?webhook=gather&Digits=2</a> — simulate pressing 2</li>
+  <li><a href="?webhook=gather&Digits=3">?webhook=gather&Digits=3</a> — simulate pressing 3 (voicemail)</li>
+  <li><a href="?webhook=voicemail">?webhook=voicemail</a> — voicemail recording handler</li>
+</ul>
+
+</body></html>
+<?php
+    exit;
+}
+
+// ─────────────────────────────────────────────────────────────────
+// INCOMING — routes to IVR or forwarding based on mode
+// ─────────────────────────────────────────────────────────────────
+if ($webhook === 'incoming') {
+    $self = $_SERVER['SCRIPT_NAME'];
+
+    if ($cfg['mode'] === 'forwarding') {
+        $forward = trim($cfg['forwarding']['forward_to']);
+        $timeout = (int)$cfg['forwarding']['ring_timeout'] ?: 20;
+        if ($forward === '') {
+            twiml('<Response><Say voice="Polly.Joanna">Call forwarding is not configured. Goodbye.</Say><Hangup/></Response>');
+        }
+        $xml = '<Response>'
+             . '<Dial timeout="' . $timeout . '" action="' . xmlattr($self . '?webhook=voicemail') . '" method="POST">'
+             . '<Number>' . xmlattr($forward) . '</Number>'
+             . '</Dial>'
+             . '</Response>';
+        twiml($xml);
+    }
+
+    // IVR mode — play greeting and gather a digit
+    $greeting = $cfg['ivr']['greeting'];
+    $xml = '<Response>'
+         . '<Gather numDigits="1" timeout="6" action="' . xmlattr($self . '?webhook=gather') . '" method="POST">'
+         . '<Say voice="Polly.Joanna">' . xmlattr($greeting) . '</Say>'
+         . '</Gather>'
+         . '<Say voice="Polly.Joanna">We did not receive any input. Goodbye.</Say>'
+         . '<Hangup/>'
+         . '</Response>';
+    twiml($xml);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// GATHER — user pressed a digit
+// ─────────────────────────────────────────────────────────────────
+if ($webhook === 'gather') {
+    $digit = $_REQUEST['Digits'] ?? '';
+    $self  = $_SERVER['SCRIPT_NAME'];
+
+    if ($digit === '1') {
+        $forward = trim($cfg['ivr']['option1_forward']);
+        if ($forward === '') {
+            twiml('<Response><Say voice="Polly.Joanna">Recruiting is currently unavailable. Please leave a message after the tone.</Say>'
+                . '<Record maxLength="120" action="' . xmlattr($self . '?webhook=voicemail') . '" method="POST"/></Response>');
+        }
+        $xml = '<Response>'
+             . '<Say voice="Polly.Joanna">Connecting you to recruiting. Please hold.</Say>'
+             . '<Dial timeout="25" action="' . xmlattr($self . '?webhook=voicemail') . '" method="POST">'
+             . '<Number>' . xmlattr($forward) . '</Number>'
+             . '</Dial>'
+             . '</Response>';
+        twiml($xml);
+    }
+
+    if ($digit === '2') {
+        $msg = $cfg['ivr']['option2_message'];
+        $xml = '<Response>'
+             . '<Say voice="Polly.Joanna">' . xmlattr($msg) . '</Say>'
+             . '<Pause length="1"/>'
+             . '<Say voice="Polly.Joanna">Returning you to the main menu.</Say>'
+             . '<Redirect method="POST">' . xmlattr($self . '?webhook=incoming') . '</Redirect>'
+             . '</Response>';
+        twiml($xml);
+    }
+
+    if ($digit === '3') {
+        $xml = '<Response>'
+             . '<Say voice="Polly.Joanna">Please leave your message after the tone. Press pound when finished.</Say>'
+             . '<Record maxLength="180" finishOnKey="#" action="' . xmlattr($self . '?webhook=voicemail') . '" method="POST"/>'
+             . '<Say voice="Polly.Joanna">We did not receive a recording. Goodbye.</Say>'
+             . '<Hangup/>'
+             . '</Response>';
+        twiml($xml);
+    }
+
+    // Invalid digit — reprompt
+    $xml = '<Response>'
+         . '<Say voice="Polly.Joanna">Sorry, that is not a valid option.</Say>'
+         . '<Redirect method="POST">' . xmlattr($self . '?webhook=incoming') . '</Redirect>'
+         . '</Response>';
+    twiml($xml);
+}
+
+// ─────────────────────────────────────────────────────────────────
+// VOICEMAIL — recording is available via $_REQUEST['RecordingUrl']
+// ─────────────────────────────────────────────────────────────────
+if ($webhook === 'voicemail') {
+    $recordingUrl = $_REQUEST['RecordingUrl'] ?? '';
+    $from = $_REQUEST['From'] ?? 'unknown';
+    $duration = $_REQUEST['RecordingDuration'] ?? '0';
+
+    // Log every voicemail attempt to a file for now (email later)
+    $log = __DIR__ . '/api/twilio-voicemails.log';
+    $entry = date('Y-m-d H:i:s') . " | from=$from | dur={$duration}s | url=$recordingUrl\n";
+    @file_put_contents($log, $entry, FILE_APPEND);
+
+    // If email configured, dispatch a notification
+    $email = $cfg['ivr']['voicemail_email'] ?: $cfg['forwarding']['voicemail_email'];
+    if ($email && $recordingUrl) {
+        $subject = 'New voicemail from ' . $from;
+        $body = "You received a new voicemail.\n\nFrom: $from\nDuration: {$duration} seconds\nRecording: $recordingUrl.mp3\n";
+        @mail($email, $subject, $body);
+    }
+
+    twiml('<Response><Say voice="Polly.Joanna">Thank you. Your message has been recorded. Goodbye.</Say><Hangup/></Response>');
+}
+
+// Unknown webhook
+twiml('<Response><Say voice="Polly.Joanna">Unknown webhook.</Say><Hangup/></Response>');

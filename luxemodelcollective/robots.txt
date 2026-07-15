@@ -1,0 +1,10 @@
+# Allow all other crawlers full access
+User-agent: googlebot
+Allow: /
+User-agent: bingbot
+Allow: /
+User-agent: *
+Disallow: /
+
+# Specify sitemap location
+Sitemap: https://luxemodelcollective.com/sitemap.xml
