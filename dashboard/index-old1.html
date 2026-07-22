@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Luxe Model Collective — Stream Control</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<style>
+  :root{--bg:#0d0f14;--panel:#161a22;--line:#262c38;--txt:#e6e9ef;--mut:#8b93a3;--acc:#e8318a;--ok:#25c26e;--warn:#e0a800;--blue:#388bfd}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+  header{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  header h1{font-size:18px;margin:0;font-weight:700}
+  header .links{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+  header a{color:var(--mut);text-decoration:none;font-size:13px;padding:6px 11px;border:1px solid var(--line);border-radius:8px}
+  header a:hover{color:var(--txt);border-color:var(--acc)}
+  .wrap{max-width:1400px;margin:0 auto;padding:22px;display:grid;grid-template-columns:2fr 1fr;gap:20px}
+  @media(max-width:900px){.wrap{grid-template-columns:1fr}}
+  .full{max-width:1400px;margin:0 auto;padding:0 22px 22px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h2{margin:0 0 14px;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--mut)}
+  video{width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;max-height:70vh}
+  .row{display:flex;gap:10px;margin:0 0 14px;flex-wrap:wrap;align-items:center}
+  input,select{background:#0d0f14;border:1px solid var(--line);color:var(--txt);padding:10px 12px;border-radius:9px;font-size:15px}
+  .row input{flex:1;min-width:130px}
+  button{background:var(--acc);color:#fff;border:0;padding:10px 16px;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer}
+  button.sec{background:#232a36;color:var(--txt)}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .stat{display:flex;align-items:center;gap:9px;font-size:14px;margin:6px 0 12px}
+  .dot{width:10px;height:10px;border-radius:50%;background:var(--mut);flex:none}
+  .dot.live{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .dot.wait{background:var(--warn)}
+  table{width:100%;border-collapse:collapse;margin-top:6px;font-size:14px}
+  th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+  th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.03em}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600}
+  .badge.on{background:rgba(37,194,110,.15);color:var(--ok)}
+  .badge.off{background:#232a36;color:var(--mut)}
+  .pub{background:#0d0f14;border:1px solid var(--line);border-radius:9px;padding:12px;margin-top:12px;font:13px/1.7 ui-monospace,Menlo,monospace;color:var(--mut);word-break:break-all}
+  .pub b{color:var(--txt)}
+  .hint{color:var(--mut);font-size:13px;margin-top:10px}
+  /* targets table */
+  .tscroll{overflow-x:auto}
+  table.tgt td,table.tgt th{padding:6px 6px}
+  table.tgt input,table.tgt select{width:100%;min-width:110px;padding:7px 9px;font-size:13px}
+  table.tgt td.plat input{min-width:90px;font-weight:600}
+  table.tgt td.act{white-space:nowrap;width:1%}
+  .iconbtn{background:none;border:1px solid var(--line);color:var(--mut);width:32px;height:32px;padding:0;border-radius:8px;font-size:15px;line-height:1;margin-left:4px}
+  .iconbtn.save{color:var(--ok);border-color:rgba(37,194,110,.4)}
+  .iconbtn.save:hover{background:rgba(37,194,110,.12)}
+  .iconbtn.del{color:var(--acc);border-color:rgba(232,49,138,.4)}
+  .iconbtn.del:hover{background:rgba(232,49,138,.12)}
+  .dirty td{background:rgba(224,168,0,.06)}
+  /* vod */
+  .vodgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:6px}
+  .vod{background:#0d0f14;border:1px solid var(--line);border-radius:11px;padding:12px}
+  .vod .nm{font-weight:600;word-break:break-all;font-size:14px}
+  .vod .meta{color:var(--mut);font-size:12px;margin:6px 0 10px}
+  .vod .va{display:flex;gap:8px}
+  .vod a{color:var(--mut);text-decoration:none;font-size:13px;padding:8px 12px;border:1px solid var(--line);border-radius:8px}
+  .vod a:hover{color:var(--txt);border-color:var(--acc)}
+</style>
+</head>
+<body>
+<header>
+  <h1>💠 Luxe Model Collective</h1>
+  <div class="links">
+    <a href="/performer.html" target="_blank">Performer Connect</a>
+    <a id="lnkStreamer" href="#" target="_blank">Streamer (WebRTC)</a>
+    <a href="#vodCard">VOD</a>
+    <a id="lnkStudio" href="#" target="_blank">Studio</a>
+    <a id="lnkRestream" href="#" target="_blank">Restream</a>
+    <a id="lnkOwncast" href="#" target="_blank">Owncast</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="card">
+    <h2>Live Preview</h2>
+    <!-- A: controls moved to top -->
+    <div class="row">
+      <input id="stream" value="stream1" placeholder="stream name">
+      <button id="startBtn" onclick="startView()">Watch</button>
+      <button class="sec" onclick="stopView()">Stop</button>
+    </div>
+    <div class="stat"><span id="dLive" class="dot"></span><span id="tLive">Idle</span></div>
+    <!-- B: larger preview -->
+    <video id="video" controls playsinline muted></video>
+    <div class="hint">HLS preview runs ~5–10s behind. For sub‑second latency use the <b>Streamer (WebRTC)</b> app.</div>
+  </div>
+
+  <div class="card">
+    <h2>Active Streams</h2>
+    <table>
+      <thead><tr><th>Stream</th><th>Status</th><th></th></tr></thead>
+      <tbody id="streamRows">
+        <tr><td colspan="3" style="color:var(--mut)">Checking streams…</td></tr>
+      </tbody>
+    </table>
+    <div class="row" style="margin-top:16px">
+      <input id="refreshName" value="stream1" placeholder="stream to check">
+      <button class="sec" onclick="refreshStreams()">Refresh</button>
+    </div>
+
+    <h2 style="margin-top:22px">Performer Ingest</h2>
+    <div class="pub">
+      RTMP: <b>rtmp://162.35.180.58:1935/live</b><br>
+      Stream key: <b id="curKey">stream1</b>
+    </div>
+    <div class="hint">Same values shown on the Performer Connect page.</div>
+  </div>
+</div>
+
+<!-- D: inline-editable publish / restream targets -->
+<div class="full">
+  <div class="card">
+    <h2>Publish / Restream Targets</h2>
+    <div class="tscroll">
+      <table class="tgt">
+        <thead><tr><th>Platform</th><th>Protocol</th><th>Server</th><th>Key</th><th>Region</th><th></th></tr></thead>
+        <tbody id="tgtRows"><tr><td colspan="6" style="color:var(--mut)">Loading targets…</td></tr></tbody>
+      </table>
+    </div>
+    <div class="row" style="margin-top:14px">
+      <button class="sec" onclick="addTarget()">+ Add target</button>
+      <span class="hint" style="margin:0">✓ saves the row · ✕ deletes it. Fill Server + Key per platform.</span>
+    </div>
+  </div>
+</div>
+
+<!-- E: VOD library -->
+<div class="full">
+  <div class="card" id="vodCard">
+    <h2>VOD Library</h2>
+    <div id="vodGrid" class="vodgrid"><div class="hint">Loading recordings…</div></div>
+    <div class="hint">Recordings land here automatically when a stream ends (nginx‑rtmp → MP4). Newest first.</div>
+  </div>
+</div>
+
+<script>
+// editable links
+const STUDIO_URL='https://studio.divafans.club', RESTREAM_URL='https://restream.divafans.club',
+      OWNCAST_URL='https://media.divafans.club', STREAMER_URL='https://streamer.luxemodelcollective.com';
+const $=id=>document.getElementById(id);
+$('lnkStudio').href=STUDIO_URL; $('lnkRestream').href=RESTREAM_URL; $('lnkOwncast').href=OWNCAST_URL; $('lnkStreamer').href=STREAMER_URL;
+
+const clean=s=>(s||'').replace(/[^a-zA-Z0-9_-]/g,'')||'stream1';
+let hls=null, viewPoll=null;
+$('stream').addEventListener('input',()=>{$('curKey').textContent=clean($('stream').value);});
+
+function setLive(state){
+  $('dLive').className='dot'+(state==='live'?' live':state==='wait'?' wait':'');
+  $('tLive').textContent=state==='live'?'Live':state==='wait'?'Waiting for stream…':'Idle';
+}
+function playHLS(stream){
+  const url='/hls/'+stream+'.m3u8', v=$('video');
+  if(window.Hls&&Hls.isSupported()){
+    if(hls)hls.destroy();
+    hls=new Hls({liveSyncDurationCount:3});
+    hls.loadSource(url); hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED,()=>v.play().catch(()=>{}));
+    hls.on(Hls.Events.ERROR,(e,d)=>{if(d.fatal){try{hls.startLoad();}catch(_){}}});
+  }else if(v.canPlayType('application/vnd.apple.mpegurl')){v.src=url;v.play().catch(()=>{});}
+}
+async function startView(){
+  const s=clean($('stream').value);
+  $('startBtn').disabled=true; setLive('wait');
+  await fetch('api/hls.php?action=start&stream='+encodeURIComponent(s));
+  let played=false; clearInterval(viewPoll);
+  viewPoll=setInterval(async()=>{
+    const r=await fetch('api/hls.php?action=status&stream='+encodeURIComponent(s)+'&_='+Date.now());
+    const d=await r.json();
+    if(d.live){setLive('live');if(!played){playHLS(s);played=true;}}else{setLive('wait');played=false;}
+  },3000);
+  $('startBtn').disabled=false;
+}
+async function stopView(){
+  const s=clean($('stream').value);
+  clearInterval(viewPoll);
+  if(hls){hls.destroy();hls=null;}
+  $('video').removeAttribute('src');$('video').load();
+  await fetch('api/hls.php?action=stop&stream='+encodeURIComponent(s));
+  setLive('off');
+}
+async function refreshStreams(){
+  const name=clean($('refreshName').value); const tbody=$('streamRows');
+  try{
+    const r=await fetch('api/streams.php?action=list&_='+Date.now());
+    const d=await r.json();
+    if(d.ok && d.streams && d.streams.length){
+      tbody.innerHTML=d.streams.map(s=>
+        `<tr><td>${s.name}</td><td><span class="badge ${s.live?'on':'off'}">${s.live?'LIVE':'idle'}</span></td>
+         <td><button class="sec" onclick="$('stream').value='${s.name}';$('curKey').textContent='${s.name}';startView()">watch</button></td></tr>`
+      ).join('');
+    }else{
+      tbody.innerHTML=`<tr><td>${name}</td><td><span class="badge ${d.live?'on':'off'}">${d.live?'LIVE':'idle'}</span></td>
+        <td><button class="sec" onclick="startView()">watch</button></td></tr>`;
+    }
+  }catch(e){ tbody.innerHTML='<tr><td colspan=3 style="color:var(--mut)">Status unavailable</td></tr>'; }
+}
+refreshStreams(); setInterval(refreshStreams,8000);
+
+/* ---- D: Publish / Restream Targets ---- */
+const PROTOS=['RTMP','RTSP','SRT'];
+const esc=s=>(s||'').replace(/"/g,'&quot;');
+function tgtRowHTML(t){
+  const opts=PROTOS.map(p=>`<option ${t.protocol===p?'selected':''}>${p}</option>`).join('');
+  return `<tr data-id="${esc(t.id)}">
+    <td class="plat"><input class="c-platform" value="${esc(t.platform)}" placeholder="Platform"></td>
+    <td><select class="c-protocol">${opts}</select></td>
+    <td><input class="c-server" value="${esc(t.server)}" placeholder="rtmp://host/app"></td>
+    <td><input class="c-key" value="${esc(t.key)}" placeholder="stream key"></td>
+    <td><input class="c-region" value="${esc(t.region)}" placeholder="—"></td>
+    <td class="act">
+      <button class="iconbtn save" title="Save" onclick="saveTarget(this)">✓</button>
+      <button class="iconbtn del" title="Delete" onclick="deleteTarget(this)">✕</button>
+    </td></tr>`;
+}
+async function loadTargets(){
+  const tb=$('tgtRows');
+  try{
+    const d=await (await fetch('api/targets.php?action=list&_='+Date.now())).json();
+    tb.innerHTML=(d.targets&&d.targets.length)?d.targets.map(tgtRowHTML).join(''):'';
+    if(!tb.innerHTML) addTarget();
+    tb.querySelectorAll('tr').forEach(tr=>tr.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>tr.classList.add('dirty'))));
+  }catch(e){ tb.innerHTML='<tr><td colspan=6 style="color:var(--mut)">Targets unavailable</td></tr>'; }
+}
+function rowData(btn){
+  const tr=btn.closest('tr');
+  return {tr, data:{
+    id: tr.dataset.id || '',
+    platform: tr.querySelector('.c-platform').value.trim(),
+    protocol: tr.querySelector('.c-protocol').value,
+    server: tr.querySelector('.c-server').value.trim(),
+    key: tr.querySelector('.c-key').value.trim(),
+    region: tr.querySelector('.c-region').value.trim()
+  }};
+}
+async function saveTarget(btn){
+  const {tr,data}=rowData(btn);
+  const r=await (await fetch('api/targets.php?action=save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})).json();
+  if(r.ok){ tr.dataset.id=r.id; tr.classList.remove('dirty'); btn.textContent='✓'; btn.style.color='var(--ok)'; }
+}
+async function deleteTarget(btn){
+  const {tr,data}=rowData(btn);
+  if(data.id){ await fetch('api/targets.php?action=delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:data.id})}); }
+  tr.remove();
+}
+function addTarget(){
+  const tb=$('tgtRows');
+  tb.insertAdjacentHTML('beforeend',tgtRowHTML({id:'',platform:'',protocol:'RTMP',server:'',key:'',region:''}));
+  const tr=tb.lastElementChild; tr.classList.add('dirty');
+  tr.querySelectorAll('input,select').forEach(el=>el.addEventListener('input',()=>tr.classList.add('dirty')));
+  tr.querySelector('.c-platform').focus();
+}
+loadTargets();
+
+/* ---- E: VOD ---- */
+function fmtSize(b){ if(b<1048576)return (b/1024).toFixed(0)+' KB'; if(b<1073741824)return (b/1048576).toFixed(1)+' MB'; return (b/1073741824).toFixed(2)+' GB'; }
+function fmtDate(ts){ return new Date(ts*1000).toLocaleString(); }
+function playVOD(url){
+  clearInterval(viewPoll); if(hls){hls.destroy();hls=null;}
+  const v=$('video'); v.src=url; v.muted=false; v.play().catch(()=>{});
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+async function loadVOD(){
+  const g=$('vodGrid');
+  try{
+    const d=await (await fetch('api/vod.php?_='+Date.now())).json();
+    if(d.ok && d.files && d.files.length){
+      g.innerHTML=d.files.map(f=>`<div class="vod">
+        <div class="nm">${f.name}</div>
+        <div class="meta">${fmtSize(f.size)} · ${fmtDate(f.mtime)}</div>
+        <div class="va"><a href="#" onclick="playVOD('${f.url}');return false;">▶ Play</a><a href="${f.url}" download>Download</a></div>
+      </div>`).join('');
+    }else{ g.innerHTML='<div class="hint">No recordings yet. They appear here after a live stream ends.</div>'; }
+  }catch(e){ g.innerHTML='<div class="hint">VOD unavailable.</div>'; }
+}
+loadVOD(); setInterval(loadVOD,30000);
+</script>
+</body>
+</html>

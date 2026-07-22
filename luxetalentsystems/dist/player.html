@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live</title>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<style>
+  html,body{margin:0;padding:0;height:100%;overflow:hidden;background:#000}
+  .stage{position:absolute;inset:0;background:#000}
+  video{position:absolute;inset:0;width:100%;height:100%;background:#000}
+  #sb{object-fit:cover;z-index:1}
+  #lv{object-fit:contain;z-index:2;display:none}
+</style>
+</head>
+<body>
+<div class="stage">
+  <video id="sb" playsinline autoplay muted loop src="https://luxetalentsystems.com/uploads/standby.mp4"></video>
+  <video id="lv" controls playsinline muted></video>
+</div>
+<script>
+(function(){
+  var STREAM='stream1';
+  var HLS='https://dashboard.divafans.club/hls/'+STREAM+'.m3u8';
+  var lv=document.getElementById('lv'), sb=document.getElementById('sb');
+  function playSb(){ sb.play().catch(function(){}); }
+  playSb(); sb.addEventListener('canplay',playSb); document.addEventListener('click',playSb,{once:true});
+  function up(){ lv.style.display='block'; lv.play().catch(function(){}); }
+  function down(){ lv.style.display='none'; playSb(); }
+  if(window.Hls && Hls.isSupported()){
+    var h=new Hls({liveSyncDurationCount:3});
+    h.on(Hls.Events.MANIFEST_PARSED, up);
+    h.on(Hls.Events.ERROR, function(e,d){ if(d.fatal){ down();
+      if(d.type===Hls.ErrorTypes.NETWORK_ERROR){ setTimeout(function(){ try{h.loadSource(HLS);h.startLoad();}catch(x){} },6000); }
+      else { try{h.recoverMediaError();}catch(x){} } } });
+    h.loadSource(HLS); h.attachMedia(lv);
+  } else if(lv.canPlayType('application/vnd.apple.mpegurl')){
+    lv.src=HLS; lv.addEventListener('loadedmetadata', up); lv.addEventListener('error', down);
+  }
+})();
+</script>
+</body>
+</html>

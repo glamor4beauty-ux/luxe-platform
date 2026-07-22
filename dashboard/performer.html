@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
-<title>Go Live — DivaFans</title>
+<title>Go Live — Luxe Model Collective</title>
 <style>
   :root{--bg:#0d0f14;--panel:#161a22;--line:#262c38;--txt:#e6e9ef;--mut:#8b93a3;--acc:#e8318a;--ok:#25c26e;--warn:#e0a800}
   *{box-sizing:border-box}
@@ -40,7 +40,7 @@
   .pane.active{display:block}
   .apps{font-size:13px;color:var(--mut);line-height:1.7;margin-top:8px}
   .apps b{color:var(--txt)}
-  .note{font-size:12px;color:var(--warn);margin-top:10px}
+  .note{font-size:12px;color:var(--mut);margin-top:10px}
 </style>
 </head>
 <body>
@@ -52,16 +52,16 @@
 <div class="wrap">
 
   <div class="tabs">
-    <div class="tab active" id="tabBrowser" onclick="showTab('browser')">📱 Browser Camera</div>
+    <div class="tab active" id="tabBrowser" onclick="showTab('browser')">📷 Camera (WebRTC)</div>
     <div class="tab" id="tabApp" onclick="showTab('app')">📲 Phone App</div>
   </div>
 
-  <!-- BROWSER CAMERA (WebRTC) -->
+  <!-- CAMERA (WebRTC via Kurento) -->
   <div class="pane active" id="paneBrowser">
     <div class="card" style="margin-top:12px">
       <div class="preview">
         <video id="cam" autoplay playsinline muted></video>
-        <div class="overlay" id="camOverlay">Tap "Enable Camera" to preview, then Go Live.</div>
+        <div class="overlay" id="camOverlay">Tap 📷 to enable your camera, then Go Live.</div>
       </div>
       <div class="field" style="margin-top:14px">
         <label>Your stream name</label>
@@ -70,11 +70,11 @@
         </div>
       </div>
       <div class="controls">
-        <button class="btn btn-cam" onclick="enableCam()" title="Enable/flip camera">📷</button>
+        <button class="btn btn-cam" onclick="enableCam()" title="Enable / flip camera">📷</button>
         <button class="btn btn-go" id="goBtn" onclick="goLive()">Go Live</button>
         <button class="btn btn-stop" id="endBtn" onclick="endLive()" disabled>End</button>
       </div>
-      <div class="note" id="webrtcNote">Browser publishing uses WebRTC (activates with Red5 Pro). Camera preview works now; full go-live turns on when WebRTC is enabled on the server.</div>
+      <div class="note" id="webrtcNote">Publishes straight from your camera — sub‑second latency. Viewers watch at <b>/watch.html</b> with your stream name.</div>
     </div>
   </div>
 
@@ -82,7 +82,7 @@
   <div class="pane" id="paneApp">
     <div class="card" style="margin-top:12px">
       <h2>Stream from a phone app</h2>
-      <p>Use any free RTMP camera app (e.g. Larix Broadcaster, Streamlabs, nginx-compatible broadcasters). Enter these two values in the app:</p>
+      <p>Prefer an RTMP camera app? Use any free broadcaster (Larix, Streamlabs). Enter these two values:</p>
       <div class="field">
         <label>Server / URL</label>
         <div class="copyrow">
@@ -105,7 +105,7 @@
         </div>
       </div>
       <div class="apps">
-        Suggested free apps: <b>Larix Broadcaster</b> (iOS/Android), <b>Streamlabs</b>, <b>nginx Broadcaster</b>. Set video to H.264, audio AAC, then start streaming with the values above.
+        Suggested free apps: <b>Larix Broadcaster</b> (iOS/Android), <b>Streamlabs</b>. Set video H.264, audio AAC, then start streaming with the values above. RTMP has ~5–10s latency; the Camera tab is sub‑second.
       </div>
     </div>
   </div>
@@ -123,8 +123,6 @@ function showTab(t){
   $('paneBrowser').classList.toggle('active',t==='browser');
   $('paneApp').classList.toggle('active',t==='app');
 }
-
-// keep stream name synced across both tabs
 function syncName(){
   const n=clean($('pname').value);
   $('rtmpKey').value=n;
@@ -141,49 +139,60 @@ async function enableCam(){
     $('cam').srcObject=camStream;
     $('camOverlay').style.display='none';
   }catch(e){
+    $('camOverlay').style.display='flex';
     $('camOverlay').textContent='Camera access denied or unavailable: '+e.message;
   }
 }
 
-/* WebRTC publish — wired for Red5 Pro's WHIP/WebSocket endpoint.
-   Future-proof: when Pro is enabled, set PUBLISH_ENDPOINT and this connects.
-   On free Red5 the endpoint is absent, so we surface a clear message instead of failing silently. */
-const PUBLISH_ENDPOINT = ''; // e.g. wss://streamer.divafans.club/ws or WHIP URL when Pro is on
-let pc=null;
+/* ---- WebRTC publish via Kurento signaling ---- */
+const SIGNAL_URL=(location.protocol==='https:'?'wss://':'ws://')+location.host+'/kurento-signal';
+const ICE=[
+  {urls:'stun:162.35.180.58:3478'},
+  {urls:'turn:162.35.180.58:3478',username:'luxe',credential:'Turn7700Luxe'}
+];
+let pc=null, sig=null;
+function sigSend(o){ if(sig&&sig.readyState===WebSocket.OPEN) sig.send(JSON.stringify(o)); }
+function note(t,warn){ const n=$('webrtcNote'); n.textContent=t; n.style.color=warn?'var(--warn)':'var(--mut)'; }
 
 async function goLive(){
   const name=clean($('pname').value);
   if(!camStream){ await enableCam(); if(!camStream) return; }
-  setLive('wait');
-  if(!PUBLISH_ENDPOINT){
-    setLive('off');
-    $('webrtcNote').textContent='Browser go-live needs WebRTC (Red5 Pro). For now use the "Phone App" tab with the RTMP values, or enable Pro to publish straight from this camera.';
-    $('webrtcNote').style.color='#e0a800';
-    showTab('app');
-    $('rtmpKey').value=name; syncName();
-    return;
-  }
-  // ---- WebRTC/WHIP publish (activates when PUBLISH_ENDPOINT set) ----
+  setLive('wait'); $('goBtn').disabled=true;
   try{
-    pc=new RTCPeerConnection({iceServers:[{urls:'stun:stun.l.google.com:19302'}]});
+    pc=new RTCPeerConnection({iceServers:ICE});
     camStream.getTracks().forEach(t=>pc.addTrack(t,camStream));
-    const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
-    const r=await fetch(PUBLISH_ENDPOINT+'?stream='+encodeURIComponent(name),{method:'POST',headers:{'Content-Type':'application/sdp'},body:offer.sdp});
-    const answer=await r.text();
-    await pc.setRemoteDescription({type:'answer',sdp:answer});
-    setLive('on'); $('goBtn').disabled=true; $('endBtn').disabled=false;
-  }catch(e){ setLive('off'); $('webrtcNote').textContent='Publish failed: '+e.message; }
+    pc.onicecandidate=e=>{ if(e.candidate) sigSend({id:'onIceCandidate',candidate:e.candidate}); };
+
+    sig=new WebSocket(SIGNAL_URL);
+    sig.onopen=async()=>{
+      const offer=await pc.createOffer({offerToReceiveAudio:false,offerToReceiveVideo:false});
+      await pc.setLocalDescription(offer);
+      sigSend({id:'presenter',name:name,sdpOffer:offer.sdp});
+    };
+    sig.onmessage=async(ev)=>{
+      const m=JSON.parse(ev.data);
+      if(m.id==='presenterResponse'){
+        if(m.response!=='accepted'){ note(m.message||'Could not go live.',true); endLive(); return; }
+        await pc.setRemoteDescription({type:'answer',sdp:m.sdpAnswer});
+        setLive('on'); $('endBtn').disabled=false;
+        note('You are LIVE. Viewers watch at /watch.html?name='+encodeURIComponent(name),false);
+      }else if(m.id==='iceCandidate'){ try{ await pc.addIceCandidate(m.candidate); }catch(e){} }
+      else if(m.id==='stopCommunication'){ endLive(); }
+    };
+    sig.onerror=()=>{ note('Signaling connection failed. Is the streamer service running?',true); endLive(); };
+    sig.onclose=()=>{};
+  }catch(e){ note('Publish failed: '+e.message,true); endLive(); }
 }
 function endLive(){
-  if(pc){pc.close();pc=null;}
+  sigSend({id:'stop'});
+  if(sig){ try{sig.close();}catch(e){} sig=null; }
+  if(pc){ try{pc.close();}catch(e){} pc=null; }
   setLive('off'); $('goBtn').disabled=false; $('endBtn').disabled=true;
 }
-
 function setLive(state){
   $('dot').className='dot'+(state==='on'?' on':state==='wait'?' wait':'');
   $('liveTxt').textContent=state==='on'?'LIVE':state==='wait'?'Connecting…':'Offline';
 }
-
 function copyVal(id,btn){
   const el=$(id); el.select(); el.setSelectionRange(0,99999);
   navigator.clipboard.writeText(el.value).then(()=>{const o=btn.textContent;btn.textContent='✓';setTimeout(()=>btn.textContent=o,1200);});

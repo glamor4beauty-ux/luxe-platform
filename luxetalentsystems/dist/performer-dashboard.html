@@ -410,6 +410,12 @@ a{color:var(--gold);text-decoration:none}
     <div class="action-btn" onclick="perfCalcOpen()">Calculator</div>
   </div>
 
+  <div class="home-card" style="text-align:center;padding:10px;margin-top:12px">
+    <span id="clockLocal" style="font-weight:600">Time: --:--</span>
+    <span style="color:var(--muted);margin:0 8px">|</span>
+    <span id="clockGmt3" style="font-weight:600">GMT-3 Time: --:--</span>
+  </div>
+
   <div class="home-card">
     <div class="home-card-title">Work Schedule <span style="font-size:11px;color:var(--muted);font-weight:400" id="schedWeekHome"></span></div>
     <div id="homeSchedule"><div style="color:var(--muted);font-size:12px">Loading...</div></div>
@@ -719,6 +725,17 @@ a{color:var(--gold);text-decoration:none}
     </div>
 
     <div class="st-section">
+      <div class="st-h">Timezone</div>
+      <div class="st-grid">
+        <div class="st-field">
+          <label>Your timezone</label>
+          <select id="stTimezone" style="width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;color-scheme:dark;outline:none"></select>
+          <div style="font-size:11px;color:#8a8fa8;margin-top:4px">Shown on your home screen next to your recruiter's time (GMT-3).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="st-section">
       <div class="st-actions">
         <button class="st-btn" onclick="stSave()" id="stSaveBtn">Save settings</button>
         <span class="st-status" id="stStatus"></span>
@@ -800,10 +817,39 @@ window.nav = function(screen) {
     if(screen==='personal') renderPersonal();
     if(screen==='earnings') loadEarnings();
     // removed: if(screen==='email')    emEnter();
-    if(screen==='settings') stEnter();
+    if(screen==='settings') { stEnter(); if(window.buildTZDropdown) buildTZDropdown(); }
     /* Clip4Sale now lives inside the Payouts screen as a pill */
     if(screen==='vidup')     { if (window.vidupPerfLoad) vidupPerfLoad(); }
 };
+
+// ═══ TIMEZONE: dual clock (home) + dropdown (settings) ═══
+(function(){
+  function allZones(){
+    try { return Intl.supportedValuesOf('timeZone'); }
+    catch(e){ return ['UTC','America/Sao_Paulo','America/New_York','America/Chicago','America/Denver','America/Los_Angeles','America/Anchorage','Pacific/Honolulu','Europe/London','Europe/Paris','Europe/Madrid','Asia/Manila','Asia/Tokyo','Australia/Sydney']; }
+  }
+  function fmt(tz){
+    try { return new Date().toLocaleTimeString('en-US',{timeZone:tz,hour:'2-digit',minute:'2-digit'}); }
+    catch(e){ return '--:--'; }
+  }
+  window.perfTZ = localStorage.getItem('perfTZ') || (Intl.DateTimeFormat().resolvedOptions().timeZone) || 'UTC';
+  window.tickClocks = function(){
+    var l=document.getElementById('clockLocal'), g=document.getElementById('clockGmt3');
+    if(l) l.textContent = 'Time: ' + fmt(window.perfTZ);
+    if(g) g.textContent = 'GMT-3 Time: ' + fmt('America/Sao_Paulo');   // GMT-3 = São Paulo (client zone)
+  };
+  window.buildTZDropdown = function(){
+    var sel=document.getElementById('stTimezone'); if(!sel) return;
+    if(!sel.options.length){
+      allZones().forEach(function(z){ var o=document.createElement('option'); o.value=z; o.textContent=z; sel.appendChild(o); });
+      sel.addEventListener('change', function(){ window.perfTZ=sel.value; localStorage.setItem('perfTZ',sel.value); window.tickClocks(); });
+    }
+    sel.value = window.perfTZ;
+  };
+  document.addEventListener('DOMContentLoaded', function(){ window.tickClocks(); });
+  window.tickClocks();
+  setInterval(function(){ window.tickClocks(); }, 30000);
+})();
 
 // ═══ LOAD PERFORMER DATA ═══
 async function loadPerformerData() {

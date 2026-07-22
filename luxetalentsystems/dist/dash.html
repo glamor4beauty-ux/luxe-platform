@@ -375,10 +375,6 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
   .phone-block{display:flex}
   .dash{display:none}
 }
-
-.sp-key{background:#161b27;border:1px solid #2a2f3e;border-radius:8px;padding:12px 0;color:#e8eaf0;font-size:16px;font-weight:600;cursor:pointer}
-.sp-key:hover{background:rgba(212,168,48,.1)}
-.sp-key:active{background:rgba(212,168,48,.2)}
 </style>
 
 <style id="cockpit-css">
@@ -565,7 +561,6 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
 
       <div class="sb-item clickable" data-tab="tasks"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Tasks</span></div>
       <div class="sb-item clickable" data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></div>
-      <div class="sb-item clickable" data-tab="pbx"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.74a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/></svg><span>PBX</span></div>
       <div class="sb-item clickable" data-tab="streammypc"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>Stream My PC</span></div>
 
           <div class="sb-section"></div>
@@ -612,18 +607,17 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
             <div style="text-align:center"><div style="font-size:11px;color:#8a8fa8">Paris</div><div style="font-size:16px;font-weight:600;color:#e8eaf0" id="tzPAR">—</div></div>
             <div style="text-align:center"><div style="font-size:11px;color:#8a8fa8">Toronto</div><div style="font-size:16px;font-weight:600;color:#e8eaf0" id="tzTOR">—</div></div>
             <div style="text-align:center"><div style="font-size:11px;color:#8a8fa8">Philippines</div><div style="font-size:16px;font-weight:600;color:#e8eaf0" id="tzPHL">—</div></div>
-            <div style="text-align:center"><div style="font-size:11px;color:#8a8fa8">UTC-3</div><div style="font-size:16px;font-weight:600;color:#e8eaf0" id="tzUTC3">—</div></div>
           </div>
         </div>
 
 
         <!-- ===== DASHBOARD TOTALS BAR ===== -->
         <div style="background:#0e1117;border:1px solid #2a2f3e;border-radius:10px;padding:12px 14px;margin-bottom:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;cursor:pointer" onclick="document.getElementById('dtBody').style.display=(document.getElementById('dtBody').style.display==='none'?'flex':'none');this.querySelector('.dt-chev').textContent=(document.getElementById('dtBody').style.display==='none'?'▸':'▾')">
-            <div style="font-size:13px;font-weight:600;color:#d4a830"><span class="dt-chev" style="margin-right:6px">▾</span>Totals</div>
-            <button onclick="event.stopPropagation();loadDashTotals()" style="background:#1a1f2e;border:1px solid #2a2f3e;color:#8a8fa8;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer">Refresh</button>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+            <div style="font-size:13px;font-weight:600;color:#d4a830">Totals</div>
+            <button onclick="loadDashTotals()" style="background:#1a1f2e;border:1px solid #2a2f3e;color:#8a8fa8;border-radius:6px;padding:3px 9px;font-size:11px;cursor:pointer">Refresh</button>
           </div>
-          <div id="dtBody" style="display:none;gap:8px;flex-wrap:wrap">
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
             <div class="dt-card"><div class="dt-num" style="color:#4ade80" id="dtPerfTotal">—</div><div class="dt-lbl">Performers</div></div>
             <div class="dt-card"><div class="dt-num" style="color:#4ade80" id="dtPerfActive">—</div><div class="dt-lbl">Active</div></div>
             <div class="dt-card"><div class="dt-num" style="color:#f59e0b" id="dtPerfPending">—</div><div class="dt-lbl">Pending</div></div>
@@ -639,64 +633,6 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
             <div class="dt-card"><div class="dt-num" style="color:#60a5fa" id="dtAdBalance">—</div><div class="dt-lbl">Ad Balance</div></div>
           </div>
         </div>
-
-        <!-- ===== 40/60 dashboard panels ===== -->
-        <div style="display:flex;gap:14px;margin-top:14px;align-items:stretch">
-          <!-- LEFT 40% — Live Chat -->
-          <div style="flex:0 0 40%;max-width:40%;background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:14px;display:flex;flex-direction:column;min-height:460px">
-            <!-- header: title + status -->
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap">
-              <div>
-                <div style="font-size:17px;font-weight:700;color:#d4a830">Live Chat</div>
-                <div id="lcWhoami" style="font-size:11px;color:#8a8fa8;margin-top:2px">—</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:8px">
-                <span style="font-size:10px;color:#8a8fa8;text-transform:uppercase;letter-spacing:.04em">Status</span>
-                <button class="lc-st" data-st="online" onclick="lcSetStatus('online')" style="background:#4ade80;color:#0e1117;border:none;border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer">Online</button>
-                <button class="lc-st" data-st="away" onclick="lcSetStatus('away')" style="background:transparent;color:#8a8fa8;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer">Away</button>
-                <button class="lc-st" data-st="offline" onclick="lcSetStatus('offline')" style="background:transparent;color:#8a8fa8;border:none;border-radius:6px;padding:5px 8px;font-size:11px;cursor:pointer">Offline</button>
-                <span id="lcOnlineCount" style="font-size:11px;color:#8a8fa8;font-weight:600">— ONLINE</span>
-              </div>
-            </div>
-
-            <!-- Offline Messages dropdown -->
-            <div id="lcOffCard" style="margin-top:12px;border:1px solid #2a2f3e;border-radius:8px;overflow:hidden">
-              <div onclick="lcToggle('lcOffBody','lcOffChev')" style="display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;color:#8a8fa8;text-transform:uppercase;letter-spacing:.04em"><span id="lcOffChev">▾</span> Offline Messages</div>
-              <div id="lcOffBody" style="display:none;border-top:1px solid #2a2f3e;max-height:160px;overflow-y:auto"><div id="lcOffList" style="padding:12px;color:#8a8fa8;font-size:12px">No offline messages</div></div>
-            </div>
-
-            <!-- Agents Online dropdown (empty) -->
-            <div id="lcAgCard" style="margin-top:10px;border:1px solid #2a2f3e;border-radius:8px;overflow:hidden">
-              <div onclick="lcToggle('lcAgBody','lcAgChev')" style="display:flex;align-items:center;gap:8px;padding:8px 12px;cursor:pointer;font-size:12px;font-weight:700;color:#8a8fa8;text-transform:uppercase;letter-spacing:.04em"><span id="lcAgChev">▸</span> Agents Online</div>
-              <div id="lcAgBody" style="display:none;border-top:1px solid #2a2f3e;max-height:160px;overflow-y:auto"><div id="lcAgList" style="padding:12px;color:#8a8fa8;font-size:12px">—</div></div>
-            </div>
-
-            <!-- Active Chats list -->
-            <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
-              <span style="font-size:12px;font-weight:700;color:#8a8fa8;text-transform:uppercase;letter-spacing:.04em">Active Chats</span>
-              <span id="lcActiveCount" style="font-size:11px;color:#8a8fa8">—</span>
-            </div>
-            <div id="lcSessList" style="flex:1;overflow-y:auto;margin-top:8px;min-height:0"><div style="color:#8a8fa8;font-size:12px;padding:8px">Loading…</div></div>
-          </div>
-
-          <!-- RIGHT 60% — Knowledgebase -->
-          <div style="flex:1;background:#131720;border:1px solid #2a2f3e;border-radius:12px;min-height:460px;display:flex;flex-direction:column;padding:14px;gap:12px">
-            <div style="font-size:15px;font-weight:700;color:#d4a830">Knowledgebase</div>
-            <!-- Ask KB + Send -->
-            <div style="display:flex;gap:8px">
-              <input id="kbAsk" placeholder="Ask the knowledge base..." onkeydown="if(event.key==='Enter')kbSend()" style="flex:1;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:10px 12px;color:#e8eaf0;font-size:13px;outline:none">
-              <button onclick="kbSend()" id="kbSendBtn" style="background:#4ade80;color:#0e1117;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer">Send</button>
-            </div>
-            <!-- KB Answers -->
-            <div id="kbAnswers" style="flex:1;min-height:120px;background:#0e1117;border:1px solid #2a2f3e;border-radius:10px;padding:12px;overflow-y:auto;font-size:13px;line-height:1.6;color:#8a8fa8">Answers appear here.</div>
-            <!-- Reply box + Send under -->
-            <div>
-              <textarea id="kbReply" placeholder="Type your reply..." rows="3" style="width:100%;background:#0e1117;border:1px solid #2a2f3e;border-radius:10px;padding:12px;color:#e8eaf0;font-size:13px;outline:none;resize:vertical;box-sizing:border-box"></textarea>
-              <button onclick="kbSendReply()" id="kbReplyBtn" style="margin-top:8px;background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:10px 24px;font-size:13px;font-weight:700;cursor:pointer">Send Reply</button>
-            </div>
-          </div>
-        </div>
-
         <style>
         .dt-card{background:#161b27;border:1px solid #2a2f3e;border-radius:8px;padding:7px 11px;min-width:66px;text-align:center;flex:0 0 auto}
         .dt-num{font-size:19px;font-weight:800;line-height:1.1;font-family:ui-monospace,monospace}
@@ -735,6 +671,123 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
         <!-- ===== COCKPIT ===== -->
         <div class="cockpit">
           <!-- LEFT: live chat gets moved here at runtime -->
+          <div class="cockpit-left" id="lcHost">
+            <div class="cp-empty" id="lcPlaceholder">Loading live chat…</div>
+          </div>
+          <!-- RIGHT: Video Collaboration (Twilio Video) -->
+          <div class="cockpit-right">
+            <div class="vc-panel">
+              <div class="vc-head">
+                <span>Video Collaboration</span>
+                <span style="display:flex;align-items:center;gap:10px">
+                  <span class="vc-status" id="vcStatus">Idle</span>
+                  <button type="button" id="cpLauncher" class="cp-icon-btn" title="Phone &amp; SMS">&#9742;</button>
+                </span>
+              </div>
+              <div class="vc-stage">
+                <div class="vc-remote" id="vcRemote"><div class="vc-placeholder">No active call</div></div>
+                <div class="vc-local" id="vcLocal"></div>
+              </div>
+              <div class="vc-controls" id="vcControls" style="display:none">
+                <button type="button" id="vcMute" class="vc-btn">&#127908; Mute</button>
+                <button type="button" id="vcCam" class="vc-btn">&#128247; Camera</button>
+                <button type="button" id="vcEnd" class="vc-btn vc-end">&#9745; End</button>
+              </div>
+              <div class="vc-start" id="vcStart">
+                <input id="vcPerfEmail" placeholder="Performer email to call&hellip;">
+                <button type="button" id="vcJoin" class="vc-btn vc-join">&#127909; Start Call</button>
+              </div>
+              <div class="vc-pending">
+                <div class="vc-sub">Incoming Requests</div>
+                <div id="vcPending"><div class="vc-empty">None</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Phone / Call History / SMS Off-Canvas Drawer -->
+          <div id="smsDrawerOverlay" class="sms-drawer-overlay"></div>
+          <div id="smsDrawer" class="sms-drawer" aria-hidden="true">
+            <div class="sms-drawer-head">
+              <span>Phone &amp; SMS</span>
+              <button type="button" id="smsDrawerClose" class="sms-drawer-close" aria-label="Close">&times;</button>
+            </div>
+            <div class="sms-drawer-body">
+              <!-- Softphone status + power (Twilio.Device) -->
+              <div class="sp-bar">
+                <span class="sp-status" id="spStatus">Offline</span>
+                <button type="button" id="spPower" class="sp-power">Go Online</button>
+              </div>
+              <div class="sp-incoming" id="spIncoming" style="display:none">
+                <span id="spIncFrom" class="sp-inc-from">Incoming call</span>
+                <span class="sp-inc-btns">
+                  <button type="button" id="spAccept" class="sp-accept">Accept</button>
+                  <button type="button" id="spReject" class="sp-reject">Reject</button>
+                </span>
+              </div>
+              <!-- Dialpad -->
+              <div class="cp-dialpad" style="border-right:none;width:100%">
+                <input class="cp-num" id="cpDialNum" placeholder="+1 555 123 4567" readonly>
+                <div class="cp-keys">
+                  <button type="button">1</button><button type="button">2</button><button type="button">3</button>
+                  <button type="button">4</button><button type="button">5</button><button type="button">6</button>
+                  <button type="button">7</button><button type="button">8</button><button type="button">9</button>
+                  <button type="button">*</button><button type="button">0</button><button type="button">#</button>
+                </div>
+                <div class="cp-actions">
+                  <button type="button" class="cp-dial" id="cpDial">&#9742; Dial</button>
+                  <button type="button" class="cp-end" id="cpEnd">&#9742; End</button>
+                  <button type="button" class="cp-clear" id="cpClear">&#9003;</button>
+                </div>
+              </div>
+              <!-- Messaging accordion: Call History / SMS / WhatsApp -->
+              <div class="msg-acc" id="msgAcc">
+
+                <!-- Call History -->
+                <div class="acc-sec" data-sec="calls">
+                  <button type="button" class="acc-head"><span>Call History</span><span class="acc-chev">&#9656;</span></button>
+                  <div class="acc-body">
+                    <div class="cp-history-list" id="cpHistory"><div class="cp-empty">No recent calls</div></div>
+                  </div>
+                </div>
+
+                <!-- SMS (open by default) -->
+                <div class="acc-sec open" data-sec="sms">
+                  <button type="button" class="acc-head"><span>SMS</span><span class="acc-chev">&#9656;</span></button>
+                  <div class="acc-body">
+                    <div class="msg-recent" id="smsRecent"></div>
+                    <div class="cp-sms-thread" id="cpSmsThread"><div class="cp-empty">No messages</div></div>
+                    <div class="cp-sms-input">
+                      <input id="cpSmsTo" placeholder="To (+1…)">
+                      <input id="cpSmsBody" placeholder="Type an SMS…">
+                      <button type="button" class="cp-send" id="cpSmsSend" title="Send" aria-label="Send">&#10148;</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- WhatsApp -->
+                <div class="acc-sec" data-sec="wa">
+                  <button type="button" class="acc-head"><span>WhatsApp</span><span class="acc-chev">&#9656;</span></button>
+                  <div class="acc-body">
+                    <div class="msg-recent" id="waRecent"></div>
+                    <div class="cp-sms-thread" id="cpWaThread"><div class="cp-empty">No messages</div></div>
+                    <div class="wa-tpl-row">
+                      <select id="cpWaTemplate" class="wa-tpl-select">
+                        <option value="">Free-form (inside 24h window only)</option>
+                      </select>
+                    </div>
+                    <div class="wa-vars" id="cpWaVars"></div>
+                    <div class="cp-sms-input">
+                      <input id="cpWaTo" placeholder="To (+1…)">
+                      <input id="cpWaBody" placeholder="Type a WhatsApp message…">
+                      <button type="button" class="cp-send" id="cpWaSend" title="Send" aria-label="Send">&#10148;</button>
+                    </div>
+                    <div class="wa-note" id="cpWaNote">Outside the 24-hour window WhatsApp requires an approved template. Pick one above; manage templates in Settings.</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -945,19 +998,6 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
         #tab-settings .rfs-chk{display:flex;align-items:center;gap:7px;font-size:13px;color:#e8eaf0;cursor:pointer}
         #tab-settings .rfs-chk input{width:16px;height:16px;accent-color:#d4a830;cursor:pointer}
       </style>
-            <div class="tab-content" id="tab-pbx">
-        <div class="perf-header"><div><span class="perf-title">PBX &mdash; Phone System</span></div></div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px;margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:10px">Status</div><div id="pbxStatus" style="font-size:13px;color:#8a8fa8">Loading...</div></div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px;margin-bottom:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:#d4a830">Extensions</div><button id="pbxRefreshBtn" style="background:#1a1f2e;border:1px solid #2a2f3e;color:#8a8fa8;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer">Refresh</button></div>
-          <div id="pbxExtList" style="margin-bottom:14px"><div style="color:#8a8fa8;font-size:12px">Loading...</div></div>
-          <div style="border-top:1px solid #2a2f3e;padding-top:12px"><div style="font-size:12px;color:#8a8fa8;margin-bottom:8px">Add Extension</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><label style="font-size:11px;color:#8a8fa8">Extension<br><input id="pbxNewExt" placeholder="1002" style="width:90px;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:8px;color:#e8eaf0;font-size:13px;outline:none"></label><label style="font-size:11px;color:#8a8fa8">Password<br><input id="pbxNewPass" placeholder="min 6 chars" style="width:160px;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:8px;color:#e8eaf0;font-size:13px;outline:none"></label><button id="pbxAddBtn" style="background:#4ade80;color:#0e1117;border:none;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer">Add</button></div>
-            <div id="pbxAddMsg" style="font-size:12px;margin-top:8px"></div></div>
-        </div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px;margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:10px">Trunk (Outside Calls)</div><div style="font-size:13px;color:#8a8fa8">Not configured. Set up in Phase 2 (Twilio SIP trunk) for real phone numbers.</div></div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px"><div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:10px">Phone Numbers</div><div style="font-size:13px;color:#8a8fa8">No numbers yet - added with the trunk in Phase 2.</div></div>
-      </div>
       <div class="tab-content" id="tab-settings">
         <div class="set-wrap">
           <div class="perf-header"><div><span class="perf-title">Settings</span></div></div>
@@ -966,9 +1006,21 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
           <div class="set-grid">
             <div class="set-col">
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">Twilio (Video / SMS / Voice)</div>
+                          <div class="set-row"><label>Account SID</label><input type="text" data-key="twilio_account_sid" placeholder="AC…"></div>
+                          <div class="set-row"><label>API Key SID</label><input type="text" data-key="twilio_api_key" placeholder="SK…"></div>
+                          <div class="set-row"><label>API Key Secret</label><input type="password" data-key="twilio_api_secret" data-secret="1" placeholder="•••• leave blank to keep"></div>
+                          <div class="set-row"><label>Auth Token</label><input type="password" data-key="twilio_auth_token" data-secret="1" placeholder="•••• leave blank to keep"></div>
+                          <div class="set-row"><label>From Number</label><input type="text" data-key="twilio_from_number" placeholder="+1…"></div>
+                        </div>
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">Messaging — Channels (SMS &amp; WhatsApp)</div>
+                          <div class="set-row"><label>SMS From Number (blank = use Twilio From Number above)</label><input type="text" data-key="twilio_sms_from" placeholder="+1…"></div>
+                          <div class="set-row"><label>WhatsApp From (whatsapp:+E.164)</label><input type="text" data-key="twilio_whatsapp_from" placeholder="whatsapp:+14155238886"></div>
+                          <div class="set-row"><label>Messaging Service SID (optional — overrides SMS From, enables opt-out)</label><input type="text" data-key="twilio_messaging_service_sid" placeholder="MG…"></div>
+                        </div>
 
               <div class="set-card">
                           <div class="set-card-title">Message Templates</div>
@@ -978,7 +1030,11 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
                           <div style="margin-top:10px"><button type="button" class="set-save" id="tplSaveBtn" style="padding:8px 16px;font-size:12px">Save Templates</button><span class="set-status" id="tplStatus"></span></div>
                         </div>
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">Custom Credentials</div>
+                          <div id="setCustomList"></div>
+                          <button type="button" class="set-add" id="setAddBtn">+ Add credential</button>
+                        </div>
 
               <div class="set-card" id="regFormSettingsCard">
                 <div class="set-card-title">Registration Form — Platforms &amp; Opt-in</div>
@@ -998,29 +1054,93 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
             </div>
             <div class="set-col">
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">SIP / Voice — Domain</div>
+                          <div class="set-row"><label>SIP Domain Name (must end in sip.twilio.com)</label><input type="text" data-key="sip_domain_name" placeholder="example.sip.twilio.com"></div>
+                          <div class="set-row"><label>SIP Domain SID</label><input type="text" data-key="sip_domain_sid" placeholder="SD…"></div>
+                          <div class="set-row"><label>Friendly Name</label><input type="text" data-key="sip_domain_friendly_name" placeholder="up to 64 chars"></div>
+                          <div class="set-row"><label>Voice URL</label><input type="text" data-key="sip_voice_url" placeholder="https://…"></div>
+                          <div class="set-row"><label>Voice Method</label><select data-key="sip_voice_method"><option value="POST">POST</option><option value="GET">GET</option></select></div>
+                          <div class="set-row"><label>Voice Fallback URL</label><input type="text" data-key="sip_voice_fallback_url" placeholder="https://…"></div>
+                          <div class="set-row"><label>Voice Fallback Method</label><select data-key="sip_voice_fallback_method"><option value="POST">POST</option><option value="GET">GET</option></select></div>
+                          <div class="set-row"><label>Voice Status Callback URL</label><input type="text" data-key="sip_voice_status_callback_url" placeholder="https://…"></div>
+                          <div class="set-row"><label>Voice Status Callback Method</label><select data-key="sip_voice_status_callback_method"><option value="POST">POST</option><option value="GET">GET</option></select></div>
+                          <div class="set-row"><label>SIP Registration</label><select data-key="sip_registration"><option value="false">false</option><option value="true">true</option></select></div>
+                          <div class="set-row"><label>Emergency Calling Enabled</label><select data-key="sip_emergency_calling_enabled"><option value="false">false</option><option value="true">true</option></select></div>
+                          <div class="set-row"><label>Secure (enforce TLS / SRTP)</label><select data-key="sip_secure"><option value="false">false</option><option value="true">true</option></select></div>
+                          <div class="set-row"><label>BYOC Trunk SID</label><input type="text" data-key="sip_byoc_trunk_sid" placeholder="BY…"></div>
+                          <div class="set-row"><label>Emergency Caller SID</label><input type="text" data-key="sip_emergency_caller_sid" placeholder="PN…"></div>
+                        </div>
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">SIP / Voice — Authentication</div>
+                          <div class="set-row"><label>Credential List SID</label><input type="text" data-key="sip_credential_list_sid" placeholder="CL…"></div>
+                          <div class="set-row"><label>SIP Username (up to 32 chars)</label><input type="text" data-key="sip_username"></div>
+                          <div class="set-row"><label>SIP Password</label><input type="password" data-key="sip_password" data-secret="1" placeholder="•••• leave blank to keep"></div>
+                          <div class="set-row"><label>IP Access Control List SID</label><input type="text" data-key="sip_ip_acl_sid" placeholder="AL…"></div>
+                          <div class="set-row"><label>Allowed IP Address</label><input type="text" data-key="sip_allowed_ip" placeholder="e.g. 203.0.113.10"></div>
+                          <div class="set-row"><label>CIDR Prefix Length (0–32)</label><input type="text" data-key="sip_ip_cidr_prefix" placeholder="e.g. 32"></div>
+                        </div>
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">Voice Softphone (account-wide)</div>
+                          <div class="set-row"><label>TwiML App SID (outgoing application)</label><input type="text" data-key="twilio_twiml_app_sid" placeholder="AP…"></div>
+                          <div class="set-row"><label>Inbound calls ring this softphone identity</label><input type="text" data-key="voice_inbound_client" placeholder="e.g. admin_example_com"></div>
+                        </div>
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">My Softphone (this admin only)</div>
+                          <div class="set-row"><label>My Caller ID — From number for my outbound calls</label><input type="text" data-user-key="voice_caller_id" placeholder="+1…"></div>
+                          <div class="set-row"><label>Edge Location</label><select data-user-key="voice_edge"><option value="roaming">roaming</option><option value="ashburn">ashburn</option><option value="dublin">dublin</option><option value="frankfurt">frankfurt</option><option value="singapore">singapore</option><option value="sao-paulo">sao-paulo</option><option value="sydney">sydney</option><option value="tokyo">tokyo</option></select></div>
+                          <div class="set-row"><label>Go online automatically when I open the softphone</label><select data-user-key="voice_auto_register"><option value="false">No</option><option value="true">Yes</option></select></div>
+                        </div>
 
-              
+              <div class="set-card">
+                <div class="set-card-title">IVR — Phone Menu</div>
+                <p class="set-note" style="margin:0 0 12px">Callers hear the greeting, then press a key. Each option routes to an action. Prompts use text-to-speech; fill an Audio URL to play a recording instead. Edits here are saved to the IVR (separate Save button below).</p>
+
+                <div class="set-row"><label>Greeting (text-to-speech)</label><textarea data-ivr="greeting_tts" rows="3" placeholder="Thank you for calling. For sales press 1, to leave a message press 2…" style="resize:vertical;min-height:72px"></textarea></div>
+                <div class="set-row"><label>Greeting Audio URL (optional — plays instead of the text above)</label><input type="text" data-ivr="greeting_audio" placeholder="https://…/greeting.mp3"></div>
+
+                <div class="set-row"><label>Voice</label><select data-ivr="voice">
+                  <option value="Polly.Joanna">Joanna (US, female)</option>
+                  <option value="Polly.Matthew">Matthew (US, male)</option>
+                  <option value="Polly.Salli">Salli (US, female)</option>
+                  <option value="Polly.Joey">Joey (US, male)</option>
+                  <option value="Polly.Kimberly">Kimberly (US, female)</option>
+                  <option value="Polly.Amy">Amy (UK, female)</option>
+                  <option value="Polly.Brian">Brian (UK, male)</option>
+                  <option value="Polly.Lupe">Lupe (US Spanish, female)</option>
+                  <option value="Polly.Mia">Mia (Mexican Spanish, female)</option>
+                  <option value="man">man (basic)</option>
+                  <option value="woman">woman (basic)</option>
+                </select></div>
+                <div class="set-row"><label>Language</label><select data-ivr="language">
+                  <option value="en-US">English (US)</option>
+                  <option value="en-GB">English (UK)</option>
+                  <option value="es-US">Spanish (US)</option>
+                  <option value="es-MX">Spanish (Mexico)</option>
+                  <option value="fr-FR">French</option>
+                  <option value="de-DE">German</option>
+                  <option value="pt-BR">Portuguese (Brazil)</option>
+                </select></div>
+                <div class="set-row"><label>Digit wait time (seconds)</label><input type="number" data-ivr="timeout" min="2" max="30" placeholder="5"></div>
+                <div class="set-row"><label>Invalid-entry message (TTS)</label><input type="text" data-ivr="invalid_tts" placeholder="Sorry, I didn't get that. Let's try again."></div>
+                <div class="set-row"><label>Voicemail notification email</label><input type="text" data-ivr="voicemail_email" placeholder="support@luxemodelcollective.com"></div>
+
+                <div class="set-card-title" style="font-size:12px;margin:14px 0 8px">Menu options (main)</div>
+                <div id="ivrOptList"></div>
+                <button type="button" class="set-add" id="ivrAddBtn">+ Add option</button>
+
+                <div class="set-card-title" style="font-size:12px;margin:18px 0 4px">Extensions</div>
+                <p class="set-note" style="margin:0 0 8px">Callers can type an extension (e.g. 101) during the greeting, or behind a menu option set to "extension_prompt". Each extension rings a device.</p>
+                <div id="ivrExtList"></div>
+                <button type="button" class="set-add" id="ivrExtAddBtn">+ Add extension</button>
+
+                <div style="margin-top:12px"><button type="button" class="set-save" id="ivrSaveBtn" style="padding:8px 16px;font-size:12px">Save IVR</button><span class="set-status" id="ivrStatus"></span></div>
+              </div>
 
             </div>
-          </div>
-
-          <!-- Softphone (SIP) settings -->
-          <div class="set-card" id="sipSettingsCard" style="margin-top:16px;background:#131720;border:1px solid #1e2330;border-radius:10px;padding:16px">
-            <div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:12px">Softphone (SIP) Settings</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-              <label style="font-size:12px;color:#8a8fa8">SIP Server (WSS URL)<input type="text" id="sipWss" placeholder="wss://your3cx.com:5061" style="width:100%;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-size:13px;outline:none"></label>
-              <label style="font-size:12px;color:#8a8fa8">SIP URI / User<input type="text" id="sipUri" placeholder="sip:100@your3cx.com" style="width:100%;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-size:13px;outline:none"></label>
-              <label style="font-size:12px;color:#8a8fa8">Password<input type="password" id="sipPass" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" style="width:100%;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-size:13px;outline:none"></label>
-              <label style="font-size:12px;color:#8a8fa8">Display Name<input type="text" id="sipName" placeholder="Admin" style="width:100%;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:9px 11px;color:#e8eaf0;font-size:13px;outline:none"></label>
-            </div>
-            <div style="margin-top:12px"><button type="button" class="set-save" id="sipSaveBtn" style="padding:9px 18px;font-size:12px">Save Softphone Settings</button><span class="set-status" id="sipStatus" style="margin-left:10px;font-size:12px;color:#8a8fa8"></span></div>
           </div>
 
           <button type="button" class="set-save" id="setSaveBtn">Save Settings</button>
@@ -2207,6 +2327,495 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
 <!-- Drop-in replacement for tab-livechat block.                              -->
 <!-- ═══════════════════════════════════════════════════════════════════════ -->
 
+<div class="tab-content" id="tab-livechat">
+
+  <!-- Header: persistent status switch + my name -->
+  <div class="ad-lc-head">
+    <div class="ad-lc-head-l">
+      <h2 style="margin:0;font-size:18px;color:var(--gold)">Live Chat</h2>
+      <div id="adLcWhoami" style="font-size:11px;color:var(--muted);margin-top:2px"></div>
+    </div>
+    <div class="ad-lc-head-r">
+      <span style="font-size:11px;color:var(--muted)">Status</span>
+      <div class="ad-lc-switch" id="adLcSwitch" role="radiogroup" aria-label="Status">
+        <button data-status="online"  class="ad-lc-sw-btn">Online</button>
+        <button data-status="away"    class="ad-lc-sw-btn">Away</button>
+        <button data-status="offline" class="ad-lc-sw-btn">Offline</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body: 2-column — LEFT active chats list · RIGHT agents (top) + reply (bottom) -->
+  <div class="ad-lc-grid">
+
+    <div class="ad-lc-left">
+      <div class="ad-lc-pane">
+        <div class="ad-lc-pane-head">
+          <span>Active Chats</span>
+          <span id="adLcSessCount" style="font-size:10px;color:var(--muted)"></span>
+        </div>
+        <div class="ad-lc-list" id="adLcSessList"><div class="ad-lc-empty">No active chats</div></div>
+      </div>
+    </div>
+
+    <div class="ad-lc-right">
+
+      <!-- Agents Online (Recruiters) — DROPDOWN -->
+      <div class="ad-lc-dd" id="adLcAgentsDD">
+        <div class="ad-lc-dd-head" onclick="document.getElementById('adLcAgentsDD').classList.toggle('open')">
+          <span>Agents Online (Recruiters)<span id="adLcAgentCount" style="font-size:10px;color:var(--muted);margin-left:6px"></span></span>
+          <span style="display:flex;align-items:center;gap:10px">
+            <button type="button" class="cp-icon-btn" title="Phone &amp; SMS" onclick="event.stopPropagation();var l=document.getElementById('cpLauncher'); if(l) l.click();">&#9742;</button>
+            <span class="ad-lc-dd-caret">&#9662;</span>
+          </span>
+        </div>
+        <div class="ad-lc-dd-body">
+          <div class="ad-lc-list" id="adLcAgentList"><div class="ad-lc-empty">Loading...</div></div>
+        </div>
+      </div>
+
+      <span id="adLcOfflineBadge" style="display:none">0</span>
+
+      <!-- Visitor thread -->
+      <div class="ad-lc-view" id="adLcViewThread">
+        <div class="ad-lc-thread-head" id="adLcThreadHead"></div>
+        <div class="chat-msgs" id="adLcThreadMsgs" style="flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px"></div>
+        <div class="chat-typing" id="adLcThreadTyping" style="display:none">Visitor is typing...</div>
+
+        <!-- Knowledgebase Ask-AI — QUESTION + ANSWER ONLY -->
+        <div class="ad-lc-kb">
+          <div class="ad-lc-kb-chat" id="adLcKbChat"></div>
+          <div class="ad-lc-kb-row">
+            <input type="text" id="adLcKbInput" class="ad-lc-kb-input" placeholder="Ask the knowledge base..." onkeydown="if(event.key==='Enter')askChatKB()"/>
+            <button type="button" class="ad-lc-kb-btn" id="adLcKbBtn" onclick="askChatKB()">Ask AI</button>
+          </div>
+        </div>
+
+        <div class="ad-lc-thread-input" id="adLcThreadInput" style="display:none">
+          <textarea id="adLcReplyInput" rows="3" placeholder="Type your reply..." style="min-height:70px;max-height:110px;line-height:1.4"></textarea>
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button class="ad-lc-btn primary" id="adLcReplyBtn">Send</button>
+            <button class="ad-lc-btn" id="adLcCloseBtn">Close Chat</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="ad-lc-view" id="adLcViewOffline" style="display:none">
+        <div id="adLcOfflineList" style="flex:1;overflow-y:auto;padding:8px">
+          <div class="ad-lc-empty">Loading...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+#tab-livechat{display:none;flex-direction:column;height:calc(100vh - 120px);gap:14px}
+#tab-livechat.active{display:flex}
+.ad-lc-head{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+.ad-lc-head-r{display:flex;align-items:center;gap:10px}
+.ad-lc-switch{display:flex;background:var(--input);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.ad-lc-sw-btn{background:transparent;border:none;padding:7px 14px;color:var(--muted);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .15s}
+.ad-lc-sw-btn:hover{background:rgba(212,168,48,.08);color:var(--text)}
+.ad-lc-sw-btn.active[data-status="online"]{background:#22c55e;color:#0a0d14}
+.ad-lc-sw-btn.active[data-status="away"]{background:#f59e0b;color:#0a0d14}
+.ad-lc-sw-btn.active[data-status="offline"]{background:#64748b;color:#fff}
+
+.ad-lc-grid{display:grid;grid-template-columns:300px 1fr;gap:14px;flex:1;min-height:0}
+.ad-lc-left{display:flex;flex-direction:column;gap:14px;min-height:0}
+.ad-lc-pane{flex:1;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-height:0}
+.ad-lc-pane-head{padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ad-lc-list{flex:1;overflow-y:auto;min-height:0}
+.ad-lc-empty{padding:18px;color:var(--muted);font-size:12px;text-align:center}
+.ad-lc-row{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;display:flex;align-items:center;gap:10px}
+.ad-lc-row:hover{background:rgba(212,168,48,.05)}
+.ad-lc-row.active{background:rgba(212,168,48,.1);border-left:3px solid var(--gold);padding-left:11px}
+.ad-lc-row-body{flex:1;min-width:0}
+.ad-lc-row-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-lc-row-sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.ad-lc-unread{background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 7px;flex-shrink:0}
+.ad-lc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ad-lc-dot.online{background:#22c55e}
+.ad-lc-dot.away{background:#f59e0b}
+.ad-lc-dot.offline{background:#64748b}
+
+.ad-lc-right{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.ad-lc-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.ad-lc-tab{flex:1;background:transparent;border:none;padding:12px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;position:relative;transition:color .12s}
+.ad-lc-tab:hover{color:var(--text)}
+.ad-lc-tab.active{color:var(--gold);box-shadow:inset 0 -2px 0 0 var(--gold)}
+.ad-lc-tab-badge{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;margin-left:6px}
+
+.ad-lc-view{flex:1;display:flex;flex-direction:column;min-height:0}
+.ad-lc-thread-head{padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.ad-lc-thread-name{font-size:14px;font-weight:600;color:var(--text)}
+.ad-lc-thread-email{font-size:11px;color:var(--muted)}
+.ad-lc-thread-input{padding:12px;border-top:1px solid var(--border);flex-shrink:0}
+.ad-lc-thread-input textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;outline:none}
+.ad-lc-thread-input textarea:focus{border-color:var(--gold)}
+.ad-lc-btn{padding:9px 16px;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .12s}
+.ad-lc-btn:hover{background:rgba(212,168,48,.08)}
+.ad-lc-btn.primary{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.ad-lc-btn.primary:hover{filter:brightness(1.05)}
+.ad-lc-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.ad-lc-off-row{padding:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.ad-lc-off-row:hover{background:rgba(212,168,48,.04)}
+.ad-lc-off-row.unread{background:rgba(212,168,48,.06);border-left:3px solid var(--gold);padding-left:9px}
+.ad-lc-off-from{font-size:13px;font-weight:600;color:var(--text)}
+.ad-lc-off-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.ad-lc-off-body{font-size:12px;color:var(--text);margin-top:6px;white-space:pre-wrap;line-height:1.5}
+.ad-lc-off-time{font-size:10px;color:var(--muted)}
+
+#adLcThreadMsgs .chat-msg.visitor{align-self:flex-end;background:var(--gold);color:var(--bg);border-bottom-right-radius:4px;max-width:80%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.45;word-break:break-word}
+#adLcThreadMsgs .chat-msg.agent{align-self:flex-start;background:#1a2744;color:#bfd7ff;border-bottom-left-radius:4px;max-width:80%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.45;word-break:break-word}
+#adLcThreadMsgs .chat-msg.system{align-self:center;background:rgba(212,168,48,.1);color:#d4a830;font-size:11px;font-style:italic;padding:5px 12px;border-radius:8px}
+#adLcThreadMsgs .chat-msg .name{font-size:10px;opacity:.65;margin-bottom:2px}
+#adLcThreadMsgs .chat-msg .ct{font-size:9px;opacity:.5;margin-top:3px}
+</style>
+
+<script>
+(function(){
+  const API = '/api/chat.php';
+  const SESS_POLL_MS = 5000;
+  const THREAD_POLL_MS = 3000;
+  const AGENTS_POLL_MS = 15000;
+  const OFFLINE_POLL_MS = 30000;
+
+  let me = null, currentSession = null, threadLastTs = '', sessTimer, threadTimer, agentsTimer, offTimer, audioCtx;
+  let pendingUnread = {}; // sessionId → count
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const fmtTime = ts => { try{ return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); }catch(e){return ''} };
+  const fmtRel  = secs => secs<60?'now':secs<3600?Math.floor(secs/60)+'m':secs<86400?Math.floor(secs/3600)+'h':Math.floor(secs/86400)+'d';
+
+  // ── Status switch (persistent) ────────────────────────────────────────────
+  async function loadMyStatus(){
+    try{
+      const r = await fetch(API + '?action=get_status', {credentials:'include'});
+      const d = await r.json();
+      if (!r.ok || !d.ok) return;
+      me = d;
+      const whoami = $('adLcWhoami');
+      if (whoami) whoami.textContent = (d.name||'') + ' · ' + (d.role||'admin');
+      paintSwitch(d.status);
+    }catch(e){}
+  }
+  function paintSwitch(status){
+    document.querySelectorAll('#adLcSwitch .ad-lc-sw-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.status === status);
+    });
+  }
+  async function setStatus(s){
+    paintSwitch(s);  // optimistic
+    try{
+      const r = await fetch(API + '?action=set_status', {credentials:'include', method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({status: s})});
+      const d = await r.json();
+      if (!r.ok || !d.ok){ alert('Could not change status: ' + (d.error||'')); }
+      if (me) me.status = s;
+    }catch(e){ alert('Network error.'); }
+  }
+
+  // ── Sessions list ─────────────────────────────────────────────────────────
+  async function loadSessions(){
+    try{
+      const r = await fetch(API + '?action=sessions_list&filter=active', {credentials:'include'});
+      const d = await r.json();
+      if (!r.ok || !d.ok) return;
+      const list = $('adLcSessList');
+      $('adLcSessCount').textContent = d.sessions.length + ' active';
+      if (!d.sessions.length){
+        list.innerHTML = '<div class="ad-lc-empty">No active chats</div>';
+        return;
+      }
+      list.innerHTML = d.sessions.map(s => {
+        const active = s.id === currentSession ? ' active' : '';
+        const unread = s.unread > 0 ? '<span class="ad-lc-unread">' + s.unread + '</span>' : '';
+        const last = s.last_message ? esc(String(s.last_message).slice(0, 60)) : '(no messages yet)';
+        return '<div class="ad-lc-row' + active + '" data-id="' + esc(s.id) + '">' +
+                 '<div class="ad-lc-row-body">' +
+                   '<div class="ad-lc-row-name">' + esc(s.visitor_name || 'Visitor') + '</div>' +
+                   '<div class="ad-lc-row-sub">' + last + '</div>' +
+                 '</div>' +
+                 unread +
+               '</div>';
+      }).join('');
+      list.querySelectorAll('.ad-lc-row').forEach(row => {
+        row.onclick = () => openThread(row.dataset.id);
+      });
+    }catch(e){}
+  }
+
+  // ── Agents panel ──────────────────────────────────────────────────────────
+  async function loadAgents(){
+    try{
+      const r = await fetch(API + '?action=agents_list', {credentials:'include'});
+      const d = await r.json();
+      if (!r.ok || !d.ok) return;
+      const list = $('adLcAgentList');
+      const onlineCount = d.agents.filter(a => a.status === 'online').length;
+      $('adLcAgentCount').textContent = onlineCount + ' online';
+      list.innerHTML = d.agents.map(a => {
+        const cls = a.status; // online | away | offline
+        const sub = a.status === 'offline' ? ('last seen ' + fmtRel(a.seconds_ago) + ' ago') : (a.role || 'admin');
+        return '<div class="ad-lc-row" style="cursor:default">' +
+                 '<div class="ad-lc-dot ' + cls + '"></div>' +
+                 '<div class="ad-lc-row-body">' +
+                   '<div class="ad-lc-row-name">' + esc(a.name || a.email) + '</div>' +
+                   '<div class="ad-lc-row-sub">' + esc(sub) + '</div>' +
+                 '</div>' +
+               '</div>';
+      }).join('');
+    }catch(e){}
+  }
+
+  // ── Thread (selected chat) ────────────────────────────────────────────────
+  async function openThread(id){
+    currentSession = id;
+    threadLastTs = '';
+    if (threadTimer) clearInterval(threadTimer);
+    document.querySelectorAll('#adLcSessList .ad-lc-row').forEach(r => r.classList.toggle('active', r.dataset.id === id));
+    try{
+      const r = await fetch(API + '?action=messages_get&session_id=' + encodeURIComponent(id, {credentials:'include'}));
+      const d = await r.json();
+      if (!r.ok || !d.ok){ alert(d.error||'Failed to load'); return; }
+      paintThread(d.session, d.messages);
+      $('adLcThreadInput').style.display = d.session.status === 'active' ? 'block' : 'none';
+      // Start cursor at the latest message
+      if (d.messages.length) threadLastTs = d.messages[d.messages.length-1].created_at;
+      threadTimer = setInterval(pollThread, THREAD_POLL_MS);
+      loadSessions();  // unread counts will refresh
+    }catch(e){}
+  }
+  function paintThread(session, messages){
+    $('adLcThreadHead').innerHTML =
+      '<div><div class="ad-lc-thread-name">' + esc(session.visitor_name || 'Visitor') + '</div>' +
+      '<div class="ad-lc-thread-email">' + esc(session.visitor_email || '') + ' · ' + esc(session.status) + '</div></div>';
+    const box = $('adLcThreadMsgs');
+    box.innerHTML = messages.map(m => renderMsg(m)).join('');
+    box.scrollTop = box.scrollHeight;
+  }
+  function renderMsg(m){
+    const cls = m.sender_type === 'visitor' ? 'visitor' : m.sender_type === 'system' ? 'system' : 'agent';
+    const name = m.sender_type === 'agent' ? '<div class="name">' + esc(m.sender_name||'Agent') + '</div>' : '';
+    const time = m.sender_type === 'system' ? '' : '<div class="ct">' + fmtTime(m.created_at) + '</div>';
+    return '<div class="chat-msg ' + cls + '">' + name + esc(m.message) + time + '</div>';
+  }
+  async function pollThread(){
+    if (!currentSession) return;
+    try{
+      const r = await fetch(API + '?action=poll&session_id=' + encodeURIComponent(currentSession, {credentials:'include'}) + '&last_ts=' + encodeURIComponent(threadLastTs||''));
+      const d = await r.json();
+      if (!r.ok || !d.ok) return;
+      let gotVisitor = false;
+      d.messages.forEach(m => {
+        threadLastTs = m.created_at;
+        const box = $('adLcThreadMsgs');
+        box.insertAdjacentHTML('beforeend', renderMsg(m));
+        box.scrollTop = box.scrollHeight;
+        if (m.sender_type === 'visitor') gotVisitor = true;
+      });
+      $('adLcThreadTyping').style.display = (d.status === 'active' && d.messages_typing) ? 'block' : 'none';
+      // Visitor typing flag comes from the session, not messages; poll endpoint returns it differently
+      // For now we rely on session.typing via messages_get if needed
+      if (gotVisitor) chime();
+      if (d.status === 'closed'){
+        $('adLcThreadInput').style.display = 'none';
+      }
+    }catch(e){}
+  }
+  async function sendReply(){
+    const ta = $('adLcReplyInput');
+    const msg = ta.value.trim();
+    if (!msg || !currentSession) return;
+    ta.value = '';
+    $('adLcReplyBtn').disabled = true;
+    try{
+      const r = await fetch(API + '?action=reply', {credentials:'include', method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({session_id: currentSession, message: msg})});
+      const d = await r.json();
+      if (!r.ok || !d.ok){ alert(d.error||'Failed to send'); }
+      await pollThread();
+    }catch(e){ alert('Network error'); }
+    $('adLcReplyBtn').disabled = false;
+  }
+  async function closeChat(){
+    if (!currentSession || !confirm('Close this chat session?')) return;
+    try{
+      await fetch(API + '?action=close_session', {credentials:'include', method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({session_id: currentSession})});
+      $('adLcThreadInput').style.display = 'none';
+      await pollThread();
+      loadSessions();
+    }catch(e){}
+  }
+
+  // ── Offline messages inbox ────────────────────────────────────────────────
+  async function loadOffline(){
+    try{
+      const r = await fetch(API + '?action=offline_inbox&limit=50', {credentials:'include'});
+      const d = await r.json();
+      if (!r.ok || !d.ok) return;
+      const list = $('adLcOfflineList');
+      const unread = d.messages.filter(m => !m.is_read).length;
+      const badge = $('adLcOfflineBadge');
+      if (unread > 0){ badge.style.display = 'inline-block'; badge.textContent = unread; }
+      else           { badge.style.display = 'none'; }
+      if (!d.messages.length){ list.innerHTML = '<div class="ad-lc-empty">No offline messages</div>'; return; }
+      list.innerHTML = d.messages.map(m => {
+        const cls = m.is_read ? '' : ' unread';
+        return '<div class="ad-lc-off-row' + cls + '" data-id="' + m.id + '">' +
+                 '<div class="ad-lc-off-from">' + esc(m.subject || 'Message') + '</div>' +
+                 '<div class="ad-lc-off-sub">From: ' + esc(m.from_email) + ' · <span class="ad-lc-off-time">' + esc(m.created_at) + '</span></div>' +
+                 '<div class="ad-lc-off-body">' + esc(m.body) + '</div>' +
+               '</div>';
+      }).join('');
+      list.querySelectorAll('.ad-lc-off-row').forEach(row => {
+        row.onclick = async () => {
+          if (!row.classList.contains('unread')) return;
+          row.classList.remove('unread');
+          try{ await fetch(API+'?action=mark_read', {credentials:'include', method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({id: parseInt(row.dataset.id,10)})}); }catch(e){}
+          loadOffline();
+        };
+      });
+    }catch(e){}
+  }
+
+  // ── Tabs (Chat / Offline) ─────────────────────────────────────────────────
+  document.querySelectorAll('#tab-livechat .ad-lc-tab').forEach(t => {
+    t.onclick = () => {
+      document.querySelectorAll('#tab-livechat .ad-lc-tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const view = t.dataset.view;
+      $('adLcViewThread').style.display  = view === 'thread'  ? 'flex' : 'none';
+      $('adLcViewOffline').style.display = view === 'offline' ? 'flex' : 'none';
+      if (view === 'offline') loadOffline();
+    };
+  });
+
+  // ── Chime ─────────────────────────────────────────────────────────────────
+  function chime(){
+    try{
+      if (!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.setValueAtTime(880, audioCtx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.2);
+      g.gain.setValueAtTime(0.18, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+      o.start(); o.stop(audioCtx.currentTime + 0.3);
+    }catch(e){}
+  }
+
+  // ── Wiring ────────────────────────────────────────────────────────────────
+  document.querySelectorAll('#adLcSwitch .ad-lc-sw-btn').forEach(b => {
+    b.onclick = () => setStatus(b.dataset.status);
+  });
+  $('adLcReplyBtn').onclick = sendReply;
+  $('adLcCloseBtn').onclick = closeChat;
+  $('adLcReplyInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)){ e.preventDefault(); sendReply(); }
+  });
+
+  // ── Boot / polling lifecycle ──────────────────────────────────────────────
+  // Called by the existing tab system when this tab activates. Falls back to
+  // window load if no tab system event fires.
+  window.tab_livechat_enter = function(){
+    loadMyStatus();
+    loadSessions();
+    loadAgents();
+    loadOffline();
+    if (sessTimer)   clearInterval(sessTimer);
+    if (agentsTimer) clearInterval(agentsTimer);
+    if (offTimer)    clearInterval(offTimer);
+    sessTimer   = setInterval(loadSessions, SESS_POLL_MS);
+    agentsTimer = setInterval(loadAgents,   AGENTS_POLL_MS);
+    offTimer    = setInterval(loadOffline,  OFFLINE_POLL_MS);
+  };
+  window.tab_livechat_leave = function(){
+    if (sessTimer)   { clearInterval(sessTimer);   sessTimer = null; }
+    if (threadTimer) { clearInterval(threadTimer); threadTimer = null; }
+    if (agentsTimer) { clearInterval(agentsTimer); agentsTimer = null; }
+    if (offTimer)    { clearInterval(offTimer);    offTimer = null; }
+  };
+
+  // Auto-boot once on page load — safe even if tab isn't visible (just polls in background)
+  window.addEventListener('load', () => window.tab_livechat_enter());
+})();
+</script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+
+<style>
+#tab-livechat{display:none;flex-direction:column;height:calc(100vh - 120px);gap:14px}
+#tab-livechat.active{display:flex}
+.ad-lc-head{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 18px}
+.ad-lc-head-r{display:flex;align-items:center;gap:10px}
+.ad-lc-switch{display:flex;background:var(--input);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.ad-lc-sw-btn{background:transparent;border:none;padding:7px 14px;color:var(--muted);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600;transition:all .15s}
+.ad-lc-sw-btn:hover{background:rgba(212,168,48,.08);color:var(--text)}
+.ad-lc-sw-btn.active[data-status="online"]{background:#22c55e;color:#0a0d14}
+.ad-lc-sw-btn.active[data-status="away"]{background:#f59e0b;color:#0a0d14}
+.ad-lc-sw-btn.active[data-status="offline"]{background:#64748b;color:#fff}
+
+.ad-lc-grid{display:grid;grid-template-columns:300px 1fr;gap:14px;flex:1;min-height:0}
+.ad-lc-left{display:flex;flex-direction:column;gap:14px;min-height:0}
+.ad-lc-pane{flex:1;display:flex;flex-direction:column;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;min-height:0}
+.ad-lc-pane-head{padding:10px 14px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-shrink:0}
+.ad-lc-list{flex:1;overflow-y:auto;min-height:0}
+.ad-lc-empty{padding:18px;color:var(--muted);font-size:12px;text-align:center}
+.ad-lc-row{padding:10px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s;display:flex;align-items:center;gap:10px}
+.ad-lc-row:hover{background:rgba(212,168,48,.05)}
+.ad-lc-row.active{background:rgba(212,168,48,.1);border-left:3px solid var(--gold);padding-left:11px}
+.ad-lc-row-body{flex:1;min-width:0}
+.ad-lc-row-name{font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ad-lc-row-sub{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.ad-lc-unread{background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 7px;flex-shrink:0}
+.ad-lc-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ad-lc-dot.online{background:#22c55e}
+.ad-lc-dot.away{background:#f59e0b}
+.ad-lc-dot.offline{background:#64748b}
+
+.ad-lc-right{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;min-height:0}
+.ad-lc-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.ad-lc-tab{flex:1;background:transparent;border:none;padding:12px;color:var(--muted);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;position:relative;transition:color .12s}
+.ad-lc-tab:hover{color:var(--text)}
+.ad-lc-tab.active{color:var(--gold);box-shadow:inset 0 -2px 0 0 var(--gold)}
+.ad-lc-tab-badge{display:inline-block;background:#ef4444;color:#fff;font-size:10px;font-weight:700;border-radius:10px;padding:1px 6px;margin-left:6px}
+
+.ad-lc-view{flex:1;display:flex;flex-direction:column;min-height:0}
+.ad-lc-thread-head{padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;justify-content:space-between;align-items:center}
+.ad-lc-thread-name{font-size:14px;font-weight:600;color:var(--text)}
+.ad-lc-thread-email{font-size:11px;color:var(--muted)}
+.ad-lc-thread-input{padding:12px;border-top:1px solid var(--border);flex-shrink:0}
+.ad-lc-thread-input textarea{width:100%;background:var(--input);border:1px solid var(--border);border-radius:8px;padding:10px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;outline:none}
+.ad-lc-thread-input textarea:focus{border-color:var(--gold)}
+.ad-lc-btn{padding:9px 16px;background:var(--input);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;transition:background .12s}
+.ad-lc-btn:hover{background:rgba(212,168,48,.08)}
+.ad-lc-btn.primary{background:var(--gold);color:var(--bg);border-color:var(--gold)}
+.ad-lc-btn.primary:hover{filter:brightness(1.05)}
+.ad-lc-btn:disabled{opacity:.5;cursor:not-allowed}
+
+.ad-lc-off-row{padding:12px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.ad-lc-off-row:hover{background:rgba(212,168,48,.04)}
+.ad-lc-off-row.unread{background:rgba(212,168,48,.06);border-left:3px solid var(--gold);padding-left:9px}
+.ad-lc-off-from{font-size:13px;font-weight:600;color:var(--text)}
+.ad-lc-off-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.ad-lc-off-body{font-size:12px;color:var(--text);margin-top:6px;white-space:pre-wrap;line-height:1.5}
+.ad-lc-off-time{font-size:10px;color:var(--muted)}
+
+#adLcThreadMsgs .chat-msg.visitor{align-self:flex-end;background:var(--gold);color:var(--bg);border-bottom-right-radius:4px;max-width:80%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.45;word-break:break-word}
+#adLcThreadMsgs .chat-msg.agent{align-self:flex-start;background:#1a2744;color:#bfd7ff;border-bottom-left-radius:4px;max-width:80%;padding:9px 13px;border-radius:14px;font-size:13px;line-height:1.45;word-break:break-word}
+#adLcThreadMsgs .chat-msg.system{align-self:center;background:rgba(212,168,48,.1);color:#d4a830;font-size:11px;font-style:italic;padding:5px 12px;border-radius:8px}
+#adLcThreadMsgs .chat-msg .name{font-size:10px;opacity:.65;margin-bottom:2px}
+#adLcThreadMsgs .chat-msg .ct{font-size:9px;opacity:.5;margin-top:3px}
+</style>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+
+
 <div class="tab-content" id="tab-marketing" style="padding:20px">
   <div style="max-width:900px">
     <h2 style="color:#e8eaf0;font-size:20px;margin:0 0 4px">Email Marketing</h2>
@@ -2975,7 +3584,7 @@ document.querySelectorAll('.sb-item[data-tab]').forEach(item => {
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('sidebarOverlay').classList.remove('open');
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        var _tc=$('tab-'+tab); if(_tc) _tc.classList.add('active');
+        $('tab-' + tab).classList.add('active');
         if(tab==='browser' && window.blInit) blInit();
         $('pageTitle').textContent = item.querySelector('span')?.textContent || 'Dashboard';
         if (tab === 'schedule') loadDaySchedule();
@@ -2991,7 +3600,7 @@ document.querySelectorAll('.sb-item[data-tab]').forEach(item => {
         if (tab === 'studio-payouts') { if (window.aspLoad) aspLoad(); }
         if (tab === 'performer-accounts') { if (window.apaLoad) apaLoad(); }
         if (tab === 'vidup')     { if (window.vidupLoad)    vidupLoad(); }
-        /* livechat tab removed */
+        if (tab === 'livechat') { loadChatSessions(); startChatPolling(); }
         if (tab === 'livestreams') { if (window.tab_livestreams_enter) tab_livestreams_enter(); }
         if (tab === 'stripchat') { loadScPerformers(); loadScSummary(); }
         if (tab === 'filestorage') { loadFS(); loadFSCategories(); }
@@ -4014,6 +4623,29 @@ window.askKBAIWithText = function(text) {
     $('kbAiInput').value = text;
     askKBAI();
 };
+
+/* KB Ask-AI inside chat — shows ONLY question + answer (no sources/suggestions/header) */
+window.askChatKB = async function(){
+  var input=document.getElementById('adLcKbInput'); if(!input) return;
+  var q=(input.value||'').trim(); if(!q) return; input.value='';
+  var chat=document.getElementById('adLcKbChat');
+  chat.innerHTML += '<div class="ad-lc-kb-q">'+esc(q)+'</div>';
+  chat.innerHTML += '<div class="ad-lc-kb-a" id="adLcKbLoading" style="color:#8a8fa8;border-left-color:#8a8fa8">Searching...</div>';
+  chat.scrollTop=chat.scrollHeight;
+  var btn=document.getElementById('adLcKbBtn'); if(btn) btn.disabled=true;
+  try{
+    var r=await fetch(API + '/ai-kb.php?action=ask',{credentials:'include',method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,history:[]})});
+    var d=await r.json();
+    var l=document.getElementById('adLcKbLoading'); if(l) l.remove();
+    if(d.error){ chat.innerHTML += '<div class="ad-lc-kb-a" style="color:#f87171;border-left-color:#f87171">'+esc(d.error)+'</div>'; }
+    else { chat.innerHTML += '<div class="ad-lc-kb-a">'+(window.formatAIReply?formatAIReply(d.reply):esc(d.reply))+'</div>'; }
+  }catch(e){
+    var l2=document.getElementById('adLcKbLoading'); if(l2) l2.remove();
+    chat.innerHTML += '<div class="ad-lc-kb-a" style="color:#f87171;border-left-color:#f87171">Connection error</div>';
+  }
+  if(btn) btn.disabled=false; chat.scrollTop=chat.scrollHeight;
+};
+
 
 window.askKBAI = async function() {
     const input = $('kbAiInput');
@@ -5863,7 +6495,10 @@ window.emailBulkTrash=async function(){var ids=Array.prototype.slice.call(docume
 window.emailBulkDelete=async function(){var ids=Array.prototype.slice.call(document.querySelectorAll('.emcb:checked')).map(function(c){return c.value;});if(!ids.length)return;if(!confirm('Permanently delete '+ids.length+' email(s)? This cannot be undone.'))return;for(var i=0;i<ids.length;i++){try{await fetch(EMAIL_API+'?action=delete_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:ids[i],account:currentEmailAccount})});}catch(e){}}window.emailBulkClear();loadInbox();};
 window.emailAutoTick=function(){if(document.querySelector('.emcb:checked'))return;loadInbox();};
 window.loadInbox=async function(){var filter=document.getElementById('emailFilter')?document.getElementById('emailFilter').value:'';var folder=document.getElementById('emailFolder')?document.getElementById('emailFolder').value:'INBOX';var list=document.getElementById('emailList');if(!list)return;list.innerHTML='<div style="padding:20px;color:#6a6f88;font-size:12px;text-align:center">Loading...</div>';try{var url=EMAIL_API+'?action=inbox&limit=30&skip='+inboxSkip+'&filter='+filter+'&account='+currentEmailAccount;if(folder&&folder!=='INBOX')url+='&folder='+folder;var r=await fetch(url);var d=await r.json();var msgs=d.messages||[];var sb=document.getElementById('emailStatusBar');if(sb)sb.textContent=(d.total||msgs.length)+' emails, '+(d.unread||0)+' unread';var ec=document.getElementById('emailCount');if(ec)ec.textContent=(d.total||0)+' emails';if(!msgs.length){list.innerHTML='<div style="padding:20px;color:#6a6f88;font-size:12px;text-align:center">No emails</div>';return;}list.innerHTML=msgs.map(function(m){var read=m.is_read;var bg=read?'':'background:rgba(212,168,48,.04);';var fw=read?'normal':'600';var dot=read?'':'<span style="color:#d4a830;font-size:8px;margin-right:4px">&#9679;</span>';var date=m.date?new Date(m.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';return '<div style="display:flex;align-items:flex-start;padding:10px 12px;border-bottom:1px solid #1e2330;'+bg+'"><input type="checkbox" class="emcb" value="'+m.uid+'" onclick="event.stopPropagation()" onchange="emailBulkUpdate()" style="margin:2px 9px 0 0;flex-shrink:0;cursor:pointer"><div onclick="readEmail('+m.uid+')" style="flex:1;min-width:0;cursor:pointer"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:12px;font-weight:'+fw+';color:#e8eaf0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">'+dot+escE(m.from_name||m.from||'')+'</span><span style="font-size:10px;color:#6a6f88">'+date+'</span></div><div style="font-size:12px;color:#c0c4d0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:'+fw+'">'+escE(m.subject||'(no subject)')+'</div><div style="font-size:11px;color:#6a6f88;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escE(m.preview||'').substring(0,80)+'</div></div></div>';}).join('');}catch(e){list.innerHTML='<div style="padding:20px;color:#f87171;font-size:12px;text-align:center">Error: '+escE(e.message)+'</div>';}};
-window.readEmail=async function(uid){ /* email tab pending rebuild */ };
+window.readEmail=async function(uid){currentEmailId=uid;window.currentEmailRead=true;var _mrb=document.getElementById('markReadBtn');if(_mrb)_mrb.textContent='Mark Unread';document.getElementById('emailEmpty').style.display='none';document.getElementById('emailReadHeader').style.display='block';document.getElementById('readBody').style.display='block';document.getElementById('replyBox').style.display='none';document.getElementById('emailComposePane').style.display='none';document.getElementById('emailTemplatesPane').style.display='none';document.getElementById('emailReadPane').style.display='flex';document.getElementById('readSubject').textContent='Loading...';try{var r=await fetch(EMAIL_API+'?action=read&uid='+uid+'&account='+currentEmailAccount);var d=await r.json();document.getElementById('readSubject').textContent=d.subject||'(no subject)';document.getElementById('readFrom').textContent=d.from||'';document.getElementById('readTo').textContent=Array.isArray(d.to)?d.to.join(', '):(d.to||'');document.getElementById('readDate').textContent=d.date?new Date(d.date).toLocaleString():'';var frame=document.getElementById('emailBodyFrame');if(frame){var doc=frame.contentDocument||frame.contentWindow.document;doc.open();doc.write('<html><body style="font-family:Arial,sans-serif;font-size:14px;color:#333;padding:16px;margin:0">'+(d.body||'No content')+'
+
+
+</body></html>');doc.close();}var mf=document.getElementById('moveToFolder');if(mf&&mf.options.length<=1){try{var fr=await fetch(EMAIL_API+'?action=folders&account='+currentEmailAccount);var folders=await fr.json();mf.innerHTML='<option value="">Move to...</option>'+folders.map(function(f){var dn=f.name.replace('INBOX.','').replace('INBOX/','');return '<option value="'+f.name+'">'+dn+'</option>';}).join('');}catch(e){}}loadInbox();}catch(e){document.getElementById('readSubject').textContent='Error';}};
 window.openReply=function(all){currentReplyAll=all;document.getElementById('replyBox').style.display='block';document.getElementById('replyBody').focus();document.getElementById('replyStatus').textContent='';};
 window.sendReply=async function(){var body=document.getElementById('replyBody').value.trim();if(!body)return;var s=document.getElementById('replyStatus');s.textContent='Sending...';s.style.color='#8a8fa8';try{var r=await fetch(EMAIL_API+'?action=reply_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:currentEmailId,body:body})});var d=await r.json();if(d.success){s.textContent='Sent!';s.style.color='#4ade80';document.getElementById('replyBody').value='';}else{s.textContent=d.error||'Failed';s.style.color='#f87171';}}catch(e){s.textContent='Error';s.style.color='#f87171';}};
 window.toggleEmailRead=async function(){if(!currentEmailId)return;var nr=window.currentEmailRead?0:1;try{var r=await fetch(EMAIL_API+'?action=set_read&uid='+currentEmailId+'&read='+nr+'&account='+currentEmailAccount);var d=await r.json();if(d&&d.success){window.currentEmailRead=!!nr;var b=document.getElementById('markReadBtn');if(b)b.textContent=window.currentEmailRead?'Mark Unread':'Mark Read';loadInbox();}else alert((d&&d.error)||'Failed to update');}catch(e){alert('Error updating read status');}};
@@ -6047,7 +6682,7 @@ window.makeCall=function(){dialCall();};
   function clocks(){
     var z=[['tzET','America/New_York'],['tzCT','America/Chicago'],['tzMT','America/Denver'],
            ['tzPT','America/Los_Angeles'],['tzAK','America/Anchorage'],['tzHI','Pacific/Honolulu'],
-           ['tzLON','Europe/London'],['tzPAR','Europe/Paris'],['tzTOR','America/Toronto'],['tzPHL','Asia/Manila'],['tzUTC3','America/Sao_Paulo']];
+           ['tzLON','Europe/London'],['tzPAR','Europe/Paris'],['tzTOR','America/Toronto'],['tzPHL','Asia/Manila']];
     var now=new Date();
     z.forEach(function(p){var el=document.getElementById(p[0]);if(!el)return;
       try{el.textContent=now.toLocaleTimeString('en-US',{timeZone:p[1],hour:'numeric',minute:'2-digit'});}catch(e){}});
@@ -6075,7 +6710,7 @@ window.makeCall=function(){dialCall();};
     var clr=document.getElementById('cpClear');
     if(clr) clr.addEventListener('click',function(){ if(num) num.value=num.value.slice(0,-1); });
   }
-  function boot(){ clocks(); setInterval(clocks,30000); /* dialpad() + moveChat() removed — chat/phone stripped */ }
+  function boot(){ clocks(); setInterval(clocks,30000); dialpad(); moveChat(0); }
   if(document.readyState!=='loading') setTimeout(boot,200); else window.addEventListener('load',function(){ setTimeout(boot,200); });
 })();
 </script>
@@ -6154,6 +6789,24 @@ window.makeCall=function(){dialCall();};
 #tab-livechat .ad-lc-thread-input{ padding:12px; border-top:1px solid var(--border); flex-shrink:0; background:transparent; }
 #tab-livechat .cp-icon-btn{ background:var(--input); border:1px solid var(--border); border-radius:8px; color:var(--gold); cursor:pointer; padding:4px 9px; font-size:14px; line-height:1; }
 #tab-livechat .cp-icon-btn:hover{ background:rgba(212,168,48,.12); }
+
+/* ── Agents dropdown (drawing: "Agent Online -> Dropdown") ── */
+#tab-livechat .ad-lc-dd{ background:var(--card); border:1px solid var(--border); border-radius:12px; overflow:hidden; flex-shrink:0; }
+#tab-livechat .ad-lc-dd-head{ display:flex; align-items:center; justify-content:space-between; padding:10px 12px; cursor:pointer; font-size:12px; font-weight:700; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; }
+#tab-livechat .ad-lc-dd-body{ display:none; max-height:170px; overflow-y:auto; border-top:1px solid var(--border); }
+#tab-livechat .ad-lc-dd.open .ad-lc-dd-body{ display:block; }
+#tab-livechat .ad-lc-dd-caret{ transition:transform .15s; }
+#tab-livechat .ad-lc-dd.open .ad-lc-dd-caret{ transform:rotate(180deg); }
+/* ── KB Ask-AI in chat — QUESTION + ANSWER ONLY ── */
+#tab-livechat .ad-lc-kb{ border-top:1px solid var(--border); padding:10px 12px; flex-shrink:0; }
+#tab-livechat .ad-lc-kb-chat{ max-height:150px; overflow-y:auto; margin-bottom:8px; font-size:13px; line-height:1.6; }
+#tab-livechat .ad-lc-kb-chat:empty{ display:none; }
+#tab-livechat .ad-lc-kb-q{ color:var(--gold); font-weight:600; margin-bottom:4px; }
+#tab-livechat .ad-lc-kb-q::before{ content:'Q: '; }
+#tab-livechat .ad-lc-kb-a{ color:#e8eaf0; background:rgba(74,222,128,.05); border-left:3px solid #4ade80; padding:8px 12px; border-radius:0 8px 8px 0; margin-bottom:10px; }
+#tab-livechat .ad-lc-kb-row{ display:flex; gap:8px; }
+#tab-livechat .ad-lc-kb-input{ flex:1; background:var(--input); border:1px solid var(--border); border-radius:8px; padding:8px 11px; color:var(--text); font-size:13px; outline:none; }
+#tab-livechat .ad-lc-kb-btn{ background:#4ade80; color:#0e1117; border:none; border-radius:8px; padding:8px 16px; font-size:12px; font-weight:700; cursor:pointer; white-space:nowrap; }
 </style>
 <script id="lcFinalJs">
 (function(){
@@ -6266,7 +6919,7 @@ window.makeCall=function(){dialCall();};
 
   function tick(){
     if (!$('tab-livechat')) return;
-    /* ensureOffline(); removed — chat stripped */
+    ensureOffline();
     /* wrapPanesInCards(); disabled */
     ensureReply();
   }
@@ -7506,234 +8159,5 @@ function calToLocal(iso){ if(!iso) return ''; try{ var d=new Date(iso); var p=n=
 
 
 
-
-<!-- ===== Softphone launcher + off-canvas video softphone (JsSIP) ===== -->
-<button id="spLauncher" title="Softphone" onclick="spToggle()" style="position:fixed;right:20px;bottom:20px;z-index:9000;width:52px;height:52px;border-radius:50%;background:#4ade80;color:#0e1117;border:none;font-size:22px;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4)">&#9742;</button>
-<div id="spOverlay" onclick="spToggle()" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9001"></div>
-<div id="spDrawer" style="position:fixed;top:0;right:-380px;width:360px;height:100%;background:#0e1117;border-left:1px solid #2a2f3e;z-index:9002;transition:right .25s;display:flex;flex-direction:column;padding:16px;gap:12px;overflow-y:auto">
-  <div style="display:flex;justify-content:space-between;align-items:center">
-    <div style="font-weight:700;color:#d4a830">Softphone</div>
-    <div style="display:flex;align-items:center;gap:8px"><span id="spStatus" style="font-size:11px;color:#8a8fa8">Offline</span><button onclick="spToggle()" style="background:none;border:none;color:#8a8fa8;font-size:22px;cursor:pointer;line-height:1">&times;</button></div>
-  </div>
-  <div style="position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:4/3">
-    <img id="spLogo" src="/uploads/LUXELogo12.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"><video id="spRemote" autoplay playsinline style="width:100%;height:100%;object-fit:cover;background:transparent;position:relative;z-index:1"></video>
-    <video id="spLocal" autoplay playsinline muted style="position:absolute;bottom:8px;right:8px;width:96px;border-radius:6px;border:1px solid #2a2f3e;background:#000"></video>
-  </div>
-  <div id="spIncoming" style="display:none;background:#161b27;border:1px solid #2a2f3e;border-radius:8px;padding:10px;text-align:center">
-    <div id="spIncFrom" style="font-size:13px;margin-bottom:8px;color:#e8eaf0">Incoming call</div>
-    <button onclick="spAnswer()" style="background:#4ade80;color:#0e1117;border:none;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer;margin-right:8px">Answer</button>
-    <button onclick="spHangup()" style="background:#ef4444;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-weight:700;cursor:pointer">Reject</button>
-  </div>
-  <input id="spNum" placeholder="sip:101@server or number" style="background:#161b27;border:1px solid #2a2f3e;border-radius:8px;padding:10px;color:#e8eaf0;outline:none">
-  <div id="spDialpad" style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
-    <button class="sp-key" onclick="spKey('1')">1</button><button class="sp-key" onclick="spKey('2')">2</button><button class="sp-key" onclick="spKey('3')">3</button>
-    <button class="sp-key" onclick="spKey('4')">4</button><button class="sp-key" onclick="spKey('5')">5</button><button class="sp-key" onclick="spKey('6')">6</button>
-    <button class="sp-key" onclick="spKey('7')">7</button><button class="sp-key" onclick="spKey('8')">8</button><button class="sp-key" onclick="spKey('9')">9</button>
-    <button class="sp-key" onclick="spKey('*')">*</button><button class="sp-key" onclick="spKey('0')">0</button><button class="sp-key" onclick="spKey('#')">#</button>
-    <button class="sp-key" onclick="spBack()" style="grid-column:span 3;background:#1a1f2e">&#9003; Delete</button>
-  </div>
-  <div style="display:flex;gap:8px">
-    <button onclick="spCall(true)" style="flex:1;background:#4ade80;color:#0e1117;border:none;border-radius:8px;padding:10px;font-weight:700;cursor:pointer">&#128249; Video</button>
-    <button onclick="spCall(false)" style="flex:1;background:#3b82f6;color:#fff;border:none;border-radius:8px;padding:10px;font-weight:700;cursor:pointer">&#127908; Audio</button>
-  </div>
-  <div style="display:flex;gap:8px">
-    <button onclick="spHangup()" style="flex:1;background:#ef4444;color:#fff;border:none;border-radius:8px;padding:10px;font-weight:700;cursor:pointer">Hang Up</button>
-    <button onclick="spRegister()" style="flex:1;background:#1a1f2e;color:#e8eaf0;border:1px solid #2a2f3e;border-radius:8px;padding:10px;cursor:pointer">Reconnect</button>
-  </div>
-</div>
-<script src="/js/jssip.min.js"></script>
-<script>
-(function(){
-  var ua=null, session=null;
-  function cfg(){ return { wss:localStorage.getItem('sipWss')||'', uri:localStorage.getItem('sipUri')||'', pass:localStorage.getItem('sipPass')||'', name:localStorage.getItem('sipName')||'' }; }
-  function setStatus(t){ var e=document.getElementById('spStatus'); if(e) e.textContent=t; }
-  window.spToggle=function(){ var d=document.getElementById('spDrawer'),o=document.getElementById('spOverlay'); var open=(d.style.right==='0px'); d.style.right=open?'-380px':'0px'; o.style.display=open?'none':'block'; if(!open && !ua) spRegister(); };
-  window.spRegister=function(){
-    var c=cfg();
-    if(!c.wss||!c.uri){ setStatus('Set SIP settings first'); return; }
-    if(!window.JsSIP){ setStatus('SDK not loaded'); return; }
-    try{
-      var socket=new JsSIP.WebSocketInterface(c.wss);
-      ua=new JsSIP.UA({ sockets:[socket], uri:c.uri, password:c.pass, display_name:c.name||undefined });
-      ua.on('connected',function(){ setStatus('Connecting...'); });
-      ua.on('registered',function(){ setStatus('Registered'); });
-      ua.on('unregistered',function(){ setStatus('Unregistered'); });
-      ua.on('registrationFailed',function(){ setStatus('Reg failed'); });
-      ua.on('newRTCSession',function(e){
-        session=e.session;
-        if(session.direction==='incoming'){
-          document.getElementById('spIncoming').style.display='block';
-          document.getElementById('spIncFrom').textContent='Incoming: '+((session.remote_identity&&session.remote_identity.uri.user)||'call');
-        }
-        wireSession();
-      });
-      ua.start();
-    }catch(err){ setStatus('Error'); }
-  };
-  function wireSession(){
-    if(!session) return;
-    session.on('progress',function(){ setStatus('Ringing...'); });
-    session.on('confirmed',function(){ setStatus('In call'); document.getElementById('spIncoming').style.display='none'; });
-    session.on('ended',function(){ setStatus('Registered'); cleanup(); });
-    session.on('failed',function(){ setStatus('Call failed'); cleanup(); });
-    session.on('peerconnection',function(e){ attachMedia(e.peerconnection); });
-  }
-  function attachMedia(pc){ if(!pc) return; pc.addEventListener('track',function(ev){ var r=document.getElementById('spRemote'); if(ev.streams&&ev.streams[0]) r.srcObject=ev.streams[0]; }); }
-  window.spCall=function(video){
-    if(!ua){ spRegister(); return; }
-    var c=cfg(); var target=document.getElementById('spNum').value.trim(); if(!target){ setStatus('Enter a number'); return; }
-    if(target.indexOf('sip:')!==0){ var host=(c.uri.split('@')[1]||''); target='sip:'+target+'@'+host; }
-    var opts={ mediaConstraints:{audio:true,video:!!video}, pcConfig:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]} };
-    session=ua.call(target,opts); wireSession();
-    if(session && session.connection) attachMedia(session.connection);
-    navigator.mediaDevices.getUserMedia({audio:true,video:!!video}).then(function(st){ var l=document.getElementById('spLocal'); if(l) l.srcObject=st; }).catch(function(){});
-  };
-  window.spAnswer=function(){ if(!session)return; session.answer({ mediaConstraints:{audio:true,video:true}, pcConfig:{iceServers:[{urls:'stun:stun.l.google.com:19302'}]} }); document.getElementById('spIncoming').style.display='none'; };
-  window.spKey=function(d){
-    if(session && session.isEstablished && session.isEstablished()){ try{ session.sendDTMF(d); }catch(e){} }
-    var n=document.getElementById('spNum'); if(n) n.value += d;
-  };
-  window.spBack=function(){ var n=document.getElementById('spNum'); if(n) n.value=n.value.slice(0,-1); };
-  window.spHangup=function(){ try{ if(session) session.terminate(); }catch(e){} cleanup(); };
-  function cleanup(){ session=null; var r=document.getElementById('spRemote'),l=document.getElementById('spLocal'); if(r)r.srcObject=null; if(l)l.srcObject=null; var inc=document.getElementById('spIncoming'); if(inc) inc.style.display='none'; }
-
-  // Settings page: save + load SIP config
-  document.addEventListener('DOMContentLoaded',function(){
-    ['sipWss','sipUri','sipPass','sipName'].forEach(function(k){ var el=document.getElementById(k); if(el) el.value=localStorage.getItem(k)||''; });
-    var btn=document.getElementById('sipSaveBtn');
-    if(btn) btn.addEventListener('click',function(){
-      ['sipWss','sipUri','sipPass','sipName'].forEach(function(k){ var el=document.getElementById(k); if(el) localStorage.setItem(k, el.value.trim()); });
-      var st=document.getElementById('sipStatus'); if(st){ st.textContent='Saved'; setTimeout(function(){st.textContent='';},1500); }
-      if(ua){ try{ ua.stop(); }catch(e){} ua=null; }  // re-register with new settings on next open
-    });
-  });
-})();
-</script>
-
-<script>
-/* ===== Clean Live Chat panel (40% box) — reads existing /api/chat.php ===== */
-(function(){
-  var CHAT='/api/chat.php';
-  var lcRowDelegated=false;
-  function lcWireRows(){
-    if(lcRowDelegated) return; lcRowDelegated=true;
-    var list=document.getElementById('lcSessList'); if(!list) return;
-    list.addEventListener('click',function(ev){ var row=ev.target.closest('.lc-row'); if(!row) return; lcOpenChat(row.getAttribute('data-sid'), row.getAttribute('data-name')); });
-  }
-  document.addEventListener('DOMContentLoaded', lcWireRows);
-
-  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  window.lcToggle=function(bodyId,chevId){ var b=document.getElementById(bodyId),c=document.getElementById(chevId); if(!b)return; var open=b.style.display!=='none'; b.style.display=open?'none':'block'; if(c)c.textContent=open?'▸':'▾'; };
-  window.lcSetStatus=async function(st){
-    document.querySelectorAll('.lc-st').forEach(function(b){ var on=b.dataset.st===st; b.style.background=on?(st==='online'?'#4ade80':(st==='away'?'#f59e0b':'#ef4444')):'transparent'; b.style.color=on?'#0e1117':'#8a8fa8'; });
-    try{ await fetch(CHAT+'?action=set_status',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:st})}); }catch(e){}
-    lcLoadAgents();
-  };
-  async function lcLoadMe(){
-    var w=document.getElementById('lcWhoami');
-    try{
-      var r=await fetch(CHAT+'?action=get_status',{credentials:'include'});
-      if(r.status===401){ if(w){ w.textContent='Not signed in (session not seen by chat API)'; w.style.color='#f59e0b'; } return; }
-      var d=await r.json();
-      if(d&&d.ok){ if(w){ w.textContent=(d.name||'(no name)')+' · '+(d.role||'admin'); w.style.color='#8a8fa8'; } if(d.status) lcSetStatus.call(null,d.status); }
-      else { if(w){ w.textContent='API error: '+(d&&d.error?d.error:'unknown'); w.style.color='#f59e0b'; } }
-    }catch(e){ if(w){ w.textContent='Fetch error: '+e.message; w.style.color='#ef4444'; } }
-  }
-  window.lcLoadAgents=async function(){
-    try{ var r=await fetch(CHAT+'?action=agents_list',{credentials:'include'}); var d=await r.json(); var list=document.getElementById('lcAgList'); if(!d||!d.ok){ return; }
-      var ags=d.agents||[]; var online=ags.filter(function(a){return a.status==='online' && (a.seconds_ago==null || a.seconds_ago<120);}).length;
-      var oc=document.getElementById('lcOnlineCount'); if(oc) oc.textContent=online+' ONLINE';
-      list.innerHTML = ags.length ? ags.map(function(a){ var dot=a.status==='online'?'#4ade80':(a.status==='away'?'#f59e0b':'#64748b'); var fresh=(a.status==='online' && (a.seconds_ago==null||a.seconds_ago<120)); var d2=fresh?'#4ade80':(a.status==='away'?'#f59e0b':'#64748b'); return '<div style="display:flex;align-items:center;gap:8px;padding:6px 0"><span style="width:8px;height:8px;border-radius:50%;background:'+d2+'"></span><span style="font-size:12px;color:#e8eaf0">'+esc(a.name||a.email||'agent')+'</span>'+(fresh?'<span style="font-size:10px;color:#4ade80;margin-left:auto">online</span>':'')+'</div>'; }).join('') : '<div style="color:#8a8fa8;font-size:12px">No agents</div>';
-    }catch(e){}
-  };
-  window.lcLoadSessions=async function(){
-    var box=document.getElementById('lcSessList');
-    try{ var r=await fetch(CHAT+'?action=sessions_list&filter=active',{credentials:'include'});
-      if(r.status===401){ box.innerHTML='<div style="color:#f59e0b;font-size:12px;padding:8px">Sign in as an agent to load chats</div>'; return; }
-      var d=await r.json(); if(!d||!d.ok){ box.innerHTML='<div style="color:#8a8fa8;font-size:12px;padding:8px">No active chats</div>'; return; }
-      var ss=d.sessions||[]; var cnt=document.getElementById('lcActiveCount'); if(cnt) cnt.textContent=ss.length+' ACTIVE';
-      box.innerHTML = ss.length ? ss.map(function(x){
-        var un=(x.unread&&x.unread>0)?'<span style="background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;margin-left:auto">'+x.unread+'</span>':'';
-        return '<div class="lc-row" data-sid="'+esc(String(x.id))+'" data-name="'+esc(x.visitor_name||'Visitor')+'" style="padding:10px 8px;border-bottom:1px solid #1e2330;cursor:pointer;display:flex;align-items:center;gap:6px"><div style="min-width:0;flex:1"><div style="font-size:13px;font-weight:600;color:#e8eaf0">'+esc(x.visitor_name||'Visitor')+'</div><div style="font-size:12px;color:#8a8fa8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+esc(x.last_message||'')+'</div></div>'+un+'</div>';
-      }).join('') : '<div style="color:#8a8fa8;font-size:12px;padding:8px">No active chats</div>';
-    }catch(e){ var box=document.getElementById('lcSessList'); if(box) box.innerHTML='<div style="color:#8a8fa8;font-size:12px;padding:8px">No active chats</div>'; }
-  };
-  document.addEventListener('DOMContentLoaded',function(){
-    lcLoadMe(); lcLoadAgents(); lcLoadSessions();
-    setInterval(function(){ lcLoadSessions(); lcLoadAgents(); }, 8000);
-  });
-})();
-</script>
-
-<script>
-/* Knowledgebase panel (60% box) */
-(function(){
-  function esc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-  window.kbSend=async function(){
-    var inp=document.getElementById('kbAsk'); var q=(inp.value||'').trim(); if(!q) return;
-    var box=document.getElementById('kbAnswers'); var btn=document.getElementById('kbSendBtn');
-    box.innerHTML='<div style="color:#8a8fa8">Searching…</div>'; btn.disabled=true;
-    try{
-      var r=await fetch('/api/ai-kb.php?action=ask',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,history:[]})});
-      var d=await r.json();
-      if(d && (d.reply||d.answer)){ box.innerHTML='<div style="color:#e8eaf0"><b style="color:#d4a830">Q:</b> '+esc(q)+'</div><div style="margin-top:8px;color:#e8eaf0;border-left:3px solid #4ade80;padding-left:10px">'+esc(d.reply||d.answer)+'</div>'; }
-      else { box.innerHTML='<div style="color:#f59e0b">'+esc((d&&d.error)||'No answer')+'</div>'; }
-    }catch(e){ box.innerHTML='<div style="color:#ef4444">Error: '+esc(e.message)+'</div>'; }
-    btn.disabled=false; inp.value='';
-  };
-  window.lcCurrentSession=null; window.lcCurrentName='';
-  window.lcOpenChat=async function(sid,name){
-    window.lcCurrentSession=sid; window.lcCurrentName=name||'Visitor';
-    // highlight selected row
-    document.querySelectorAll('#lcSessList [data-sid]').forEach(function(el){ el.style.background=(el.getAttribute('data-sid')===String(sid))?'#1a2030':''; });
-    var box=document.getElementById('kbAnswers');
-    box.innerHTML='<div style="color:#d4a830;font-weight:700;margin-bottom:8px">Chat with '+esc(name||'Visitor')+'</div><div style="color:#8a8fa8">Loading…</div>';
-    try{
-      var r=await fetch('/api/chat.php?action=messages_get&session_id='+encodeURIComponent(sid),{credentials:'include'});
-      var d=await r.json();
-      if(d&&d.ok){
-        var msgs=d.messages||[];
-        var html='<div style="color:#d4a830;font-weight:700;margin-bottom:8px">Chat with '+esc(name||'Visitor')+'</div>';
-        html+= msgs.length ? msgs.map(function(m){ var mine=(m.sender_type==='agent'); return '<div style="margin:6px 0;text-align:'+(mine?'right':'left')+'"><span style="display:inline-block;max-width:80%;padding:7px 11px;border-radius:10px;background:'+(mine?'#2563eb':'#1e2330')+';color:#e8eaf0;font-size:13px">'+esc(m.message)+'</span></div>'; }).join('') : '<div style="color:#8a8fa8">No messages yet</div>';
-        box.innerHTML=html; box.scrollTop=box.scrollHeight;
-      } else { box.innerHTML='<div style="color:#f59e0b">'+esc((d&&d.error)||'Could not load')+'</div>'; }
-    }catch(e){ box.innerHTML='<div style="color:#ef4444">Error: '+esc(e.message)+'</div>'; }
-  };
-  window.kbSendReply=async function(){
-    var t=document.getElementById('kbReply'); var v=(t.value||'').trim(); if(!v) return;
-    if(!window.lcCurrentSession){ alert('Click an active chat on the left first.'); return; }
-    var btn=document.getElementById('kbReplyBtn'); btn.disabled=true;
-    try{
-      var r=await fetch('/api/chat.php?action=reply',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({session_id:window.lcCurrentSession,message:v})});
-      var d=await r.json();
-      if(d&&d.ok){ t.value=''; lcOpenChat(window.lcCurrentSession, window.lcCurrentName); }
-      else { alert('Send failed: '+((d&&d.error)||'unknown')); }
-    }catch(e){ alert('Send error: '+e.message); }
-    btn.disabled=false;
-  };
-})();
-</script>
-<script>
-(function(){
-  function esc(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-  window.pbxLoad=async function(){
-    var st=document.getElementById("pbxStatus"),list=document.getElementById("pbxExtList");if(!list)return;
-    try{var r=await fetch("/api/pbx.php?action=list",{credentials:"include"});
-      if(r.status===401){list.innerHTML="<div style=\"color:#f59e0b;font-size:12px\">Sign in to manage the PBX</div>";if(st)st.textContent="Not signed in";return;}
-      var d=await r.json();if(!d.ok){list.innerHTML="<div style=\"color:#f59e0b;font-size:12px\">"+esc(d.error||"Error")+"</div>";return;}
-      var exts=d.extensions||[],status=d.status||{};var reg=exts.filter(function(e){return status[e.ext]==="registered";}).length;
-      if(st)st.innerHTML="Asterisk PBX active - <b style=\"color:#4ade80\">"+reg+"</b> of "+exts.length+" extensions registered - WSS: pbx.divafans.club:8089";
-      list.innerHTML=exts.length?exts.map(function(e){var on=status[e.ext]==="registered",dot=on?"#4ade80":"#64748b";
-        var del=e.ext==="1001"?"<span style=\"font-size:10px;color:#64748b\">primary</span>":"<button class=\"pbx-del\" data-ext=\""+esc(e.ext)+"\" style=\"background:#3a1a1a;color:#f87171;border:1px solid #5a2a2a;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer\">Delete</button>";
-        return "<div style=\"display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1e2330\"><span style=\"width:8px;height:8px;border-radius:50%;background:"+dot+"\"></span><span style=\"font-size:14px;font-weight:600;color:#e8eaf0;min-width:60px\">"+esc(e.ext)+"</span><span style=\"font-size:11px;color:"+(on?"#4ade80":"#8a8fa8")+"\">"+(on?"registered":"offline")+"</span><span style=\"margin-left:auto\">"+del+"</span></div>";
-      }).join(""):"<div style=\"color:#8a8fa8;font-size:12px\">No extensions</div>";
-      var nums=exts.map(function(e){return parseInt(e.ext,10);});var next=1002;while(nums.indexOf(next)!==-1)next++;var ne=document.getElementById("pbxNewExt");if(ne)ne.placeholder=String(next);
-    }catch(e){list.innerHTML="<div style=\"color:#ef4444;font-size:12px\">Error: "+esc(e.message)+"</div>";}};
-  window.pbxAdd=async function(){var ne=document.getElementById("pbxNewExt"),np=document.getElementById("pbxNewPass");var ext=(ne.value||ne.placeholder||"").trim(),pass=(np.value||"").trim();var msg=document.getElementById("pbxAddMsg"),btn=document.getElementById("pbxAddBtn");msg.style.color="#8a8fa8";msg.textContent="Adding...";btn.disabled=true;
-    try{var r=await fetch("/api/pbx.php?action=add",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({ext:ext,password:pass})});var d=await r.json();if(d.ok){msg.style.color="#4ade80";msg.textContent="Added extension "+d.ext;ne.value="";np.value="";pbxLoad();}else{msg.style.color="#f87171";msg.textContent=d.error||"Failed";}}catch(e){msg.style.color="#ef4444";msg.textContent="Error: "+e.message;}btn.disabled=false;};
-  window.pbxDel=async function(ext){if(!confirm("Delete extension "+ext+"?"))return;try{var r=await fetch("/api/pbx.php?action=delete",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({ext:ext})});var d=await r.json();if(d.ok)pbxLoad();else alert(d.error||"Delete failed");}catch(e){alert("Error: "+e.message);}};
-  document.addEventListener("DOMContentLoaded",function(){var rb=document.getElementById("pbxRefreshBtn");if(rb)rb.addEventListener("click",pbxLoad);var ab=document.getElementById("pbxAddBtn");if(ab)ab.addEventListener("click",pbxAdd);var el=document.getElementById("pbxExtList");if(el)el.addEventListener("click",function(ev){var b=ev.target.closest(".pbx-del");if(b)pbxDel(b.getAttribute("data-ext"));});var t=document.getElementById("tab-pbx");if(t){var o=new MutationObserver(function(){if(t.style.display!=="none")pbxLoad();});o.observe(t,{attributes:true,attributeFilter:["style"]});}});
-})();
-</script>
 </body>
 </html>

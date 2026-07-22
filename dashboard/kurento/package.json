@@ -1,0 +1,12 @@
+{
+  "name": "luxe-kurento-signal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser WebRTC <-> Kurento one-to-many signaling for Luxe",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "kurento-client": "7.3.0",
+    "ws": "^8.18.0"
+  }
+}

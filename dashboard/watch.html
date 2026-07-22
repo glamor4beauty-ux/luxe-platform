@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Watch — Luxe Model Collective</title>
+<style>
+  :root{--bg:#0d0f14;--panel:#161a22;--line:#262c38;--txt:#e6e9ef;--mut:#8b93a3;--acc:#e8318a;--ok:#25c26e;--warn:#e0a800}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.5 system-ui,Segoe UI,Roboto,sans-serif}
+  .top{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .top h1{font-size:17px;margin:0;font-weight:600}
+  .top .live{margin-left:auto;font-size:13px;color:var(--mut);display:flex;align-items:center;gap:7px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--mut)}
+  .dot.on{background:var(--ok);box-shadow:0 0 8px var(--ok)}
+  .dot.wait{background:var(--warn)}
+  .wrap{max-width:900px;margin:0 auto;padding:16px}
+  .stage{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:16px;overflow:hidden}
+  video{width:100%;height:100%;object-fit:contain;background:#000}
+  .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:var(--mut);font-size:14px}
+  .row{display:flex;gap:10px;margin-top:14px;align-items:center}
+  input{flex:1;background:#0d0f14;border:1px solid var(--line);color:var(--txt);padding:12px 13px;border-radius:10px;font-size:15px}
+  button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:12px 18px;font-size:15px;font-weight:700;cursor:pointer}
+  button.sec{background:#232a36;color:var(--txt)}
+  .hint{color:var(--mut);font-size:13px;margin-top:10px}
+  /* embed mode: video only, fills frame horizontally */
+  body.embed .top,body.embed .row,body.embed .hint{display:none}
+  body.embed .wrap{max-width:none;padding:0}
+  body.embed .stage{border-radius:0;aspect-ratio:auto;height:100vh;width:100vw}
+  body.embed video{object-fit:contain}
+</style>
+</head>
+<body>
+<div class="top">
+  <h1>▶ Watch Live</h1>
+  <div class="live"><span id="dot" class="dot"></span><span id="liveTxt">Idle</span></div>
+</div>
+<div class="wrap">
+  <div class="stage">
+    <video id="vid" autoplay playsinline></video>
+    <div class="overlay" id="ov">Enter a stream name and tap Watch.</div>
+  </div>
+  <div class="row">
+    <input id="name" value="stream1" placeholder="stream name">
+    <button id="watchBtn" onclick="watch()">Watch</button>
+    <button class="sec" onclick="stop()">Stop</button>
+  </div>
+  <div class="hint">Live WebRTC playback (sub‑second). Tap the video once if it stays paused — some browsers need a tap to start audio.</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const clean=s=>(s||'').replace(/[^a-zA-Z0-9_-]/g,'')||'stream1';
+const SIGNAL_URL=(location.protocol==='https:'?'wss://':'ws://')+location.host+'/kurento-signal';
+const ICE=[
+  {urls:'stun:162.35.180.58:3478'},
+  {urls:'turn:162.35.180.58:3478',username:'luxe',credential:'Turn7700Luxe'}
+];
+let pc=null, sig=null;
+function sigSend(o){ if(sig&&sig.readyState===WebSocket.OPEN) sig.send(JSON.stringify(o)); }
+function setLive(s){ $('dot').className='dot'+(s==='on'?' on':s==='wait'?' wait':''); $('liveTxt').textContent=s==='on'?'LIVE':s==='wait'?'Connecting…':'Idle'; }
+function ov(t){ $('ov').style.display=t?'flex':'none'; if(t)$('ov').textContent=t; }
+
+async function watch(){
+  const name=clean($('name').value);
+  stop(); setLive('wait'); ov('Connecting…'); $('watchBtn').disabled=true;
+  try{
+    pc=new RTCPeerConnection({iceServers:ICE});
+    pc.ontrack=e=>{ $('vid').srcObject=e.streams[0]; ov(''); };
+    pc.onicecandidate=e=>{ if(e.candidate) sigSend({id:'onIceCandidate',candidate:e.candidate}); };
+    pc.addTransceiver('video',{direction:'recvonly'});
+    pc.addTransceiver('audio',{direction:'recvonly'});
+
+    sig=new WebSocket(SIGNAL_URL);
+    sig.onopen=async()=>{
+      const offer=await pc.createOffer(); await pc.setLocalDescription(offer);
+      sigSend({id:'viewer',name:name,sdpOffer:offer.sdp});
+    };
+    sig.onmessage=async(ev)=>{
+      const m=JSON.parse(ev.data);
+      if(m.id==='viewerResponse'){
+        if(m.response!=='accepted'){ ov(m.message||'Stream not available.'); setLive('off'); $('watchBtn').disabled=false; return; }
+        await pc.setRemoteDescription({type:'answer',sdp:m.sdpAnswer});
+        setLive('on'); $('watchBtn').disabled=false;
+      }else if(m.id==='iceCandidate'){ try{ await pc.addIceCandidate(m.candidate); }catch(e){} }
+      else if(m.id==='stopCommunication'){ ov('Stream ended.'); stop(); }
+    };
+    sig.onerror=()=>{ ov('Connection failed.'); setLive('off'); $('watchBtn').disabled=false; };
+  }catch(e){ ov('Error: '+e.message); setLive('off'); $('watchBtn').disabled=false; }
+}
+function stop(){
+  sigSend({id:'stop'});
+  if(sig){ try{sig.close();}catch(e){} sig=null; }
+  if(pc){ try{pc.close();}catch(e){} pc=null; }
+  $('vid').srcObject=null; setLive('off');
+}
+// deep-link: /watch.html?name=xyz  ·  &embed=1 for video-only (dashboard monitor)
+const params=new URLSearchParams(location.search);
+if(params.get('embed')) document.body.classList.add('embed');
+// report the live video's real aspect ratio to the dashboard so the frame can auto-adapt
+(function(){ const vid=$('vid');
+  function post(){ if(vid.videoWidth&&vid.videoHeight){ try{ parent.postMessage({type:'luxe-aspect',ratio:vid.videoWidth/vid.videoHeight},'*'); }catch(e){} } }
+  vid.addEventListener('loadedmetadata',post);
+  vid.addEventListener('resize',post);
+})();
+const q=params.get('name');
+if(q){ $('name').value=clean(q); watch(); }
+</script>
+</body>
+</html>

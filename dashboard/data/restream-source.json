@@ -1,0 +1,6 @@
+{
+    "mode": "file",
+    "url": "rtmp:\/\/127.0.0.1:1935\/live\/stream1",
+    "file": "",
+    "loop": false
+}

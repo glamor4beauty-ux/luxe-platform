@@ -13,3 +13,12 @@
 *.bak-*
 # node
 node_modules/
+# secrets / config with credentials
+config.php
+api/comm-config.php
+api/ivr-config.php
+api/jenny-config.php
+*.pem
+*.pre-*
+*.OLD-*
+dashboard.html.pre-*

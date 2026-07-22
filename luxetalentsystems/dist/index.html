@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Luxe Talent Syatems — Webcam Talent Management</title>
-<meta name="description" content="Register to become a webcam model. Above average payout, Combined 131 Million visitors monthly..">
+<title>Sexyjobs, adult jobs, content creator webcam model - Luxe Model Collective</title>
+<meta name="description" content="Luxe Model Collective is the premier employment center in adult entertainmen. Work from home. 131 Million visitors monthly..">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
@@ -445,7 +445,9 @@ a:visited {
 <div class="hero" id="register">
 <div class="row">
   <div class="col-12 col-md-6"> <h1>Online Performer <span>Registration</span></h1></div>
-  <div class="col-12 col-md-6"><p>Join the fastest-growing webcam talent collective. Register below, set your schedule, and start earning.</p></div>
+  <div class="col-12 col-md-6">
+ <img src="/uploads/referralprogram.png" class="rounded-bottom-1" alt="Referral 5%">
+  </div>
 </div>
   <div class="hero-bar"></div>
 </div>
@@ -646,6 +648,8 @@ Your browser does not support the video tag.
   </div>
 </div>
 <div class="gradient-bar"></div>
+<div style="height:10px"></div>
+<center> <img src="/uploads/referralprogram.png" class="rounded-bottom-1" alt="Referral 5%"></center>
 </div>
 
 <!-- RIGHT COLUMN: KB Widget + Platform Info -->
@@ -695,16 +699,70 @@ Your browser does not support the video tag.
     </div>
   </div>
 
-  <div style="color:#e8eaf0;padding:0 10px">
-    <h4 style="color:#4ade80;margin-bottom:8px">Bongacams</h4>
-    <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin-bottom:20px">BongaCams is like the perfect combo of stability and freedom! Go live from anywhere, even your phone, and earn at your own pace. 18+ welcome anytime.</p>
-    <h4 style="color:#4ade80;margin-bottom:8px">Stripchat</h4>
-    <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin-bottom:20px">Engage with a diverse audience, showcase your talents, and earn competitive payouts. Earnings depend on engagement, consistency, and performance quality.</p>
-    <h4 style="color:#4ade80;margin-bottom:8px">My.Club</h4>
-    <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin-bottom:20px">Personalized "Call Me" link for enhanced fan engagement. Share your unique link to promote conversations with your followers.</p>
-    <h4 style="color:#4ade80;margin-bottom:8px">Live Jasmin</h4>
-    <p style="font-size:13px;color:#8a8fa8;line-height:1.7">Get up to 100% share! 35 million daily users. Standard, Fast, and Instant payouts. Multiple languages supported.</p>
-  </div>
+<div style="color:#e8eaf0;padding:0 10px">
+ <h4 style="color:#54F527;margin-bottom:10px">🟢 Live Now</h4>
+<iframe src="/player.html?name=stream1" style="width:100%;aspect-ratio:16/9;border:0;border-radius:12px" scrolling="no" allowfullscreen></iframe>
+  <p style="font-size:13px;color:#8a8fa8;line-height:1.7;margin:0">
+     <center>Checkout What's On Now.</center>
+  </p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script>
+(function(){
+  var LUXE_STREAM = 'desk1';                              // <-- your stream name
+  var LUXE_HLS = 'https://dashboard.divafans.club/hls/';
+  var url = LUXE_HLS + LUXE_STREAM + '.m3u8';
+  var live = document.getElementById('luxeLive');
+  var standby = document.getElementById('luxeStandby');
+  if(!live) return;
+  function showLive(){ standby.style.display='none'; live.style.display='block'; live.play().catch(function(){}); }
+  function showStandby(){ live.style.display='none'; standby.style.display='block'; standby.play().catch(function(){}); }
+  if(window.Hls && Hls.isSupported()){
+    var hls = new Hls({ liveSyncDurationCount:3 });
+    hls.loadSource(url); hls.attachMedia(live);
+    hls.on(Hls.Events.MANIFEST_PARSED, showLive);
+    hls.on(Hls.Events.ERROR, function(e,d){
+      if(d.fatal){
+        if(d.type===Hls.ErrorTypes.NETWORK_ERROR){ showStandby(); setTimeout(function(){ hls.loadSource(url); hls.startLoad(); }, 5000); }
+        else { try{ hls.recoverMediaError(); }catch(x){ showStandby(); } }
+      }
+    });
+  } else if(live.canPlayType('application/vnd.apple.mpegurl')){
+    live.src = url;
+    live.addEventListener('loadedmetadata', showLive);
+    live.addEventListener('error', showStandby);
+  }
+})();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13/dist/hls.min.js"></script>
+<script>
+(function(){
+  var LUXE_STREAM = 'desk1';                                   // <-- set your stream name here
+  var LUXE_HLS = 'https://dashboard.divafans.club/hls/';        // dashboard HLS origin
+  var url = LUXE_HLS + LUXE_STREAM + '.m3u8';
+  var v = document.getElementById('luxeLive'), msg = document.getElementById('luxeLiveMsg');
+  if(!v) return;
+  function off(){ if(msg){ msg.style.display='flex'; msg.textContent='No one is live right now.'; } }
+  function on(){ if(msg) msg.style.display='none'; }
+  if(window.Hls && Hls.isSupported()){
+    var hls = new Hls({ liveSyncDurationCount:3 });
+    hls.loadSource(url); hls.attachMedia(v);
+    hls.on(Hls.Events.MANIFEST_PARSED, function(){ on(); v.play().catch(function(){}); });
+    hls.on(Hls.Events.ERROR, function(e,d){
+      if(d.fatal){
+        if(d.type===Hls.ErrorTypes.NETWORK_ERROR){ off(); setTimeout(function(){ hls.loadSource(url); hls.startLoad(); }, 5000); }
+        else { try{ hls.recoverMediaError(); }catch(x){ off(); } }
+      }
+    });
+  } else if(v.canPlayType('application/vnd.apple.mpegurl')){
+    v.src = url;
+    v.addEventListener('loadedmetadata', function(){ on(); v.play().catch(function(){}); });
+    v.addEventListener('error', off);
+  } else if(msg){ msg.textContent='Live video not supported in this browser.'; }
+})();
+</script>
 </div>
 
 </div>
@@ -847,7 +905,7 @@ window.switchWidgetTab=function(tab){document.getElementById('kbView').style.dis
 
 window.kbSearch=async function(query){var input=document.getElementById('kbInput');var q=query||(input?input.value.trim():'');if(!q)return;if(input)input.value='';document.querySelectorAll('.kb-topic').forEach(function(t){t.classList.remove('active')});if(query){document.querySelectorAll('.kb-topic').forEach(function(t){if(t.textContent.trim()===query)t.classList.add('active')})}var results=document.getElementById('kbResults');results.innerHTML='<div style="text-align:center;color:#8a8fa8;padding:20px;font-size:12px">Searching...</div>';try{var r=await fetch(KB_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});var d=await r.json();var answer=d.answer||d.reply||d.response||'No results found.';results.innerHTML='<div class="kb-q">Q: '+esc(q)+'</div><div class="kb-answer"><div class="kb-answer-label">Knowledge Base</div><div class="kb-answer-text">'+esc(answer)+'</div></div>'}catch(e){try{var r2=await fetch(KB_SEARCH+'?action=search&q='+encodeURIComponent(q));var d2=await r2.json();if(d2.results&&d2.results.length>0){var html='<div class="kb-q">Q: '+esc(q)+'</div>';d2.results.forEach(function(item){html+='<div class="kb-answer"><div class="kb-answer-label">'+esc(item.category||'Result')+'</div><div class="kb-answer-text">'+esc(item.answer||item.content||'')+'</div></div>'});results.innerHTML=html}else{results.innerHTML='<div class="kb-q">Q: '+esc(q)+'</div><div class="kb-answer"><div class="kb-answer-text">No results found.</div></div>'}}catch(e2){results.innerHTML='<div class="kb-answer"><div class="kb-answer-text" style="color:#f87171">Search unavailable.</div></div>'}}results.scrollTop=0};
 
-window.vcCheckOnline=async function(){try{var r=await fetch(CHAT_API+'?action=check_online');var d=await r.json();var dot=document.getElementById('vcDot');var txt=document.getElementById('vcOnlineText');var cb=document.getElementById('chatTabBtn');if(d.online){dot.style.background='#4ade80';dot.style.boxShadow='0 0 6px rgba(74,222,128,0.5)';txt.textContent='Agent Online';txt.style.color='#4ade80';if(cb){cb.style.background='#4ade80';cb.style.color='#0e1117';cb.textContent='Chat Live Now'}}else{dot.style.background='#64748b';dot.style.boxShadow='none';txt.textContent='Leave a message';txt.style.color='#8a8fa8';if(cb){cb.style.background='#A66430';cb.style.color='#fff';cb.textContent='Leave a message'}}}catch(e){}}
+window.vcCheckOnline=async function(){try{var r=await fetch(CHAT_API+'?action=check_online');var d=await r.json();var dot=document.getElementById('vcDot');var txt=document.getElementById('vcOnlineText');var cb=document.getElementById('chatTabBtn');if(d.online){dot.style.background='#4ade80';dot.style.boxShadow='0 0 6px rgba(74,222,128,0.5)';txt.textContent='Agent Online';txt.style.color='#4ade80';if(cb){cb.style.background='#4ade80';cb.style.color='#0e1117';cb.textContent='Chat Live Now'}}else{dot.style.background='#64748b';dot.style.boxShadow='none';txt.textContent='Leave a message';txt.style.color='#8a8fa8';if(cb){cb.style.background='#A66430';cb.style.color='#fff';cb.textContent='Leave a message'}}}catch(e){}
   // Resume a saved chat session if one exists from a prior reload.
   if(!vcSessionId){try{var saved=JSON.parse(sessionStorage.getItem('lc_session')||'null');if(saved&&saved.id){vcSessionId=saved.id;vcLastTs=saved.lastTs||saved.lastId||'';vcName=saved.name||'';document.getElementById('vChatStart').style.display='none';document.getElementById('vChatActive').style.display='flex';vcPollMessages();vcPollTimer=setInterval(vcPollMessages,3000)}}catch(e){sessionStorage.removeItem('lc_session')}}
 };

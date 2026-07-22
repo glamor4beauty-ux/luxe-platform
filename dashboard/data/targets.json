@@ -1,0 +1,42 @@
+[
+    {
+        "id": "direct",
+        "platform": "Direct",
+        "protocol": "RTMP",
+        "server": "rtmp://162.35.180.58:1935/live",
+        "key": "stream1",
+        "region": ""
+    },
+    {
+        "id": "twitter",
+        "platform": "Twitter",
+        "protocol": "RTMP",
+        "server": "",
+        "key": "",
+        "region": ""
+    },
+    {
+        "id": "facebook",
+        "platform": "Facebook",
+        "protocol": "RTMP",
+        "server": "",
+        "key": "",
+        "region": ""
+    },
+    {
+        "id": "youtube",
+        "platform": "Youtube",
+        "protocol": "RTMP",
+        "server": "",
+        "key": "",
+        "region": ""
+    },
+    {
+        "id": "tiktok",
+        "platform": "TikTok",
+        "protocol": "RTMP",
+        "server": "",
+        "key": "",
+        "region": ""
+    }
+]

@@ -565,7 +565,6 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
 
       <div class="sb-item clickable" data-tab="tasks"><svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><span>Tasks</span></div>
       <div class="sb-item clickable" data-tab="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span>Settings</span></div>
-      <div class="sb-item clickable" data-tab="pbx"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.34a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.74-1.74a2 2 0 0 1 2.11-.45c.74.34 1.53.57 2.34.7A2 2 0 0 1 22 16.92z"/></svg><span>PBX</span></div>
       <div class="sb-item clickable" data-tab="streammypc"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg><span>Stream My PC</span></div>
 
           <div class="sb-section"></div>
@@ -945,19 +944,6 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
         #tab-settings .rfs-chk{display:flex;align-items:center;gap:7px;font-size:13px;color:#e8eaf0;cursor:pointer}
         #tab-settings .rfs-chk input{width:16px;height:16px;accent-color:#d4a830;cursor:pointer}
       </style>
-            <div class="tab-content" id="tab-pbx">
-        <div class="perf-header"><div><span class="perf-title">PBX &mdash; Phone System</span></div></div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px;margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:10px">Status</div><div id="pbxStatus" style="font-size:13px;color:#8a8fa8">Loading...</div></div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px;margin-bottom:14px">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><div style="font-size:13px;font-weight:700;color:#d4a830">Extensions</div><button id="pbxRefreshBtn" style="background:#1a1f2e;border:1px solid #2a2f3e;color:#8a8fa8;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer">Refresh</button></div>
-          <div id="pbxExtList" style="margin-bottom:14px"><div style="color:#8a8fa8;font-size:12px">Loading...</div></div>
-          <div style="border-top:1px solid #2a2f3e;padding-top:12px"><div style="font-size:12px;color:#8a8fa8;margin-bottom:8px">Add Extension</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:end"><label style="font-size:11px;color:#8a8fa8">Extension<br><input id="pbxNewExt" placeholder="1002" style="width:90px;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:8px;color:#e8eaf0;font-size:13px;outline:none"></label><label style="font-size:11px;color:#8a8fa8">Password<br><input id="pbxNewPass" placeholder="min 6 chars" style="width:160px;margin-top:4px;background:#0e1117;border:1px solid #2a2f3e;border-radius:8px;padding:8px;color:#e8eaf0;font-size:13px;outline:none"></label><button id="pbxAddBtn" style="background:#4ade80;color:#0e1117;border:none;border-radius:8px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer">Add</button></div>
-            <div id="pbxAddMsg" style="font-size:12px;margin-top:8px"></div></div>
-        </div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px;margin-bottom:14px"><div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:10px">Trunk (Outside Calls)</div><div style="font-size:13px;color:#8a8fa8">Not configured. Set up in Phase 2 (Twilio SIP trunk) for real phone numbers.</div></div>
-        <div style="background:#131720;border:1px solid #2a2f3e;border-radius:12px;padding:16px"><div style="font-size:13px;font-weight:700;color:#d4a830;margin-bottom:10px">Phone Numbers</div><div style="font-size:13px;color:#8a8fa8">No numbers yet - added with the trunk in Phase 2.</div></div>
-      </div>
       <div class="tab-content" id="tab-settings">
         <div class="set-wrap">
           <div class="perf-header"><div><span class="perf-title">Settings</span></div></div>
@@ -978,7 +964,11 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
                           <div style="margin-top:10px"><button type="button" class="set-save" id="tplSaveBtn" style="padding:8px 16px;font-size:12px">Save Templates</button><span class="set-status" id="tplStatus"></span></div>
                         </div>
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">Custom Credentials</div>
+                          <div id="setCustomList"></div>
+                          <button type="button" class="set-add" id="setAddBtn">+ Add credential</button>
+                        </div>
 
               <div class="set-card" id="regFormSettingsCard">
                 <div class="set-card-title">Registration Form — Platforms &amp; Opt-in</div>
@@ -1000,13 +990,64 @@ html,body{height:100%;background:#0e1117;color:#e8eaf0;font-family:'Segoe UI',-a
 
               
 
-              
+              <div class="set-card">
+                          <div class="set-card-title">SIP / Voice — Authentication</div>
+                          <div class="set-row"><label>Credential List SID</label><input type="text" data-key="sip_credential_list_sid" placeholder="CL…"></div>
+                          <div class="set-row"><label>SIP Username (up to 32 chars)</label><input type="text" data-key="sip_username"></div>
+                          <div class="set-row"><label>SIP Password</label><input type="password" data-key="sip_password" data-secret="1" placeholder="•••• leave blank to keep"></div>
+                          <div class="set-row"><label>IP Access Control List SID</label><input type="text" data-key="sip_ip_acl_sid" placeholder="AL…"></div>
+                          <div class="set-row"><label>Allowed IP Address</label><input type="text" data-key="sip_allowed_ip" placeholder="e.g. 203.0.113.10"></div>
+                          <div class="set-row"><label>CIDR Prefix Length (0–32)</label><input type="text" data-key="sip_ip_cidr_prefix" placeholder="e.g. 32"></div>
+                        </div>
 
               
 
               
 
-              
+              <div class="set-card">
+                <div class="set-card-title">IVR — Phone Menu</div>
+                <p class="set-note" style="margin:0 0 12px">Callers hear the greeting, then press a key. Each option routes to an action. Prompts use text-to-speech; fill an Audio URL to play a recording instead. Edits here are saved to the IVR (separate Save button below).</p>
+
+                <div class="set-row"><label>Greeting (text-to-speech)</label><textarea data-ivr="greeting_tts" rows="3" placeholder="Thank you for calling. For sales press 1, to leave a message press 2…" style="resize:vertical;min-height:72px"></textarea></div>
+                <div class="set-row"><label>Greeting Audio URL (optional — plays instead of the text above)</label><input type="text" data-ivr="greeting_audio" placeholder="https://…/greeting.mp3"></div>
+
+                <div class="set-row"><label>Voice</label><select data-ivr="voice">
+                  <option value="Polly.Joanna">Joanna (US, female)</option>
+                  <option value="Polly.Matthew">Matthew (US, male)</option>
+                  <option value="Polly.Salli">Salli (US, female)</option>
+                  <option value="Polly.Joey">Joey (US, male)</option>
+                  <option value="Polly.Kimberly">Kimberly (US, female)</option>
+                  <option value="Polly.Amy">Amy (UK, female)</option>
+                  <option value="Polly.Brian">Brian (UK, male)</option>
+                  <option value="Polly.Lupe">Lupe (US Spanish, female)</option>
+                  <option value="Polly.Mia">Mia (Mexican Spanish, female)</option>
+                  <option value="man">man (basic)</option>
+                  <option value="woman">woman (basic)</option>
+                </select></div>
+                <div class="set-row"><label>Language</label><select data-ivr="language">
+                  <option value="en-US">English (US)</option>
+                  <option value="en-GB">English (UK)</option>
+                  <option value="es-US">Spanish (US)</option>
+                  <option value="es-MX">Spanish (Mexico)</option>
+                  <option value="fr-FR">French</option>
+                  <option value="de-DE">German</option>
+                  <option value="pt-BR">Portuguese (Brazil)</option>
+                </select></div>
+                <div class="set-row"><label>Digit wait time (seconds)</label><input type="number" data-ivr="timeout" min="2" max="30" placeholder="5"></div>
+                <div class="set-row"><label>Invalid-entry message (TTS)</label><input type="text" data-ivr="invalid_tts" placeholder="Sorry, I didn't get that. Let's try again."></div>
+                <div class="set-row"><label>Voicemail notification email</label><input type="text" data-ivr="voicemail_email" placeholder="support@luxemodelcollective.com"></div>
+
+                <div class="set-card-title" style="font-size:12px;margin:14px 0 8px">Menu options (main)</div>
+                <div id="ivrOptList"></div>
+                <button type="button" class="set-add" id="ivrAddBtn">+ Add option</button>
+
+                <div class="set-card-title" style="font-size:12px;margin:18px 0 4px">Extensions</div>
+                <p class="set-note" style="margin:0 0 8px">Callers can type an extension (e.g. 101) during the greeting, or behind a menu option set to "extension_prompt". Each extension rings a device.</p>
+                <div id="ivrExtList"></div>
+                <button type="button" class="set-add" id="ivrExtAddBtn">+ Add extension</button>
+
+                <div style="margin-top:12px"><button type="button" class="set-save" id="ivrSaveBtn" style="padding:8px 16px;font-size:12px">Save IVR</button><span class="set-status" id="ivrStatus"></span></div>
+              </div>
 
             </div>
           </div>
@@ -2975,7 +3016,7 @@ document.querySelectorAll('.sb-item[data-tab]').forEach(item => {
         document.getElementById('sidebar').classList.remove('open');
         document.getElementById('sidebarOverlay').classList.remove('open');
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        var _tc=$('tab-'+tab); if(_tc) _tc.classList.add('active');
+        $('tab-' + tab).classList.add('active');
         if(tab==='browser' && window.blInit) blInit();
         $('pageTitle').textContent = item.querySelector('span')?.textContent || 'Dashboard';
         if (tab === 'schedule') loadDaySchedule();
@@ -5863,7 +5904,7 @@ window.emailBulkTrash=async function(){var ids=Array.prototype.slice.call(docume
 window.emailBulkDelete=async function(){var ids=Array.prototype.slice.call(document.querySelectorAll('.emcb:checked')).map(function(c){return c.value;});if(!ids.length)return;if(!confirm('Permanently delete '+ids.length+' email(s)? This cannot be undone.'))return;for(var i=0;i<ids.length;i++){try{await fetch(EMAIL_API+'?action=delete_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:ids[i],account:currentEmailAccount})});}catch(e){}}window.emailBulkClear();loadInbox();};
 window.emailAutoTick=function(){if(document.querySelector('.emcb:checked'))return;loadInbox();};
 window.loadInbox=async function(){var filter=document.getElementById('emailFilter')?document.getElementById('emailFilter').value:'';var folder=document.getElementById('emailFolder')?document.getElementById('emailFolder').value:'INBOX';var list=document.getElementById('emailList');if(!list)return;list.innerHTML='<div style="padding:20px;color:#6a6f88;font-size:12px;text-align:center">Loading...</div>';try{var url=EMAIL_API+'?action=inbox&limit=30&skip='+inboxSkip+'&filter='+filter+'&account='+currentEmailAccount;if(folder&&folder!=='INBOX')url+='&folder='+folder;var r=await fetch(url);var d=await r.json();var msgs=d.messages||[];var sb=document.getElementById('emailStatusBar');if(sb)sb.textContent=(d.total||msgs.length)+' emails, '+(d.unread||0)+' unread';var ec=document.getElementById('emailCount');if(ec)ec.textContent=(d.total||0)+' emails';if(!msgs.length){list.innerHTML='<div style="padding:20px;color:#6a6f88;font-size:12px;text-align:center">No emails</div>';return;}list.innerHTML=msgs.map(function(m){var read=m.is_read;var bg=read?'':'background:rgba(212,168,48,.04);';var fw=read?'normal':'600';var dot=read?'':'<span style="color:#d4a830;font-size:8px;margin-right:4px">&#9679;</span>';var date=m.date?new Date(m.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'';return '<div style="display:flex;align-items:flex-start;padding:10px 12px;border-bottom:1px solid #1e2330;'+bg+'"><input type="checkbox" class="emcb" value="'+m.uid+'" onclick="event.stopPropagation()" onchange="emailBulkUpdate()" style="margin:2px 9px 0 0;flex-shrink:0;cursor:pointer"><div onclick="readEmail('+m.uid+')" style="flex:1;min-width:0;cursor:pointer"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-size:12px;font-weight:'+fw+';color:#e8eaf0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:240px">'+dot+escE(m.from_name||m.from||'')+'</span><span style="font-size:10px;color:#6a6f88">'+date+'</span></div><div style="font-size:12px;color:#c0c4d0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:'+fw+'">'+escE(m.subject||'(no subject)')+'</div><div style="font-size:11px;color:#6a6f88;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+escE(m.preview||'').substring(0,80)+'</div></div></div>';}).join('');}catch(e){list.innerHTML='<div style="padding:20px;color:#f87171;font-size:12px;text-align:center">Error: '+escE(e.message)+'</div>';}};
-window.readEmail=async function(uid){ /* email tab pending rebuild */ };
+window.readEmail=async function(uid){currentEmailId=uid;window.currentEmailRead=true;var _mrb=document.getElementById('markReadBtn');if(_mrb)_mrb.textContent='Mark Unread';document.getElementById('emailEmpty').style.display='none';document.getElementById('emailReadHeader').style.display='block';document.getElementById('readBody').style.display='block';document.getElementById('replyBox').style.display='none';document.getElementById('emailComposePane').style.display='none';document.getElementById('emailTemplatesPane').style.display='none';document.getElementById('emailReadPane').style.display='flex';document.getElementById('readSubject').textContent='Loading...';try{var r=await fetch(EMAIL_API+'?action=read&uid='+uid+'&account='+currentEmailAccount);var d=await r.json();document.getElementById('readSubject').textContent=d.subject||'(no subject)';document.getElementById('readFrom').textContent=d.from||'';document.getElementById('readTo').textContent=Array.isArray(d.to)?d.to.join(', '):(d.to||'');document.getElementById('readDate').textContent=d.date?new Date(d.date).toLocaleString():'';var frame=document.getElementById('emailBodyFrame');if(frame){var doc=frame.contentDocument||frame.contentWindow.document;doc.open();doc.write('<html><body style="font-family:Arial,sans-serif;font-size:14px;color:#333;padding:16px;margin:0">'+(d.body||'No content')+'</body></html>');doc.close();}var mf=document.getElementById('moveToFolder');if(mf&&mf.options.length<=1){try{var fr=await fetch(EMAIL_API+'?action=folders&account='+currentEmailAccount);var folders=await fr.json();mf.innerHTML='<option value="">Move to...</option>'+folders.map(function(f){var dn=f.name.replace('INBOX.','').replace('INBOX/','');return '<option value="'+f.name+'">'+dn+'</option>';}).join('');}catch(e){}}loadInbox();}catch(e){document.getElementById('readSubject').textContent='Error';}};
 window.openReply=function(all){currentReplyAll=all;document.getElementById('replyBox').style.display='block';document.getElementById('replyBody').focus();document.getElementById('replyStatus').textContent='';};
 window.sendReply=async function(){var body=document.getElementById('replyBody').value.trim();if(!body)return;var s=document.getElementById('replyStatus');s.textContent='Sending...';s.style.color='#8a8fa8';try{var r=await fetch(EMAIL_API+'?action=reply_email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({uid:currentEmailId,body:body})});var d=await r.json();if(d.success){s.textContent='Sent!';s.style.color='#4ade80';document.getElementById('replyBody').value='';}else{s.textContent=d.error||'Failed';s.style.color='#f87171';}}catch(e){s.textContent='Error';s.style.color='#f87171';}};
 window.toggleEmailRead=async function(){if(!currentEmailId)return;var nr=window.currentEmailRead?0:1;try{var r=await fetch(EMAIL_API+'?action=set_read&uid='+currentEmailId+'&read='+nr+'&account='+currentEmailAccount);var d=await r.json();if(d&&d.success){window.currentEmailRead=!!nr;var b=document.getElementById('markReadBtn');if(b)b.textContent=window.currentEmailRead?'Mark Unread':'Mark Read';loadInbox();}else alert((d&&d.error)||'Failed to update');}catch(e){alert('Error updating read status');}};
@@ -7516,7 +7557,7 @@ function calToLocal(iso){ if(!iso) return ''; try{ var d=new Date(iso); var p=n=
     <div style="display:flex;align-items:center;gap:8px"><span id="spStatus" style="font-size:11px;color:#8a8fa8">Offline</span><button onclick="spToggle()" style="background:none;border:none;color:#8a8fa8;font-size:22px;cursor:pointer;line-height:1">&times;</button></div>
   </div>
   <div style="position:relative;background:#000;border-radius:10px;overflow:hidden;aspect-ratio:4/3">
-    <img id="spLogo" src="/uploads/LUXELogo12.png" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0"><video id="spRemote" autoplay playsinline style="width:100%;height:100%;object-fit:cover;background:transparent;position:relative;z-index:1"></video>
+    <video id="spRemote" autoplay playsinline style="width:100%;height:100%;object-fit:contain;background:#000"></video>
     <video id="spLocal" autoplay playsinline muted style="position:absolute;bottom:8px;right:8px;width:96px;border-radius:6px;border:1px solid #2a2f3e;background:#000"></video>
   </div>
   <div id="spIncoming" style="display:none;background:#161b27;border:1px solid #2a2f3e;border-radius:8px;padding:10px;text-align:center">
@@ -7541,7 +7582,7 @@ function calToLocal(iso){ if(!iso) return ''; try{ var d=new Date(iso); var p=n=
     <button onclick="spRegister()" style="flex:1;background:#1a1f2e;color:#e8eaf0;border:1px solid #2a2f3e;border-radius:8px;padding:10px;cursor:pointer">Reconnect</button>
   </div>
 </div>
-<script src="/js/jssip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jssip@3.10.1/dist/jssip.min.js"></script>
 <script>
 (function(){
   var ua=null, session=null;
@@ -7711,28 +7752,6 @@ function calToLocal(iso){ if(!iso) return ''; try{ var d=new Date(iso); var p=n=
     }catch(e){ alert('Send error: '+e.message); }
     btn.disabled=false;
   };
-})();
-</script>
-<script>
-(function(){
-  function esc(t){return String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-  window.pbxLoad=async function(){
-    var st=document.getElementById("pbxStatus"),list=document.getElementById("pbxExtList");if(!list)return;
-    try{var r=await fetch("/api/pbx.php?action=list",{credentials:"include"});
-      if(r.status===401){list.innerHTML="<div style=\"color:#f59e0b;font-size:12px\">Sign in to manage the PBX</div>";if(st)st.textContent="Not signed in";return;}
-      var d=await r.json();if(!d.ok){list.innerHTML="<div style=\"color:#f59e0b;font-size:12px\">"+esc(d.error||"Error")+"</div>";return;}
-      var exts=d.extensions||[],status=d.status||{};var reg=exts.filter(function(e){return status[e.ext]==="registered";}).length;
-      if(st)st.innerHTML="Asterisk PBX active - <b style=\"color:#4ade80\">"+reg+"</b> of "+exts.length+" extensions registered - WSS: pbx.divafans.club:8089";
-      list.innerHTML=exts.length?exts.map(function(e){var on=status[e.ext]==="registered",dot=on?"#4ade80":"#64748b";
-        var del=e.ext==="1001"?"<span style=\"font-size:10px;color:#64748b\">primary</span>":"<button class=\"pbx-del\" data-ext=\""+esc(e.ext)+"\" style=\"background:#3a1a1a;color:#f87171;border:1px solid #5a2a2a;border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer\">Delete</button>";
-        return "<div style=\"display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #1e2330\"><span style=\"width:8px;height:8px;border-radius:50%;background:"+dot+"\"></span><span style=\"font-size:14px;font-weight:600;color:#e8eaf0;min-width:60px\">"+esc(e.ext)+"</span><span style=\"font-size:11px;color:"+(on?"#4ade80":"#8a8fa8")+"\">"+(on?"registered":"offline")+"</span><span style=\"margin-left:auto\">"+del+"</span></div>";
-      }).join(""):"<div style=\"color:#8a8fa8;font-size:12px\">No extensions</div>";
-      var nums=exts.map(function(e){return parseInt(e.ext,10);});var next=1002;while(nums.indexOf(next)!==-1)next++;var ne=document.getElementById("pbxNewExt");if(ne)ne.placeholder=String(next);
-    }catch(e){list.innerHTML="<div style=\"color:#ef4444;font-size:12px\">Error: "+esc(e.message)+"</div>";}};
-  window.pbxAdd=async function(){var ne=document.getElementById("pbxNewExt"),np=document.getElementById("pbxNewPass");var ext=(ne.value||ne.placeholder||"").trim(),pass=(np.value||"").trim();var msg=document.getElementById("pbxAddMsg"),btn=document.getElementById("pbxAddBtn");msg.style.color="#8a8fa8";msg.textContent="Adding...";btn.disabled=true;
-    try{var r=await fetch("/api/pbx.php?action=add",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({ext:ext,password:pass})});var d=await r.json();if(d.ok){msg.style.color="#4ade80";msg.textContent="Added extension "+d.ext;ne.value="";np.value="";pbxLoad();}else{msg.style.color="#f87171";msg.textContent=d.error||"Failed";}}catch(e){msg.style.color="#ef4444";msg.textContent="Error: "+e.message;}btn.disabled=false;};
-  window.pbxDel=async function(ext){if(!confirm("Delete extension "+ext+"?"))return;try{var r=await fetch("/api/pbx.php?action=delete",{method:"POST",credentials:"include",headers:{"Content-Type":"application/json"},body:JSON.stringify({ext:ext})});var d=await r.json();if(d.ok)pbxLoad();else alert(d.error||"Delete failed");}catch(e){alert("Error: "+e.message);}};
-  document.addEventListener("DOMContentLoaded",function(){var rb=document.getElementById("pbxRefreshBtn");if(rb)rb.addEventListener("click",pbxLoad);var ab=document.getElementById("pbxAddBtn");if(ab)ab.addEventListener("click",pbxAdd);var el=document.getElementById("pbxExtList");if(el)el.addEventListener("click",function(ev){var b=ev.target.closest(".pbx-del");if(b)pbxDel(b.getAttribute("data-ext"));});var t=document.getElementById("tab-pbx");if(t){var o=new MutationObserver(function(){if(t.style.display!=="none")pbxLoad();});o.observe(t,{attributes:true,attributeFilter:["style"]});}});
 })();
 </script>
 </body>

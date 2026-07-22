@@ -11,5 +11,7 @@ Disallow: /performer.html
 Disallow: /performer-view.html
 Disallow: /login.html
 Disallow: /lib/
+Disallow: /vendor
+Disallow: /login.html
 
 Sitemap: https://luxetalentsystems.com/sitemap.xml
