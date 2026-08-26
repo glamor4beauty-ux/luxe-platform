@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Set up your hosting — Models Boutique</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+<style>
+:root{--bg:#0a0d14;--panel:#111622;--panel2:#0e1219;--line:#1e2330;--line2:#2a3040;
+  --txt:#e8eaf0;--txt2:#b9bcc6;--mute:#8a8fa8;--faint:#5a6070;
+  --gold:#d4a830;--gold2:#e8bf44;--ok:#3fb950;--bad:#f2685e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+  min-height:100vh;font-size:15px;line-height:1.55;display:flex;align-items:center}
+.wrap{max-width:620px;margin:0 auto;padding:30px 18px 60px;width:100%}
+.head{text-align:center;margin-bottom:26px}
+.head h1{font-size:clamp(22px,5vw,29px);font-weight:700;letter-spacing:-.4px;margin-bottom:7px}
+.head h1 span{color:var(--gold)}
+.head p{color:var(--mute);font-size:14.5px}
+.who{background:rgba(212,168,48,.07);border:1px solid rgba(212,168,48,.28);
+  border-radius:11px;padding:12px 15px;font-size:13.5px;color:var(--txt2);
+  margin-bottom:20px;text-align:center}
+.who b{color:var(--gold);font-family:ui-monospace,Menlo,monospace}
+
+.plans{display:grid;gap:13px;margin-bottom:20px}
+.plan{position:relative;border:1.5px solid var(--line2);border-radius:14px;padding:20px;
+  cursor:pointer;transition:border-color .18s,background .18s;background:var(--panel)}
+.plan:hover{border-color:rgba(212,168,48,.55)}
+.plan.on{border-color:var(--gold);background:rgba(212,168,48,.07)}
+.plan input{position:absolute;opacity:0;pointer-events:none}
+.plan .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  margin-bottom:5px}
+.plan h2{font-size:17px;font-weight:700}
+.plan .amt{font-size:23px;font-weight:700;color:var(--gold);
+  font-family:ui-monospace,Menlo,monospace;white-space:nowrap}
+.plan .per{font-size:13px;color:var(--mute)}
+.plan .save{display:inline-block;background:rgba(63,185,80,.14);color:var(--ok);
+  font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;margin-top:7px;
+  text-transform:uppercase;letter-spacing:.05em}
+.plan .cmp{font-size:12.5px;color:var(--faint);margin-top:6px}
+
+.inc{border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:20px}
+.inc h3{font-size:10px;color:var(--mute);text-transform:uppercase;letter-spacing:.09em;
+  font-weight:700;margin-bottom:11px}
+.inc ul{list-style:none}
+.inc li{font-size:13.5px;color:var(--txt2);padding:5px 0 5px 24px;position:relative;
+  line-height:1.6}
+.inc li:before{content:'\F26E';font-family:'bootstrap-icons';position:absolute;left:0;
+  color:var(--ok);font-size:13px}
+
+.go{width:100%;background:var(--gold);border:none;border-radius:12px;color:#0a0d14;
+  padding:16px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:9px}
+.go:hover{background:var(--gold2)}
+.go:disabled{opacity:.5;cursor:wait}
+.msg{font-size:13.5px;margin-top:13px;min-height:19px;text-align:center;color:var(--mute);
+  line-height:1.6}
+.msg.bad{color:var(--bad)}
+.foot{font-size:12px;color:var(--faint);text-align:center;margin-top:18px;line-height:1.7}
+.foot i{color:var(--ok)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="head">
+    <h1>Set up your <span>hosting</span></h1>
+    <p>Choose how you would like to pay. You can change or cancel at any time.</p>
+  </div>
+
+  <div class="who" id="who" style="display:none"></div>
+
+  <div class="plans">
+    <label class="plan on" data-plan="monthly">
+      <input type="radio" name="plan" value="monthly" checked>
+      <div class="top"><h2>Monthly</h2><div class="amt">$29.99</div></div>
+      <div class="per">Billed every month</div>
+    </label>
+
+    <label class="plan" data-plan="test" id="testPlan" style="display:none">
+      <input type="radio" name="plan" value="test">
+      <div class="top"><h2>Test</h2><div class="amt">$2.00</div></div>
+      <div class="per">Billed once a year &mdash; for trying the system out</div>
+    </label>
+
+    <label class="plan" data-plan="quarterly">
+      <input type="radio" name="plan" value="quarterly">
+      <div class="top"><h2>Quarterly</h2><div class="amt">$89.95</div></div>
+      <div class="per">Billed every three months</div>
+    </label>
+  </div>
+
+  <div class="inc">
+    <h3>What you get</h3>
+    <ul>
+      <li>Your store built and put online for you</li>
+      <li>A secure address with SSL</li>
+      <li>Kept running and up to date</li>
+      <li>Your affiliate code already in place</li>
+      <li>Cancel whenever you like</li>
+    </ul>
+  </div>
+
+  <button class="go" id="pay"><i class="bi bi-lock-fill"></i>Continue to payment</button>
+  <div class="msg" id="msg"></div>
+
+  <div class="foot">
+    <i class="bi bi-shield-check"></i> Payment is handled by Stripe.
+    Your card details never reach us.
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = '/api/stripe-hook.php';
+
+  function el(id) { return document.getElementById(id); }
+  function say(t, bad) {
+    var m = el('msg');
+    m.textContent = t || '';
+    m.className = 'msg' + (bad ? ' bad' : '');
+  }
+
+  /* the account comes from the address she was sent here with */
+  var code = (location.search.match(/[?&]code=([^&]+)/) || [])[1] || '';
+  code = decodeURIComponent(code).toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  if (code) {
+    var w = el('who');
+    w.innerHTML = 'Setting up hosting for <b>' + code + '</b>';
+    w.style.display = '';
+  } else {
+    say('This page needs to be opened from your registration email.', true);
+    el('pay').disabled = true;
+  }
+
+  /* the test plan is offered only to somebody sent here for it */
+  if (/[?&]plan=test/.test(location.search)) {
+    var t = el('testPlan');
+    if (t) {
+      t.style.display = '';
+      t.classList.add('on');
+      t.querySelector('input').checked = true;
+      document.querySelectorAll('[data-plan]:not(#testPlan)').forEach(function (p) {
+        p.classList.remove('on');
+        p.style.display = 'none';
+      });
+    }
+  }
+
+  /* somebody who backed out of Stripe, rather than one who failed */
+  if (/[?&]cancelled=1/.test(location.search)) {
+    say('No payment was taken. Choose a plan when you are ready.');
+  }
+
+  document.addEventListener('click', function (ev) {
+    var p = ev.target.closest('[data-plan]');
+    if (!p) return;
+    document.querySelectorAll('[data-plan]').forEach(function (x) { x.classList.remove('on'); });
+    p.classList.add('on');
+    p.querySelector('input').checked = true;
+  });
+
+  el('pay').addEventListener('click', function () {
+    var btn = this;
+    var plan = (document.querySelector('input[name=plan]:checked') || {}).value || 'monthly';
+
+    btn.disabled = true;
+    say('Opening the secure payment page…');
+
+    fetch(API + '?action=checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, plan: plan })
+    }).then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d.ok) {
+          btn.disabled = false;
+          say(d.error || 'That did not work. Try again in a moment.', true);
+          return;
+        }
+        /* Stripe's own page from here; nothing about the card touches us */
+        location.href = d.url;
+      })
+      .catch(function () {
+        btn.disabled = false;
+        say('Could not reach the server. Check your connection and try again.', true);
+      });
+  });
+
+})();
+</script>
+
+</body>
+</html>

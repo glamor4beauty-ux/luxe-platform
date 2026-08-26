@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<!-- ══ the page builder fills these two ══ -->
+<title>Bella's Boutique — Women's Fashion</title>
+<meta name="description" content="Hand-picked women's clothing, delivered to your door. Shipping and payment handled for you."/>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0d14;color:#e8eaf0;font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+  min-height:100vh;display:flex;flex-direction:column}
+a{color:#d4a830;text-decoration:none}
+a:hover{color:#e8bf44}
+
+/* ── the bar ─────────────────────────────────────────────────────────── */
+.navbar{background:rgba(10,13,20,.96);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(212,168,48,.14);padding:10px 0}
+.navbar-brand{padding:0}
+.brand-stack{display:flex;flex-direction:column;gap:3px;line-height:1.1}
+.brand-name{font-size:20px;font-weight:700;color:#e8eaf0;letter-spacing:-.2px}
+.brand-name span{color:#d4a830}
+.brand-logo{height:34px;width:auto;display:block}
+.brand-status{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:#5a6070}
+.brand-status i{width:6px;height:6px;border-radius:50%;background:#5a6070;
+  display:block;flex:0 0 6px}
+.brand-status.live{color:#3fb950}
+.brand-status.live i{background:#3fb950;box-shadow:0 0 6px rgba(63,185,80,.55)}
+.brand-status.trial{color:#e0a340}
+.brand-status.trial i{background:#e0a340}
+.brand-status.off{color:#8a8fa8}
+.brand-status.off i{background:#8a8fa8}
+.brand-status.banned{color:#f85149}
+.brand-status.banned i{background:#f85149}
+.navbar-toggler{border-color:rgba(212,168,48,.4);padding:5px 9px}
+.navbar-toggler:focus{box-shadow:none}
+.nav-link{color:#8a8fa8 !important;font-size:13px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;padding:9px 14px !important}
+.nav-link:hover,.nav-link.active{color:#d4a830 !important}
+@media(max-width:991px){.nav-link{padding:11px 4px !important}}
+
+/* ── the image strip ──────────────────────────────────────────────────
+   Full width, 300px, several pictures at once. Product photographs are
+   portrait; one of them cropped into a wide band shows a slice of waist and
+   none of the garment. Side by side at full height, each one is whole. */
+.strip{position:relative;width:100%;height:300px;overflow:hidden;background:#0e1219;
+  border-bottom:1px solid #1e2330}
+.strip-track{display:flex;gap:2px;height:100%;
+  transition:transform .55s cubic-bezier(.4,0,.2,1);will-change:transform}
+.strip-track figure{margin:0;flex:0 0 auto;height:100%;width:225px;overflow:hidden;
+  background:#111622}
+.strip-track img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s ease}
+.strip-track figure:hover img{transform:scale(1.05)}
+.strip-track figure.gone{display:none}
+.s-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  background:rgba(10,13,20,.62);border:1px solid rgba(255,255,255,.16);color:#fff;
+  width:42px;height:42px;border-radius:50%;font-size:24px;line-height:1;cursor:pointer;
+  font-family:inherit;display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s}
+.s-arrow:hover{background:rgba(212,168,48,.9);color:#0a0d14}
+.s-arrow.prev{left:12px}
+.s-arrow.next{right:12px}
+@media(max-width:575px){
+  .strip{height:230px}
+  .strip-track figure{width:172px}
+  .s-arrow{width:34px;height:34px;font-size:20px}
+  .s-arrow.prev{left:7px}.s-arrow.next{right:7px}
+}
+
+/* ── the store ───────────────────────────────────────────────────────── */
+.store{padding:34px 0 50px}
+.store-head{text-align:center;margin-bottom:24px}
+.store-head h2{font-size:clamp(22px,4vw,30px);font-weight:700;margin-bottom:8px}
+.store-head p{color:#8a8fa8;font-size:15px;max-width:520px;margin:0 auto;line-height:1.7}
+
+/* categories filter what is shown; they are not links away */
+.cats{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-bottom:26px}
+.cat{background:#111622;border:1px solid #1e2330;border-radius:10px;color:#b9bcc6;
+  padding:11px 20px;font-size:13.5px;font-weight:600;cursor:pointer;font-family:inherit;
+  transition:border-color .18s,color .18s,background .18s}
+.cat:hover{border-color:rgba(212,168,48,.5);color:#d4a830}
+.cat.on{background:rgba(212,168,48,.12);border-color:#d4a830;color:#d4a830}
+
+.goods{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:22px}
+@media(max-width:620px){.goods{grid-template-columns:1fr 1fr;gap:13px}}
+.good{cursor:pointer}
+.good-shot{position:relative;aspect-ratio:3/4;background:#111622;border-radius:12px;
+  overflow:hidden;margin-bottom:10px}
+.good-shot img{width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .5s ease,opacity .35s}
+.good:hover .good-shot img{transform:scale(1.04)}
+.good.out .good-shot img{opacity:.42}
+.good-out{position:absolute;left:10px;top:10px;background:rgba(10,13,20,.9);
+  font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 10px;border-radius:6px}
+.good-sale{position:absolute;right:10px;top:10px;background:#d4a830;color:#0a0d14;
+  font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+  padding:5px 10px;border-radius:6px}
+.good h3{font-size:14px;font-weight:600;margin:0 0 4px;line-height:1.4}
+.good .price{font-size:14px;color:#d4a830;font-weight:700}
+.good .price s{color:#5a6070;font-weight:400;margin-left:5px}
+.good .from{color:#8a8fa8;font-size:11px;font-weight:400}
+
+.more-wrap{text-align:center;padding:30px 0 0}
+.btn-more{background:transparent;border:1px solid #2a3040;border-radius:11px;
+  color:#b9bcc6;padding:13px 30px;font-size:14.5px;font-weight:700;cursor:pointer;
+  font-family:inherit}
+.btn-more:hover{border-color:#d4a830;color:#d4a830}
+.goods-msg{text-align:center;padding:44px 20px;color:#5a6070;font-size:14px;
+  grid-column:1/-1}
+
+/* a skeleton, so the page has shape before anything arrives */
+.sk .good-shot{animation:pulse 1.4s ease-in-out infinite}
+.sk-line{height:11px;background:#111622;border-radius:4px;margin-bottom:6px;
+  animation:pulse 1.4s ease-in-out infinite}
+.sk-line.short{width:45%}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ── modal ───────────────────────────────────────────────────────────── */
+.modal-content{background:#111622;border:1px solid #1e2330;border-radius:14px;color:#e8eaf0}
+.modal-header{border-bottom:1px solid #1e2330}
+.modal-title{font-size:18px;font-weight:700;color:#d4a830}
+.modal-footer{border-top:1px solid #1e2330}
+.btn-close{filter:invert(1) grayscale(1) brightness(1.8)}
+.about-line{display:flex;gap:11px;align-items:flex-start;padding:9px 0;
+  border-bottom:1px solid #1a1e28;font-size:14px;line-height:1.6}
+.about-line:last-child{border-bottom:none}
+.about-line i{color:#d4a830;font-size:15px;width:20px;flex:0 0 20px;margin-top:2px}
+.about-line a{word-break:break-all}
+
+/* ── foot ────────────────────────────────────────────────────────────── */
+footer{background:#000;color:#e8eaf0;padding:42px 0 24px;margin-top:auto;
+  border-top:1px solid #1a1e28}
+footer h5{font-size:11px;text-transform:uppercase;letter-spacing:.09em;
+  color:#d4a830;font-weight:700;margin-bottom:13px}
+footer p,footer li{font-size:13.5px;color:#8a8fa8;line-height:1.8}
+footer a{color:#8a8fa8}
+footer a:hover{color:#d4a830}
+.social-icons a{font-size:19px;display:inline-flex;width:40px;height:40px;
+  border:1px solid #1e2330;border-radius:9px;align-items:center;justify-content:center;
+  margin-right:7px}
+.social-icons a:hover{border-color:#d4a830;color:#d4a830}
+.copyright{font-size:12.5px;color:#5a6070;padding-top:18px;border-top:1px solid #1a1e28;
+  margin-top:26px;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+
+      <a class="navbar-brand" href="/">
+        <span class="brand-stack">
+          <!-- ══ builder writes a name or a logo, never both ══ -->
+          <span class="brand-name">Bella's <span>Boutique</span></span>
+          <!-- <img class="brand-logo" src="images/logo.png" alt="Bella's Boutique"> -->
+          <span class="brand-status" id="affStatus" data-code="AFFBELL42">
+            <i></i><span class="st-text">Checking</span>
+          </span>
+        </span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#mainNav" aria-controls="mainNav"
+              aria-expanded="false" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <div class="navbar-nav align-items-lg-center">
+          <a class="nav-link active" href="/">Home</a>
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#AboutModal">About</a>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+<div class="modal fade" id="AboutModal" tabindex="-1" aria-labelledby="AboutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title" id="AboutModalLabel">About Us</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- ══ builder fills these four ══ -->
+        <div class="about-line"><i class="bi bi-shop"></i>
+          <span><b>Bella's Boutique</b></span></div>
+        <div class="about-line"><i class="bi bi-geo-alt"></i>
+          <span>418 Charles Street, Baltimore, MD 21201</span></div>
+        <div class="about-line"><i class="bi bi-envelope"></i>
+          <span><a href="mailto:hello@bellasboutique.com">hello@bellasboutique.com</a></span></div>
+        <div class="about-line"><i class="bi bi-telephone"></i>
+          <span><a href="tel:+14105550142">(410) 555-0142</a></span></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ image strip ══ -->
+<section class="strip" id="strip">
+  <div class="strip-track" id="track">
+    <figure><img src="images/Collared%20Neck%20Long%20Sleeve%20Jacket.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/Cropped%20Denim%20Jacket%20with%20Lace%20Trim.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/Fringe%20Open%20Front%20Cardigan.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/Full%20Size%20Spliced%20Lace%20Pull-On%20Shaping%20Shorts.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/High%20Waist%20Skinny%20Active%20Pants.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/Nutcracker%20Print%20Long%20Sleeve%20Top%20and%20Shorts%20Lounge%20Set.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/Slim-Fit%20Elegant%20Midi%20Dress%20with%20Beaded%20Slit%20Sleeve.png" alt="" loading="lazy"></figure>
+    <figure><img src="images/Solid%20Color%20Ring%20Detail%20Bikini%20Set.png" alt="" loading="lazy"></figure>
+  </div>
+  <button class="s-arrow prev" type="button" data-strip="-1" aria-label="Previous">&#8249;</button>
+  <button class="s-arrow next" type="button" data-strip="1" aria-label="Next">&#8250;</button>
+</section>
+
+<!-- ══ the store, on the page ══ -->
+<section class="store">
+  <div class="container">
+
+    <div class="cats" id="cats">
+      <button class="cat on" data-cat="">Everything</button>
+    </div>
+
+    <div class="goods" id="goods"></div>
+
+    <div class="more-wrap" id="moreWrap" style="display:none">
+      <button class="btn-more" id="more">Show more</button>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="row">
+
+      <div class="col-md-4 mb-4">
+        <h5>About Us</h5>
+        <p><b style="color:#e8eaf0">Bella's Boutique</b><br>
+           418 Charles Street<br>Baltimore, MD 21201<br>
+           <a href="mailto:hello@bellasboutique.com">hello@bellasboutique.com</a><br>
+           <a href="tel:+14105550142">(410) 555-0142</a></p>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="/">Home</a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#AboutModal">About</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5>Follow Us</h5>
+        <ul class="list-inline social-icons">
+          <!-- ══ builder writes only the ones she gives ══ -->
+          <li class="list-inline-item"><a href="https://facebook.com/bellasboutique"
+            target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a></li>
+          <li class="list-inline-item"><a href="https://twitter.com/bellasboutique"
+            target="_blank" rel="noopener" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a></li>
+          <li class="list-inline-item"><a href="https://instagram.com/bellasboutique"
+            target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="copyright">
+      &copy; <span id="yr"></span> Bella's Boutique. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://admin.modelsboutique.com/api/boutique.js?v=5"></script>
+<script src="https://admin.modelsboutique.com/api/affiliate-page.js?v=3"></script>
+<script src="https://admin.modelsboutique.com/api/shopfront.js?v=1"></script>
+
+</body>
+</html>

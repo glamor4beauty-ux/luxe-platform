@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<!-- ══ the page builder fills these two ══ -->
+<title>Bella's Boutique — Women's Fashion</title>
+<meta name="description" content="Hand-picked women's clothing, delivered to your door. Shipping and payment handled for you."/>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0d14;color:#e8eaf0;font-family:'DM Sans',system-ui,-apple-system,sans-serif;
+  min-height:100vh;display:flex;flex-direction:column}
+a{color:#d4a830;text-decoration:none}
+a:hover{color:#e8bf44}
+
+/* ── the bar ─────────────────────────────────────────────────────────── */
+.navbar{background:rgba(10,13,20,.96);backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(212,168,48,.14);padding:10px 0}
+.navbar-brand{padding:0}
+.brand-stack{display:flex;flex-direction:column;gap:3px;line-height:1.1}
+.brand-name{font-size:20px;font-weight:700;color:#e8eaf0;letter-spacing:-.2px}
+.brand-name span{color:#d4a830}
+.brand-logo{height:34px;width:auto;display:block}
+
+/* the status sits under the name, quiet enough not to compete with it */
+.brand-status{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:700;
+  letter-spacing:.09em;text-transform:uppercase;color:#5a6070}
+.brand-status i{width:6px;height:6px;border-radius:50%;background:#5a6070;
+  display:block;flex:0 0 6px}
+.brand-status.live{color:#3fb950}
+.brand-status.live i{background:#3fb950;box-shadow:0 0 6px rgba(63,185,80,.55)}
+.brand-status.trial{color:#e0a340}
+.brand-status.trial i{background:#e0a340}
+.brand-status.off{color:#8a8fa8}
+.brand-status.off i{background:#8a8fa8}
+.brand-status.banned{color:#f85149}
+.brand-status.banned i{background:#f85149}
+
+.navbar-toggler{border-color:rgba(212,168,48,.4);padding:5px 9px}
+.navbar-toggler:focus{box-shadow:none}
+.nav-link{color:#8a8fa8 !important;font-size:13px;font-weight:600;
+  text-transform:uppercase;letter-spacing:.05em;padding:9px 14px !important}
+.nav-link:hover,.nav-link.active{color:#d4a830 !important}
+.nav-shop{color:#0a0d14 !important;background:#d4a830;border-radius:8px;
+  padding:9px 18px !important;margin-left:6px}
+.nav-shop:hover{background:#e8bf44;color:#0a0d14 !important}
+@media(max-width:991px){
+  .nav-shop{margin:8px 0 4px;text-align:center}
+  .nav-link{padding:11px 4px !important}
+}
+
+/* ── the top of the page ─────────────────────────────────────────────── */
+.hero{padding:58px 0 42px;text-align:center;
+  background:radial-gradient(ellipse at 50% -20%,rgba(212,168,48,.10),transparent 62%)}
+.hero h1{font-size:clamp(29px,6vw,46px);font-weight:700;letter-spacing:-.8px;
+  line-height:1.15;margin-bottom:14px}
+.hero h1 em{color:#d4a830;font-style:normal}
+.hero p{font-size:clamp(15px,2.4vw,17.5px);color:#8a8fa8;max-width:560px;
+  margin:0 auto 26px;line-height:1.7}
+.btn-shop{background:#d4a830;color:#0a0d14;border:none;border-radius:11px;
+  padding:15px 38px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-shop:hover{background:#e8bf44}
+
+/* ── sponsored ───────────────────────────────────────────────────────── */
+.ads{padding:32px 0}
+.ads h2{font-size:10.5px;color:#5a6070;text-transform:uppercase;letter-spacing:.11em;
+  font-weight:700;text-align:center;margin-bottom:16px}
+.ad-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.ad{display:block;border-radius:12px;overflow:hidden;border:1px solid #1e2330;
+  background:#111622;transition:border-color .2s}
+.ad:hover{border-color:rgba(212,168,48,.45)}
+.ad img{width:100%;height:auto;display:block}
+
+/* ── the shop band ───────────────────────────────────────────────────── */
+.shopband{padding:20px 0 56px;text-align:center}
+.shopband h2{font-size:clamp(21px,4vw,27px);font-weight:700;margin-bottom:10px}
+.shopband p{color:#8a8fa8;font-size:15px;max-width:480px;margin:0 auto;line-height:1.7}
+
+/* ── modal ───────────────────────────────────────────────────────────── */
+.modal-content{background:#111622;border:1px solid #1e2330;border-radius:14px;color:#e8eaf0}
+.modal-header{border-bottom:1px solid #1e2330}
+.modal-title{font-size:18px;font-weight:700;color:#d4a830}
+.modal-footer{border-top:1px solid #1e2330}
+.btn-close{filter:invert(1) grayscale(1) brightness(1.8)}
+.about-line{display:flex;gap:11px;align-items:flex-start;padding:9px 0;
+  border-bottom:1px solid #1a1e28;font-size:14px;line-height:1.6}
+.about-line:last-child{border-bottom:none}
+.about-line i{color:#d4a830;font-size:15px;width:20px;flex:0 0 20px;margin-top:2px}
+.about-line a{word-break:break-all}
+
+/* ── foot ────────────────────────────────────────────────────────────── */
+footer{background:#000;color:#e8eaf0;padding:42px 0 24px;margin-top:auto;
+  border-top:1px solid #1a1e28}
+footer h5{font-size:11px;text-transform:uppercase;letter-spacing:.09em;
+  color:#d4a830;font-weight:700;margin-bottom:13px}
+footer p,footer li{font-size:13.5px;color:#8a8fa8;line-height:1.8}
+footer a{color:#8a8fa8}
+footer a:hover{color:#d4a830}
+.social-icons a{font-size:19px;display:inline-flex;width:40px;height:40px;
+  border:1px solid #1e2330;border-radius:9px;align-items:center;justify-content:center;
+  margin-right:7px}
+.social-icons a:hover{border-color:#d4a830;color:#d4a830}
+.copyright{font-size:12.5px;color:#5a6070;padding-top:18px;border-top:1px solid #1a1e28;
+  margin-top:26px;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+
+      <a class="navbar-brand" href="/">
+        <span class="brand-stack">
+          <!-- ══ builder writes a name or a logo, never both ══ -->
+          <span class="brand-name">Bella's <span>Boutique</span></span>
+          <!-- <img class="brand-logo" src="images/logo.png" alt="Bella's Boutique"> -->
+
+          <span class="brand-status" id="affStatus" data-code="AFFBELL42">
+            <i></i><span class="st-text">Checking</span>
+          </span>
+        </span>
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+              data-bs-target="#mainNav" aria-controls="mainNav"
+              aria-expanded="false" aria-label="Menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse justify-content-end" id="mainNav">
+        <div class="navbar-nav align-items-lg-center">
+          <a class="nav-link active" href="/">Home</a>
+          <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#AboutModal">About</a>
+          <a class="nav-link nav-shop" href="#" data-mb-shop="AFFBELL42">Shop Now</a>
+        </div>
+      </div>
+
+    </div>
+  </nav>
+</header>
+
+<div class="modal fade" id="AboutModal" tabindex="-1" aria-labelledby="AboutModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title" id="AboutModalLabel">About Us</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- ══ builder fills these four ══ -->
+        <div class="about-line"><i class="bi bi-shop"></i>
+          <span><b>Bella's Boutique</b></span></div>
+        <div class="about-line"><i class="bi bi-geo-alt"></i>
+          <span>418 Charles Street, Baltimore, MD 21201</span></div>
+        <div class="about-line"><i class="bi bi-envelope"></i>
+          <span><a href="mailto:hello@bellasboutique.com">hello@bellasboutique.com</a></span></div>
+        <div class="about-line"><i class="bi bi-telephone"></i>
+          <span><a href="tel:+14105550142">(410) 555-0142</a></span></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="container">
+    <h1>Style that arrives <em>at your door</em></h1>
+    <p>Hand-picked women's fashion. We handle the shipping and the payments —
+       you just choose what you love.</p>
+    <button class="btn-shop" data-mb-shop="AFFBELL42">Shop the collection</button>
+  </div>
+</section>
+
+<section class="ads" id="adSection" style="display:none">
+  <div class="container">
+    <h2>Sponsored</h2>
+    <div class="ad-strip" id="adStrip"></div>
+  </div>
+</section>
+
+<section class="shopband">
+  <div class="container">
+    <h2>The full collection</h2>
+    <p>Everything in one place — dresses, tops, outerwear and more. Browse and buy
+       without leaving this page.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="row">
+
+      <div class="col-md-4 mb-4">
+        <h5>About Us</h5>
+        <p><b style="color:#e8eaf0">Bella's Boutique</b><br>
+           418 Charles Street<br>Baltimore, MD 21201<br>
+           <a href="mailto:hello@bellasboutique.com">hello@bellasboutique.com</a><br>
+           <a href="tel:+14105550142">(410) 555-0142</a></p>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5>Quick Links</h5>
+        <ul class="list-unstyled">
+          <li><a href="/">Home</a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#AboutModal">About</a></li>
+          <li><a href="#" data-mb-shop="AFFBELL42">Shop</a></li>
+        </ul>
+      </div>
+
+      <div class="col-md-4 mb-4">
+        <h5>Follow Us</h5>
+        <ul class="list-inline social-icons">
+          <!-- ══ builder writes only the ones she gives ══ -->
+          <li class="list-inline-item"><a href="https://facebook.com/bellasboutique"
+            target="_blank" rel="noopener" aria-label="Facebook"><i class="bi bi-facebook"></i></a></li>
+          <li class="list-inline-item"><a href="https://twitter.com/bellasboutique"
+            target="_blank" rel="noopener" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a></li>
+          <li class="list-inline-item"><a href="https://instagram.com/bellasboutique"
+            target="_blank" rel="noopener" aria-label="Instagram"><i class="bi bi-instagram"></i></a></li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="copyright">
+      &copy; <span id="yr"></span> Bella's Boutique. All rights reserved.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://luxetalentsystems.com/api/boutique.js?v=3"></script>
+<script src="https://luxetalentsystems.com/api/affiliate-page.js?v=1"></script>
+
+</body>
+</html>

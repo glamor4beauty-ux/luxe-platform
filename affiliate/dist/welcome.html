@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Welcome — Models Boutique</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+<style>
+:root{--bg:#0a0d14;--panel:#111622;--panel2:#0e1219;--line:#1e2330;--line2:#2a3040;
+  --txt:#e8eaf0;--txt2:#b9bcc6;--mute:#8a8fa8;--faint:#5a6070;
+  --gold:#d4a830;--gold2:#e8bf44;--ok:#3fb950;--warn:#e0a340;--bad:#f2685e}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);
+  font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  min-height:100vh;display:flex;align-items:center;justify-content:center;
+  padding:26px 18px;font-size:15px;line-height:1.6}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold2)}
+.box{width:100%;max-width:520px;text-align:center}
+
+.tick{width:66px;height:66px;border-radius:50%;background:rgba(63,185,80,.12);
+  border:2px solid var(--ok);color:var(--ok);font-size:32px;line-height:62px;
+  margin:0 auto 20px}
+h1{font-size:26px;font-weight:700;letter-spacing:-.4px;margin-bottom:8px}
+h1 span{color:var(--gold)}
+.lead{color:var(--txt2);font-size:15px;line-height:1.7;margin-bottom:24px}
+
+.code{background:var(--panel);border:1px solid var(--gold);border-radius:13px;
+  padding:18px;margin-bottom:18px}
+.code small{display:block;font-size:9.5px;color:var(--mute);text-transform:uppercase;
+  letter-spacing:.1em;font-weight:700;margin-bottom:5px}
+.code b{font-size:26px;color:var(--gold);font-family:ui-monospace,Menlo,monospace;
+  letter-spacing:1px}
+
+/* ── while it builds ─────────────────────────────────────────────────────
+   A building site takes under a minute, and a person watching a blank page
+   for a minute assumes it has failed. So it says what it is doing, and keeps
+   saying it. */
+.building{background:var(--panel);border:1px solid var(--line2);border-radius:13px;
+  padding:22px;margin-bottom:18px}
+.spin{width:34px;height:34px;border:3px solid var(--line2);border-top-color:var(--gold);
+  border-radius:50%;margin:0 auto 14px;animation:turn .9s linear infinite}
+@keyframes turn{to{transform:rotate(360deg)}}
+.building h2{font-size:16px;font-weight:700;margin-bottom:6px}
+.building p{font-size:13.5px;color:var(--mute);line-height:1.65}
+.warn{color:var(--warn);font-weight:700;margin-top:11px;font-size:13px}
+
+.ready{background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.4);
+  border-radius:13px;padding:22px;margin-bottom:18px}
+.ready h2{font-size:16px;font-weight:700;color:var(--ok);margin-bottom:10px}
+.addr{display:flex;gap:9px;align-items:center;background:var(--panel2);
+  border:1px solid var(--line2);border-radius:10px;padding:12px 14px;margin-bottom:13px}
+.addr code{flex:1;min-width:0;font-size:13.5px;color:var(--gold);word-break:break-all;
+  font-family:ui-monospace,monospace;text-align:left}
+.btn{border:1px solid var(--line2);background:transparent;color:var(--txt2);
+  border-radius:9px;padding:10px 17px;font-size:13px;font-weight:700;cursor:pointer;
+  font-family:inherit;white-space:nowrap;text-decoration:none;display:inline-block}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#0a0d14}
+.btn.gold:hover{background:var(--gold2);color:#0a0d14}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+.slow{background:rgba(224,163,64,.07);border:1px solid rgba(224,163,64,.35);
+  border-radius:11px;padding:15px 17px;font-size:13px;color:var(--warn);
+  line-height:1.65;margin-bottom:18px;text-align:left}
+.note{font-size:12.5px;color:var(--mute);line-height:1.75;text-align:left;
+  background:rgba(212,168,48,.05);border-left:2px solid rgba(212,168,48,.4);
+  border-radius:0 9px 9px 0;padding:13px 15px;margin-top:18px}
+.note b{color:var(--gold)}
+.steps{text-align:left;margin:0;padding-left:19px}
+.steps li{font-size:13px;color:var(--txt2);line-height:1.8;margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<div class="box">
+
+  <div class="tick">&#10003;</div>
+  <h1>Payment received</h1>
+  <p class="lead">Thank you. Your subscription is set up and your store is being built.</p>
+
+  <div class="code">
+    <small>Your affiliate code</small>
+    <b id="code">—</b>
+  </div>
+
+  <!-- while it builds -->
+  <div class="building" id="building">
+    <div class="spin"></div>
+    <h2>Building your store</h2>
+    <p>This usually takes under a minute. We are putting your page together,
+       setting up your address and issuing your security certificate.</p>
+    <p class="warn">Please keep this window open.</p>
+  </div>
+
+  <!-- once it is done -->
+  <div class="ready" id="ready" style="display:none">
+    <h2>Your store is live</h2>
+    <div class="addr">
+      <code id="addr"></code>
+      <button class="btn" onclick="copyAddr()">Copy</button>
+    </div>
+    <div class="btns">
+      <a class="btn gold" id="visit" href="#" target="_blank" rel="noopener">Visit your store</a>
+      <a class="btn" href="/dashboard.php">Your dashboard</a>
+    </div>
+  </div>
+
+  <!-- if it is taking longer than it should -->
+  <div class="slow" id="slow" style="display:none">
+    <b>This is taking longer than usual.</b><br>
+    Your payment went through and your account is set up, so nothing is lost. We will
+    email you as soon as your store is ready — usually within a few minutes, and at
+    worst within a working day. You can close this window safely.
+  </div>
+
+  <div class="note">
+    <b>What happens next.</b>
+    <ul class="steps">
+      <li>Your store sells the whole Models Boutique range</li>
+      <li>We hold the stock, take payments, ship orders and handle returns</li>
+      <li>Anyone who buys through your store earns you commission</li>
+      <li>Your sales and earnings appear in your dashboard</li>
+    </ul>
+    <br>
+    <b>Keep your code safe.</b> It is already in your store and it is what credits
+    sales to you.
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  function el(id){ return document.getElementById(id); }
+
+  var code = (location.search.match(/[?&]code=([^&]+)/) || [])[1] || '';
+  code = decodeURIComponent(code).toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+  el('code').textContent = code || '—';
+
+  if (!code) {
+    el('building').style.display = 'none';
+    el('slow').style.display = '';
+    return;
+  }
+
+  /* Asking every three seconds for two minutes. Long enough for a site to be
+     built and a certificate issued, short enough that somebody staring at a
+     spinner is not left there indefinitely. */
+  var tries = 0;
+  var max = 40;
+
+  function check() {
+    fetch('/api/register.php?action=status&code=' + encodeURIComponent(code))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (d && d.ok && d.ready && d.site_url) {
+          el('building').style.display = 'none';
+          el('ready').style.display = '';
+          el('addr').textContent = d.site_url;
+          el('visit').href = d.site_url;
+          return;
+        }
+        again();
+      })
+      .catch(again);
+  }
+
+  function again() {
+    if (++tries >= max) {
+      /* Not an error, and not presented as one: the payment is taken and the
+         account exists. Only the building is slow. */
+      el('building').style.display = 'none';
+      el('slow').style.display = '';
+      return;
+    }
+    setTimeout(check, 3000);
+  }
+
+  check();
+
+  window.copyAddr = function () {
+    var t = el('addr').textContent;
+    if (!navigator.clipboard) return;
+    navigator.clipboard.writeText(t).then(function () {
+      var b = document.querySelector('.addr .btn');
+      b.textContent = 'Copied';
+      setTimeout(function () { b.textContent = 'Copy'; }, 1600);
+    }).catch(function () {});
+  };
+
+})();
+</script>
+
+</body>
+</html>

@@ -13,3 +13,9 @@
 *.bak-*
 # node
 node_modules/
+adminmb/dist/shopify/.token
+adminmb/dist/shopify/.users.json
+adminmb/dist/shopify/cache/
+adminmb/dist/api/cache/
+*.bak2
+affiliate/dist/hosted/

@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="robots" content="noindex,nofollow"/>
+<title>Join the Models Boutique affiliate programme</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"/>
+
+<style>
+/* Matching the house style rather than inventing one: the same near-black,
+   the same gold, the same type as every other Models Boutique surface. */
+:root{
+  --bg:#0a0d14; --panel:#111622; --panel2:#0e1219;
+  --line:#1e2330; --line2:#2a3040;
+  --txt:#e8eaf0; --txt2:#b9bcc6; --mute:#8a8fa8; --faint:#5a6070;
+  --gold:#d4a830; --gold2:#e8bf44;
+  --ok:#3fb950; --warn:#e0a340; --bad:#f2685e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--txt);
+  font-family:'DM Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  min-height:100vh;font-size:15px;line-height:1.55}
+a{color:var(--gold);text-decoration:none}
+a:hover{color:var(--gold2)}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.wrap{max-width:720px;margin:0 auto;padding:26px 18px 70px}
+
+.head{text-align:center;margin-bottom:26px}
+.head h1{font-size:clamp(23px,5vw,32px);font-weight:700;letter-spacing:-.5px;margin-bottom:7px}
+.head h1 span{color:var(--gold)}
+.head p{color:var(--mute);font-size:14.5px}
+
+/* ── the step rail ────────────────────────────────────────────────────
+   Numbered because this genuinely is a sequence — each step depends on the
+   one before, and knowing how many remain is the thing people most want. */
+.rail{display:flex;gap:5px;margin-bottom:24px}
+.rail div{flex:1;height:3px;background:var(--line);border-radius:2px;transition:background .3s}
+.rail div.done{background:var(--gold)}
+.stepno{font-size:10.5px;color:var(--gold);text-transform:uppercase;letter-spacing:.11em;
+  font-weight:700;margin-bottom:6px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px}
+.card h2{font-size:20px;font-weight:700;margin-bottom:5px;letter-spacing:-.3px}
+.card>p.lead{color:var(--mute);font-size:14px;margin-bottom:20px;line-height:1.65}
+
+/* ── choices ─────────────────────────────────────────────────────────── */
+.pick{display:grid;gap:12px;margin-bottom:6px}
+.opt{position:relative;border:1.5px solid var(--line2);border-radius:13px;padding:18px;
+  cursor:pointer;transition:border-color .18s,background .18s}
+.opt:hover{border-color:rgba(212,168,48,.55)}
+.opt.on{border-color:var(--gold);background:rgba(212,168,48,.07)}
+.opt input{position:absolute;opacity:0;pointer-events:none}
+.opt h3{font-size:16.5px;font-weight:700;margin-bottom:4px;display:flex;
+  align-items:center;gap:9px}
+.opt h3 i{color:var(--gold);font-size:18px}
+.opt .price{color:var(--gold);font-weight:700;font-size:14.5px;margin-bottom:7px}
+.opt ul{list-style:none;margin:8px 0 0}
+.opt li{font-size:13.5px;color:var(--txt2);padding:3px 0 3px 21px;position:relative;line-height:1.6}
+.opt li:before{content:'\F26E';font-family:'bootstrap-icons';position:absolute;left:0;
+  color:var(--ok);font-size:12px}
+.opt .note{font-size:12.5px;color:var(--mute);margin-top:9px;line-height:1.6}
+
+/* ── fields ──────────────────────────────────────────────────────────── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.grid .full{grid-column:1/-1}
+@media(max-width:575px){.grid{grid-template-columns:1fr}}
+label.f{display:block;font-size:10px;color:var(--mute);text-transform:uppercase;
+  letter-spacing:.08em;font-weight:700;margin-bottom:6px}
+label.f span{color:var(--gold);margin-left:2px}
+input[type=text],input[type=email],input[type=tel],select{
+  width:100%;background:var(--panel2);border:1px solid var(--line2);border-radius:10px;
+  padding:12px 13px;color:var(--txt);font-size:16px;outline:none;font-family:inherit}
+input:focus,select:focus{border-color:var(--gold)}
+input::placeholder{color:#4a5060}
+select{cursor:pointer}
+select option{background:var(--panel2)}
+
+.check{display:flex;gap:11px;align-items:flex-start;font-size:13.5px;color:var(--txt2);
+  line-height:1.6;cursor:pointer;padding:11px 0}
+.check input{width:21px;height:21px;flex:0 0 21px;margin-top:1px;accent-color:var(--gold)}
+
+/* ── templates ───────────────────────────────────────────────────────── */
+.tpls{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:575px){.tpls{grid-template-columns:1fr}}
+.tpl{border:1.5px solid var(--line2);border-radius:13px;overflow:hidden;cursor:pointer;
+  transition:border-color .18s}
+.tpl:hover{border-color:rgba(212,168,48,.55)}
+.tpl.on{border-color:var(--gold)}
+.tpl input{position:absolute;opacity:0;pointer-events:none}
+/* a drawn impression rather than a live iframe: it loads instantly, cannot
+   scroll-trap a phone, and the real thing is one tap away */
+.tpl .shot{aspect-ratio:16/10;background:var(--panel2);border-bottom:1px solid var(--line);
+  padding:11px;display:flex;flex-direction:column;gap:6px}
+.tpl .bar{height:9px;background:var(--line2);border-radius:2px}
+.tpl .band{flex:1;background:linear-gradient(135deg,rgba(212,168,48,.22),rgba(212,168,48,.05));
+  border-radius:4px}
+.tpl .band.wide{flex:1.6}
+.tpl .row3{display:flex;gap:5px;height:22px}
+.tpl .row3 div{flex:1;background:var(--line2);border-radius:3px}
+.tpl .meta{padding:12px 13px}
+.tpl .meta b{display:block;font-size:14.5px;margin-bottom:2px}
+.tpl .meta span{font-size:12px;color:var(--mute);line-height:1.5;display:block}
+.tpl .meta a{font-size:12px;font-weight:600;display:inline-block;margin-top:8px}
+
+/* ── uploads ─────────────────────────────────────────────────────────── */
+.ups{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:575px){.ups{grid-template-columns:1fr}}
+.up{position:relative}
+.up input[type=file]{position:absolute;width:1px;height:1px;opacity:0}
+.up label{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;min-height:135px;background:var(--panel2);border:1.5px dashed var(--line2);
+  border-radius:12px;cursor:pointer;padding:14px;text-align:center;margin:0}
+.up label:hover{border-color:var(--gold)}
+.up label i{font-size:24px;color:var(--faint)}
+.up label b{font-size:13.5px;color:var(--txt2)}
+.up label span{font-size:11px;color:var(--faint);line-height:1.45}
+.up.has label{display:none}
+.up img{display:none;width:100%;height:135px;object-fit:cover;border-radius:12px;
+  border:1.5px solid var(--ok)}
+.up.has img{display:block}
+.up .clear{display:none;position:absolute;top:7px;right:7px;background:rgba(10,13,20,.88);
+  border:1px solid var(--line2);border-radius:7px;color:var(--txt2);font-size:11px;
+  padding:5px 9px;cursor:pointer;font-family:inherit}
+.up.has .clear{display:block}
+
+/* ── the terms box ───────────────────────────────────────────────────── */
+.terms{background:var(--panel2);border:1px solid var(--line);border-radius:11px;
+  padding:15px;max-height:190px;overflow-y:auto;font-size:13px;line-height:1.75;
+  color:var(--txt2);margin-bottom:6px}
+.terms h4{font-size:12.5px;color:var(--gold);margin:13px 0 5px;font-weight:700}
+.terms h4:first-child{margin-top:0}
+.terms p{margin-bottom:9px}
+
+/* ── buttons ─────────────────────────────────────────────────────────── */
+.bar-btns{display:flex;gap:10px;margin-top:22px}
+.btn{border-radius:11px;padding:14px 26px;font-size:15px;font-weight:700;cursor:pointer;
+  font-family:inherit;border:1px solid var(--line2);background:transparent;color:var(--txt2)}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.go{background:var(--gold);border-color:var(--gold);color:#0a0d14;flex:1}
+.btn.go:hover{background:var(--gold2);color:#0a0d14}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.msg{font-size:13.5px;margin-top:13px;min-height:19px;line-height:1.55;color:var(--mute)}
+.msg.bad{color:var(--bad)}
+.msg.ok{color:var(--ok)}
+
+/* ── the end ─────────────────────────────────────────────────────────── */
+.done{text-align:center;padding:14px 0}
+.done .tick{width:64px;height:64px;border-radius:50%;background:rgba(63,185,80,.12);
+  border:2px solid var(--ok);color:var(--ok);font-size:31px;line-height:60px;margin:0 auto 18px}
+.done h2{font-size:23px;margin-bottom:9px}
+.done>p{color:var(--txt2);font-size:14.5px;line-height:1.7;margin-bottom:20px}
+.codebox{background:var(--panel2);border:1px solid var(--gold);border-radius:12px;
+  padding:17px;margin-bottom:20px}
+.codebox small{font-size:10px;color:var(--mute);text-transform:uppercase;
+  letter-spacing:.09em;font-weight:700;display:block;margin-bottom:5px}
+.codebox b{font-size:25px;color:var(--gold);font-family:ui-monospace,Menlo,monospace;
+  letter-spacing:1px}
+.dl{display:inline-flex;align-items:center;gap:9px;background:var(--gold);color:#0a0d14;
+  border:none;border-radius:11px;padding:15px 30px;font-size:15.5px;font-weight:700;
+  cursor:pointer;font-family:inherit}
+.dl:hover{background:var(--gold2)}
+.after{font-size:13px;color:var(--mute);line-height:1.75;margin-top:18px;text-align:left;
+  background:rgba(212,168,48,.05);border-left:2px solid rgba(212,168,48,.4);
+  border-radius:0 9px 9px 0;padding:13px 15px}
+.after b{color:var(--gold)}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="head">
+    <h1>Sell <span>Models Boutique</span> from your own site</h1>
+    <p>No stock to buy. We handle shipping, payment and returns.</p>
+  </div>
+
+  <div class="rail" id="rail">
+    <div class="done"></div><div></div><div></div><div></div><div></div>
+  </div>
+
+  <form id="regForm" autocomplete="on">
+
+  <!-- ══ 1 ══════════════════════════════════════════════════════════ -->
+  <section class="card step" data-step="1">
+    <div class="stepno">Step 1 of 5</div>
+    <h2>How do you want your site hosted?</h2>
+    <p class="lead">Either we run it for you, or you download the files and put them
+       on your own hosting.</p>
+
+    <div class="pick">
+      <label class="opt" data-opt="hosting" data-val="managed">
+        <input type="radio" name="hosting" value="managed">
+        <h3><i class="bi bi-shield-check"></i>Done for you</h3>
+        <div class="price">$29.95 a month &middot; or $85.36 a quarter, saving 5%</div>
+        <ul>
+          <li>Your site set up and live, nothing to install</li>
+          <li>Secure address with SSL included</li>
+          <li>We keep it running and up to date</li>
+          <li>Cancel whenever you like</li>
+        </ul>
+        <div class="note">You will be taken to a secure payment page after you finish
+          this form. Nothing is charged until then.</div>
+      </label>
+
+      <label class="opt" data-opt="hosting" data-val="diy">
+        <input type="radio" name="hosting" value="diy">
+        <h3><i class="bi bi-download"></i>Do it yourself</h3>
+        <div class="price">Free</div>
+        <ul>
+          <li>Download your finished site as a zip</li>
+          <li>Already built with your name and your details</li>
+          <li>Upload it to any hosting you already have</li>
+          <li>Step-by-step instructions included</li>
+        </ul>
+        <div class="note">You will need your own hosting and a domain. If you are not
+          sure what that means, the done-for-you option is the easier road.</div>
+      </label>
+    </div>
+
+    <div class="bar-btns"><button type="button" class="btn go" data-next>Continue</button></div>
+    <div class="msg" id="m1"></div>
+  </section>
+
+  <!-- ══ 2 ══════════════════════════════════════════════════════════ -->
+  <section class="card step" data-step="2" hidden>
+    <div class="stepno">Step 2 of 5</div>
+    <h2>About you and your store</h2>
+    <p class="lead">Your store name is what customers see. Everything else stays
+       between us.</p>
+
+    <div class="grid">
+      <div class="full">
+        <label class="f" for="store">Store name <span>*</span></label>
+        <input type="text" id="store" name="store" placeholder="Bella's Boutique" required>
+      </div>
+      <div>
+        <label class="f" for="first">First name <span>*</span></label>
+        <input type="text" id="first" name="first" autocomplete="given-name" required>
+      </div>
+      <div>
+        <label class="f" for="last">Last name <span>*</span></label>
+        <input type="text" id="last" name="last" autocomplete="family-name" required>
+      </div>
+      <div class="full">
+        <label class="f" for="email">Email <span>*</span></label>
+        <input type="email" id="email" name="email" autocomplete="email" required>
+      </div>
+      <div class="full">
+        <label class="f" for="street">Street address <span>*</span></label>
+        <input type="text" id="street" name="street" autocomplete="address-line1" required>
+      </div>
+      <div>
+        <label class="f" for="city">City <span>*</span></label>
+        <input type="text" id="city" name="city" autocomplete="address-level2" required>
+      </div>
+      <div>
+        <label class="f" for="state">State <span>*</span></label>
+        <input type="text" id="state" name="state" autocomplete="address-level1" required>
+      </div>
+      <div>
+        <label class="f" for="zip">Postcode <span>*</span></label>
+        <input type="text" id="zip" name="zip" autocomplete="postal-code" required>
+      </div>
+      <div>
+        <label class="f" for="country">Country <span>*</span></label>
+        <select id="country" name="country" required>
+          <option value="United States" selected>United States</option>
+          <option value="Canada">Canada</option>
+          <option value="United Kingdom">United Kingdom</option>
+          <option value="Australia">Australia</option>
+          <option value="Other">Somewhere else</option>
+        </select>
+      </div>
+      <div class="full">
+        <label class="f" for="phone">Phone <span>*</span></label>
+        <input type="tel" id="phone" name="phone" autocomplete="tel" placeholder="(410) 555-0142" required>
+      </div>
+    </div>
+
+    <label class="check">
+      <input type="checkbox" id="sms" name="sms">
+      <span>Text me about my account and my payouts. Message rates may apply,
+        and you can stop any time by replying STOP.</span>
+    </label>
+
+    <div class="bar-btns">
+      <button type="button" class="btn" data-back>Back</button>
+      <button type="button" class="btn go" data-next>Continue</button>
+    </div>
+    <div class="msg" id="m2"></div>
+  </section>
+
+  <!-- ══ 3 ══════════════════════════════════════════════════════════ -->
+  <section class="card step" data-step="3" hidden>
+    <div class="stepno">Step 3 of 5</div>
+    <h2>Choose your look</h2>
+    <p class="lead">Both work the same way and both are built with your details.
+       Open either one to see it full size.</p>
+
+    <div class="tpls">
+      <label class="tpl" data-opt="template" data-val="template1">
+        <input type="radio" name="template" value="template1">
+        <div class="shot">
+          <div class="bar"></div>
+          <div class="band"></div>
+          <div class="row3"><div></div><div></div><div></div></div>
+        </div>
+        <div class="meta">
+          <b>Classic</b>
+          <span>A bold headline up top, then your shop.</span>
+          <a href="https://affiliate.modelsboutique.com/template1.html"
+             target="_blank" rel="noopener">Open in a new window &rarr;</a>
+        </div>
+      </label>
+
+      <label class="tpl" data-opt="template" data-val="template2">
+        <input type="radio" name="template" value="template2">
+        <div class="shot">
+          <div class="bar"></div>
+          <div class="band wide"></div>
+          <div class="row3"><div></div><div></div><div></div><div></div></div>
+        </div>
+        <div class="meta">
+          <b>Banner</b>
+          <span>A wide picture across the top, with category tiles.</span>
+          <a href="https://affiliate.modelsboutique.com/template2.html"
+             target="_blank" rel="noopener">Open in a new window &rarr;</a>
+        </div>
+      </label>
+    </div>
+
+    <div class="bar-btns">
+      <button type="button" class="btn" data-back>Back</button>
+      <button type="button" class="btn go" data-next>Continue</button>
+    </div>
+    <div class="msg" id="m3"></div>
+  </section>
+
+  <!-- ══ 4 ══════════════════════════════════════════════════════════ -->
+  <section class="card step" data-step="4" hidden>
+    <div class="stepno">Step 4 of 5</div>
+    <h2>Photographs</h2>
+    <p class="lead">A photo of you for your account, and a photo ID so we can confirm
+       who you are before any money is paid out.</p>
+
+    <div class="ups">
+      <div class="up" id="upProfile">
+        <input type="file" id="profile" accept="image/*">
+        <label for="profile">
+          <i class="bi bi-person-circle"></i>
+          <b>Your photo</b>
+          <span>Head and shoulders is fine</span>
+        </label>
+        <img id="profilePrev" alt="">
+        <button type="button" class="clear" data-clear="profile">Remove</button>
+      </div>
+
+      <div class="up" id="upId">
+        <input type="file" id="idphoto" accept="image/*" capture="environment">
+        <label for="idphoto">
+          <i class="bi bi-card-image"></i>
+          <b>Photo ID</b>
+          <span>Licence or passport</span>
+        </label>
+        <img id="idphotoPrev" alt="">
+        <button type="button" class="clear" data-clear="idphoto">Remove</button>
+      </div>
+    </div>
+
+    <div class="msg" style="margin-top:14px">Your ID is stored privately and is only
+      ever seen by us. It is never shown on your site.</div>
+
+    <div class="bar-btns">
+      <button type="button" class="btn" data-back>Back</button>
+      <button type="button" class="btn go" data-next>Continue</button>
+    </div>
+    <div class="msg" id="m4"></div>
+  </section>
+
+  <!-- ══ 5 ══════════════════════════════════════════════════════════ -->
+  <section class="card step" data-step="5" hidden>
+    <div class="stepno">Step 5 of 5</div>
+    <h2>The agreement</h2>
+    <p class="lead">Please read this before you finish.</p>
+
+    <div class="terms" id="termsBox">
+      <h4>What you earn</h4>
+      <p>You earn commission on the product value of every order placed through your
+         site, before shipping and tax. Your rate is shown in your dashboard. A customer
+         who arrives through your link is credited to you for 30 days, so a sale made
+         days later still counts.</p>
+
+      <h4>When you are paid</h4>
+      <p>Commission is earned once an order is paid for and not refunded. A refunded
+         order earns nothing. Payouts are recorded in your dashboard so you can see
+         what has been paid and what is still owed.</p>
+
+      <h4>Your site</h4>
+      <p>The site is yours to run. You may not present it as being operated by anyone
+         other than yourself, and you may not use the Models Boutique name to imply
+         ownership of the business. You are responsible for anything you add to it.</p>
+
+      <h4>What we do</h4>
+      <p>We hold the stock, take the payments, ship the orders and handle returns and
+         customer service. Product photographs and descriptions are provided for you to
+         use on your site while you are an active affiliate.</p>
+
+      <h4>Ending it</h4>
+      <p>Either of us may end this at any time. Commission already earned on settled
+         orders is still paid. Accounts may be closed for misrepresenting the business,
+         for fraudulent orders, or for using the brand in ways that damage it.</p>
+
+      <h4>Your details</h4>
+      <p>We keep your name, address, contact details and ID in order to run your account
+         and pay you. Your ID is never published and is not shared except where the law
+         requires it.</p>
+    </div>
+
+    <label class="check">
+      <input type="checkbox" id="agree">
+      <span>I have read the agreement and I agree to it.</span>
+    </label>
+    <label class="check">
+      <input type="checkbox" id="age">
+      <span>I am 18 or older, and the details I have given are my own.</span>
+    </label>
+
+    <div class="bar-btns">
+      <button type="button" class="btn" data-back>Back</button>
+      <button type="button" class="btn go" id="finish">Finish</button>
+    </div>
+    <div class="msg" id="m5"></div>
+  </section>
+
+  </form>
+
+  <!-- ══ after ══════════════════════════════════════════════════════ -->
+  <section class="card" id="doneCard" hidden>
+    <div class="done">
+      <div class="tick">&#10003;</div>
+      <h2 id="doneTitle">You're in</h2>
+      <p id="doneText"></p>
+
+      <div class="codebox">
+        <small>Your affiliate code</small>
+        <b id="doneCode"></b>
+      </div>
+
+      <div id="doneAction"></div>
+
+      <div class="after" id="doneAfter"></div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var API = 'https://affiliate.modelsboutique.com/api/register.php';
+  var step = 1, LAST = 5;
+  var files = { profile: null, idphoto: null };
+
+  function el(id) { return document.getElementById(id); }
+  function v(id) { var e = el(id); return e ? e.value.trim() : ''; }
+  function say(n, text, cls) {
+    var m = el('m' + n);
+    if (m) { m.textContent = text || ''; m.className = 'msg ' + (cls || ''); }
+  }
+
+  /* ── moving between steps ─────────────────────────────────────────── */
+  function show(n) {
+    document.querySelectorAll('.step').forEach(function (s) {
+      s.hidden = (+s.getAttribute('data-step') !== n);
+    });
+    document.querySelectorAll('#rail div').forEach(function (d, i) {
+      d.classList.toggle('done', i < n);
+    });
+    step = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.addEventListener('click', function (ev) {
+    /* the picking of an option */
+    var opt = ev.target.closest('[data-opt]');
+    if (opt) {
+      var group = opt.getAttribute('data-opt');
+      document.querySelectorAll('[data-opt="' + group + '"]').forEach(function (o) {
+        o.classList.remove('on');
+      });
+      opt.classList.add('on');
+      opt.querySelector('input').checked = true;
+      say(step, '');
+      return;
+    }
+
+    if (ev.target.closest('[data-next]')) { if (valid(step)) show(step + 1); return; }
+    if (ev.target.closest('[data-back]')) { show(step - 1); return; }
+
+    var clr = ev.target.closest('[data-clear]');
+    if (clr) {
+      var k = clr.getAttribute('data-clear');
+      files[k] = null;
+      el(k).value = '';
+      el(k === 'profile' ? 'upProfile' : 'upId').classList.remove('has');
+      return;
+    }
+  });
+
+  /* ── what each step needs before it will let you on ───────────────── */
+  function valid(n) {
+    if (n === 1) {
+      if (!document.querySelector('input[name=hosting]:checked')) {
+        say(1, 'Choose one of the two options.', 'bad'); return false;
+      }
+    }
+
+    if (n === 2) {
+      var need = [['store','your store name'],['first','your first name'],
+                  ['last','your last name'],['email','your email'],
+                  ['street','your street address'],['city','your city'],
+                  ['state','your state'],['zip','your postcode'],['phone','your phone number']];
+      for (var i = 0; i < need.length; i++) {
+        if (!v(need[i][0])) {
+          say(2, 'Please add ' + need[i][1] + '.', 'bad');
+          el(need[i][0]).focus();
+          return false;
+        }
+      }
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))) {
+        say(2, 'That email address does not look right.', 'bad');
+        el('email').focus();
+        return false;
+      }
+    }
+
+    if (n === 3 && !document.querySelector('input[name=template]:checked')) {
+      say(3, 'Choose a look for your site.', 'bad'); return false;
+    }
+
+    if (n === 4) {
+      if (!files.profile) { say(4, 'Add a photo of yourself.', 'bad'); return false; }
+      if (!files.idphoto) { say(4, 'Add a photo of your ID.', 'bad'); return false; }
+    }
+
+    say(n, '');
+    return true;
+  }
+
+  /* ── photographs ──────────────────────────────────────────────────────
+     Scaled before sending. A phone camera makes several megabytes of detail
+     nobody needs, and two of those over a mobile connection is a slow upload
+     that often fails. */
+  ['profile', 'idphoto'].forEach(function (k) {
+    el(k).addEventListener('change', function () {
+      var f = this.files && this.files[0];
+      if (!f) return;
+      if (!/^image\//.test(f.type)) {
+        say(4, 'That is not an image. Choose a photo.', 'bad');
+        this.value = '';
+        return;
+      }
+
+      var fr = new FileReader();
+      fr.onload = function () {
+        var img = new Image();
+        img.onload = function () {
+          var max = 1400, w = img.width, h = img.height;
+          if (w > max || h > max) {
+            if (w > h) { h = Math.round(h * max / w); w = max; }
+            else { w = Math.round(w * max / h); h = max; }
+          }
+          var c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          c.getContext('2d').drawImage(img, 0, 0, w, h);
+
+          files[k] = c.toDataURL('image/jpeg', 0.85);
+          el(k + 'Prev').src = files[k];
+          el(k === 'profile' ? 'upProfile' : 'upId').classList.add('has');
+          say(4, '');
+        };
+        img.onerror = function () { say(4, 'That image could not be read.', 'bad'); };
+        img.src = fr.result;
+      };
+      fr.readAsDataURL(f);
+    });
+  });
+
+  /* ── finishing ────────────────────────────────────────────────────── */
+  el('finish').addEventListener('click', function () {
+    if (!el('agree').checked) { say(5, 'Tick the box to agree.', 'bad'); return; }
+    if (!el('age').checked) { say(5, 'Confirm you are 18 or older.', 'bad'); return; }
+
+    var btn = this;
+    btn.disabled = true;
+    say(5, 'Setting up your account — the photographs may take a moment…');
+
+    fetch(API + '?action=register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        hosting:  document.querySelector('input[name=hosting]:checked').value,
+        template: document.querySelector('input[name=template]:checked').value,
+        store: v('store'), first: v('first'), last: v('last'), email: v('email'),
+        street: v('street'), city: v('city'), state: v('state'),
+        zip: v('zip'), country: v('country'), phone: v('phone'),
+        sms: el('sms').checked,
+        profile: files.profile, id_photo: files.idphoto,
+        agreed: true
+      })
+    }).then(function (r) { return r.json(); })
+      .then(function (d) {
+        btn.disabled = false;
+        if (!d.ok) { say(5, d.error || 'That did not go through.', 'bad'); return; }
+        finish(d);
+      }).catch(function () {
+        btn.disabled = false;
+        say(5, 'Could not reach the server. Check your connection and try again.', 'bad');
+      });
+  });
+
+  function finish(d) {
+    document.querySelectorAll('.step').forEach(function (s) { s.hidden = true; });
+    el('rail').style.display = 'none';
+    el('doneCard').hidden = false;
+    el('doneCode').textContent = d.code;
+
+    if (d.hosting === 'managed') {
+      el('doneTitle').textContent = 'Almost there';
+      el('doneText').textContent = 'Your account is created. One last step — set up ' +
+        'your subscription and we will build your site and put it live.';
+      el('doneAction').innerHTML =
+        '<a class="dl" href="' + d.checkout_url + '"><i class="bi bi-credit-card"></i>' +
+        'Set up payment</a>';
+      el('doneAfter').innerHTML =
+        '<b>What happens next.</b> Once your first payment goes through we build your ' +
+        'site and email you the address, usually within one working day. Nothing is ' +
+        'charged until you complete that step.';
+    } else {
+      el('doneTitle').textContent = "You're in";
+      el('doneText').textContent = 'Your site is built and ready. It already has your ' +
+        'name, your details and your affiliate code in it.';
+      el('doneAction').innerHTML =
+        '<a class="dl" href="' + d.zip_url + '" download><i class="bi bi-download"></i>' +
+        'Download your site</a>';
+      el('doneAfter').innerHTML =
+        '<b>What is in the zip.</b> Your finished page, a folder for your images, and ' +
+        'a readme with step-by-step instructions for cPanel and Plesk. Unzip it, upload ' +
+        'the contents to your public folder, and you are trading.<br><br>' +
+        '<b>Keep your code safe.</b> ' + d.code + ' is what earns you commission. It is ' +
+        'already in your page — do not change it, or your sales will not be credited.';
+    }
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+})();
+</script>
+
+</body>
+</html>
